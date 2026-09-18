@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Directory — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="admin.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="admin.html" class="active">Directory</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-assignments.html">Assignments</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">AR</div>
+        <span>Ana Reyes</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Role</span>
+        <strong>Admin</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Asia/Manila · Class-scoped authority</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">Admin Directory</h1>
+        <p class="bn-muted bn-text-sm">
+          Phase 8 — Full class-management authority for a specific Class/Section.
+          Milestone: Class officers can operate the entire platform without developer intervention.
+        </p>
+      </div>
+
+      <div class="bn-stat-grid" style="margin-bottom:1.25rem;">
+        <div class="bn-stat-card">
+          <div class="num" id="admin-stat-members">3</div>
+          <div class="label">Active members</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num">0</div>
+          <div class="label">Open assignments</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num">0</div>
+          <div class="label">Submissions</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num">0</div>
+          <div class="label">Subjects</div>
+        </div>
+      </div>
+
+      <!-- Management grid -->
+      <div class="bn-grid-2">
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Users &amp; membership</h2>
+          </div>
+          <p class="bn-muted bn-text-sm bn-mb-1">Manage ClassMembership roles and statuses.</p>
+          <div class="bn-table-wrap">
+            <table class="bn-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Juan Dela Cruz</td>
+                  <td><span class="bn-role-pill bn-role-student">Student</span></td>
+                  <td>ACTIVE</td>
+                </tr>
+                <tr>
+                  <td>Maria Santos</td>
+                  <td><span class="bn-role-pill bn-role-moderator">Moderator</span></td>
+                  <td>ACTIVE</td>
+                </tr>
+                <tr>
+                  <td>Ana Reyes</td>
+                  <td><span class="bn-role-pill bn-role-admin">Admin</span></td>
+                  <td>ACTIVE</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a href="admin-users.html" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Manage users</a>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Assignments &amp; subjects</h2>
+          </div>
+          <p class="bn-muted bn-text-sm bn-mb-1">Create / edit assignments, deadlines, individual vs group.</p>
+          <div class="bn-empty" style="padding:1rem;">
+            <strong>No assignments</strong>
+            Seed assignments cleared. Create new ones in Phase 2.
+          </div>
+          <a href="admin-assignments.html" class="bn-btn bn-btn-primary bn-mt-1" style="font-size:0.85rem;">Create assignment</a>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Groups &amp; submissions</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Monitor group submissions, soft-delete academic records,
+            view version history. Late is computed, never stored.
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">View submissions</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Reports &amp; audit</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Audit-log viewer (actor_role_at_time, class_id, action, target).
+            Initial retention target: 1–2 years.
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Open audit log</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Schedule &amp; announcements</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Recurring slots + exceptions (Asia/Manila). Announcements with priority and pin.
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Manage schedule</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Class settings</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Invite codes (class-scoped, revocable, max_uses), class info, soft policies.
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Open settings</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = BN.getCurrentUser();
+      if (!user) {
+        location.href = "login.html";
+        return;
+      }
+      if (user.role !== "Admin" && user.role !== "Developer") {
+        alert("This directory is for Admin (or Developer).");
+        location.href = user.role === "Moderator" ? "moderator.html" : "dashboard.html";
+      }
+    });
+  </script>
+</body>
+</html>

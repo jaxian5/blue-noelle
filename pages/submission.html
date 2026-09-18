@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submission — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="dashboard.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="assignments.html">Assignments</a>
+        <a href="#">Schedule</a>
+        <a href="#">Chat</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">JD</div>
+        <span>Juan Dela Cruz</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Current class</span>
+        <strong id="bn-current-class">—</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Next</span>
+        <strong id="bn-next-class">—</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Asia/Manila</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <a href="assignments.html" class="bn-muted bn-text-sm" style="text-decoration:none;">← Back to Assignments</a>
+        <h1 style="font-size:1.35rem; font-weight:700; margin-top:0.35rem;" id="assignment-title">E-Journal</h1>
+        <p class="bn-muted bn-text-sm">
+          Pipeline: <strong>Upload → Organize → Review → Submit → Track → Download</strong>
+        </p>
+      </div>
+
+      <div class="bn-dashboard">
+        <!-- LEFT: Upload & current version -->
+        <div>
+          <div class="bn-card">
+            <div class="bn-card-header">
+              <h2 class="bn-card-title">Current Submission</h2>
+              <span class="bn-badge bn-badge-draft" id="status-badge">DRAFT</span>
+            </div>
+
+            <p class="bn-text-sm bn-muted bn-mb-1">
+              Ownership invariant: exactly one owner (Student <em>or</em> Group).  
+              This submission belongs to <strong>you</strong> (student_id set, group_id NULL).
+            </p>
+
+            <!-- File list of current version -->
+            <div class="bn-table-wrap bn-mt-1">
+              <table class="bn-table">
+                <thead>
+                  <tr>
+                    <th>File</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="file-list">
+                  <tr>
+                    <td colspan="4" class="bn-empty" style="padding:1.5rem;">
+                      <strong>No files yet</strong>
+                      Upload one or more files for this version.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Upload zone -->
+            <div class="bn-mt-2" style="border:2px dashed var(--bn-border-strong); border-radius:var(--bn-radius); padding:1.5rem; text-align:center;">
+              <p class="bn-muted bn-text-sm bn-mb-1">Drop files here or click to browse</p>
+              <input type="file" id="file-input" multiple style="display:none;" />
+              <button type="button" class="bn-btn bn-btn-secondary" onclick="document.getElementById('file-input').click()">
+                Choose files
+              </button>
+              <p class="bn-muted" style="font-size:0.75rem; margin-top:0.6rem;">
+                Validation (Phase 3): extension + MIME, size limits, filename sanitization.<br>
+                Storage key is opaque — never public guessable paths.
+              </p>
+            </div>
+
+            <div class="bn-flex bn-mt-2" style="gap:0.75rem;">
+              <button type="button" class="bn-btn bn-btn-primary" id="btn-submit">
+                Submit this version
+              </button>
+              <button type="button" class="bn-btn bn-btn-secondary" id="btn-save-draft">
+                Save as draft
+              </button>
+            </div>
+          </div>
+
+          <!-- Version history -->
+          <div class="bn-card bn-mt-2">
+            <h2 class="bn-card-title bn-mb-1">Version History</h2>
+            <p class="bn-muted bn-text-sm bn-mb-1">
+              Versions are never destroyed on replace. A new version is created and
+              <code>current_version_id</code> is updated.
+            </p>
+            <div class="bn-table-wrap">
+              <table class="bn-table">
+                <thead>
+                  <tr>
+                    <th>Version</th>
+                    <th>Created</th>
+                    <th>Files</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>v1</strong> (current)</td>
+                    <td class="bn-muted">Just now</td>
+                    <td>0</td>
+                    <td class="bn-muted">Draft</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Assignment info + rules -->
+        <div>
+          <div class="bn-card">
+            <h2 class="bn-card-title bn-mb-1">Assignment Details</h2>
+            <dl style="font-size:0.9rem; display:grid; gap:0.6rem;">
+              <div>
+                <dt class="bn-muted" style="font-size:0.75rem;">Subject</dt>
+                <dd>EDUC 2 · The Teaching Profession</dd>
+              </div>
+              <div>
+                <dt class="bn-muted" style="font-size:0.75rem;">Deadline</dt>
+                <dd id="deadline-display">Every Friday · 10:00 PM (Asia/Manila)</dd>
+              </div>
+              <div>
+                <dt class="bn-muted" style="font-size:0.75rem;">Type</dt>
+                <dd>Individual</dd>
+              </div>
+              <div>
+                <dt class="bn-muted" style="font-size:0.75rem;">Required file type</dt>
+                <dd>PDF / DOCX / images (demo)</dd>
+              </div>
+              <div>
+                <dt class="bn-muted" style="font-size:0.75rem;">Lateness</dt>
+                <dd class="bn-muted">
+                  Computed at submit time from<br>
+                  <code>submitted_at</code> vs <code>deadline_at_submission</code>.<br>
+                  Never stored as a permanent boolean.
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="bn-card bn-mt-2">
+            <h2 class="bn-card-title bn-mb-1">Soft-delete policy</h2>
+            <p class="bn-text-sm bn-muted">
+              Academic records are soft-deleted (<code>deleted_at</code>, <code>deleted_by</code>).
+              When a Submission is soft-deleted its Versions and Files become logically inaccessible.
+              Physical byte removal is a later maintenance process.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    // Demo file upload handling (client-side only)
+    const fileInput = document.getElementById("file-input");
+    const fileList  = document.getElementById("file-list");
+    let demoFiles   = [];
+
+    fileInput.addEventListener("change", () => {
+      const files = Array.from(fileInput.files);
+      demoFiles = demoFiles.concat(files.map(f => ({
+        name: f.name,
+        size: (f.size / 1024).toFixed(1) + " KB",
+        uploaded: BN.formatDateTime(new Date())
+      })));
+      renderFiles();
+      fileInput.value = "";
+    });
+
+    function renderFiles() {
+      if (demoFiles.length === 0) {
+        fileList.innerHTML = `
+          <tr>
+            <td colspan="4" class="bn-empty" style="padding:1.5rem;">
+              <strong>No files yet</strong>
+              Upload one or more files for this version.
+            </td>
+          </tr>`;
+        return;
+      }
+      fileList.innerHTML = demoFiles.map((f, i) => `
+        <tr>
+          <td>${f.name}</td>
+          <td class="bn-muted">${f.size}</td>
+          <td class="bn-muted">${f.uploaded}</td>
+          <td><button type="button" class="bn-btn bn-btn-ghost" style="padding:0.2rem 0.5rem; font-size:0.75rem;" onclick="removeFile(${i})">Remove</button></td>
+        </tr>
+      `).join("");
+    }
+
+    window.removeFile = (idx) => {
+      demoFiles.splice(idx, 1);
+      renderFiles();
+    };
+
+    document.getElementById("btn-submit").addEventListener("click", () => {
+      if (demoFiles.length === 0) {
+        alert("Please upload at least one file before submitting.");
+        return;
+      }
+      document.getElementById("status-badge").textContent = "SUBMITTED";
+      document.getElementById("status-badge").className = "bn-badge bn-badge-submitted";
+      alert("Submission recorded.\n\nStatus → SUBMITTED\nA new SubmissionVersion was created.\nsubmitted_at and deadline_at_submission are now immutable.");
+    });
+
+    document.getElementById("btn-save-draft").addEventListener("click", () => {
+      alert("Draft saved. Status remains DRAFT. You can continue editing.");
+    });
+
+    // Title from query param (demo)
+    const params = new URLSearchParams(location.search);
+    const map = {
+      ejournal: "E-Journal",
+      gender:   "Gender and Society Video",
+      ethics:   "Ethics Video",
+      edudoc:   "EduDocumentado"
+    };
+    const key = params.get("assignment");
+    if (key && map[key]) {
+      document.getElementById("assignment-title").textContent = map[key];
+    }
+  </script>
+</body>
+</html>

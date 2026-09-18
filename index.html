@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blue Noelle — Class Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Landing-only overrides */
+    .bn-landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0ea5e9 130%);
+      color: #f8fafc;
+    }
+    .bn-landing-hero {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .bn-landing-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+    .bn-landing-hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .bn-landing-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .bn-landing-actions .bn-btn {
+      min-width: 140px;
+      padding: 0.7rem 1.4rem;
+    }
+    .bn-landing-footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+    .bn-philosophy {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+    .bn-philosophy span {
+      background: rgba(255,255,255,0.1);
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bn-landing">
+    <div class="bn-landing-hero">
+      <div>
+        <div class="bn-logo" style="justify-content:center; margin-bottom:1.5rem;">
+          <div class="bn-logo-mark">BN</div>
+          <span>Blue Noelle</span>
+        </div>
+
+        <h1>Digital Classroom Workspace</h1>
+        <p>
+          A private class platform that centralizes assignments, submissions,
+          files, deadlines, communication, and class schedules.
+        </p>
+
+        <div class="bn-philosophy">
+          <span>Upload</span>
+          <span>→</span>
+          <span>Organize</span>
+          <span>→</span>
+          <span>Submit / Share</span>
+          <span>→</span>
+          <span>Compile</span>
+          <span>→</span>
+          <span>Download</span>
+          <span>→</span>
+          <span>Track</span>
+        </div>
+
+        <div class="bn-landing-actions">
+          <a href="pages/login.html" class="bn-btn bn-btn-primary">Sign in</a>
+          <a href="pages/register.html" class="bn-btn bn-btn-secondary" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3);">Register with Invite</a>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bn-landing-footer">
+      Blue Noelle (Version 0.1: Phase 0) · September 2026 · Confidential
+    </footer>
+  </div>
+</body>
+</html>

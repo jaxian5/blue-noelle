@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-auth-page">
+    <div class="bn-auth-card">
+      <div class="bn-logo" style="margin-bottom:1.25rem;">
+        <div class="bn-logo-mark">BN</div>
+        <span style="color:var(--bn-text);">Blue Noelle</span>
+      </div>
+
+      <h1>Sign in</h1>
+      <p class="subtitle">Use a test account from roles.json until the real API exists.</p>
+
+      <form class="bn-form" id="login-form" action="#" method="post">
+        <div class="bn-field">
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" name="username" required autocomplete="username" placeholder="e.g. jdelacruz" />
+        </div>
+
+        <div class="bn-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+        </div>
+
+        <p id="login-error" class="bn-text-sm" style="color:var(--bn-danger); display:none;"></p>
+
+        <button type="submit" class="bn-btn bn-btn-primary" style="width:100%; margin-top:0.25rem;">
+          Sign in
+        </button>
+      </form>
+
+      <div class="bn-auth-footer">
+        No account yet? <a href="register.html">Register with class invite code</a>
+      </div>
+
+      <details style="margin-top:1.25rem; font-size:0.8rem; color:var(--bn-text-muted);">
+        <summary style="cursor:pointer;">Test accounts · Phase 1 (temporary)</summary>
+        <ul style="margin-top:0.5rem; padding-left:1.1rem; line-height:1.6;">
+          <li><strong>Student</strong> — jdelacruz / Student@2026 · invite BN-EDUC2-2026</li>
+          <li><strong>Moderator</strong> — msantos / Moderator@2026 · invite BN-STAFF-2026</li>
+          <li><strong>Admin</strong> — areyes / Admin@2026 · invite BN-STAFF-2026</li>
+          <li><strong>Developer</strong> — devblue / Developer@2026 · invite BN-DEV-2026</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = BN.getCurrentUser();
+      if (user) redirectByRole(user.role);
+    });
+
+    function redirectByRole(role) {
+      if (role === "Moderator") location.href = "moderator.html";
+      else if (role === "Admin") location.href = "admin.html";
+      else if (role === "Developer") location.href = "developer.html";
+      else location.href = "dashboard.html";
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const errEl = document.getElementById("login-error");
+      errEl.style.display = "none";
+
+      const result = await BN.login(username, password);
+      if (!result.ok) {
+        errEl.textContent = result.error || "Login failed";
+        errEl.style.display = "block";
+        return;
+      }
+      redirectByRole(result.user.role);
+    });
+  </script>
+</body>
+</html>

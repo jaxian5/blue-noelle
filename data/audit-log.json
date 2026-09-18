@@ -1,0 +1,5 @@
+{
+  "_comment": "Phase 1 basic audit log (in-memory/file until SQL). Shape: actor_id, actor_role_at_time, class_id, action, target_type, target_id, metadata, created_at.",
+  "version": "0.2.0-phase1",
+  "events": []
+}

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users — Admin · Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="admin.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="admin.html">Directory</a>
+        <a href="admin-users.html" class="active">Users</a>
+        <a href="admin-assignments.html">Assignments</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">AR</div>
+        <span>Ana Reyes</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item"><span>Role</span><strong>Admin</strong></div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Class masterlist · no Developer accounts</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div class="bn-flex-between" style="margin-bottom:1.25rem; flex-wrap:wrap;">
+        <div>
+          <h1 style="font-size:1.35rem; font-weight:700;">Users &amp; invite codes</h1>
+          <p class="bn-muted bn-text-sm">
+            Class masterlist: name, email, username, last login, role change.
+            Developer accounts and Developer invite codes are hidden from Admin.
+          </p>
+        </div>
+        <button type="button" class="bn-btn bn-btn-primary" id="btn-open-create-invite">Create Invite Link</button>
+      </div>
+
+      <div class="bn-card" id="create-invite-panel" hidden style="margin-bottom:1.25rem;">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">Create Invite Link</h2>
+          <button type="button" class="bn-btn bn-btn-ghost bn-text-sm" id="btn-close-create-invite">Cancel</button>
+        </div>
+        <form id="create-invite-form" style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
+          <div class="bn-field">
+            <label for="inv-class">Class</label>
+            <select id="inv-class" required>
+              <option value="class-educ2-a">EDUC 2 · The Teaching Profession · Section A</option>
+            </select>
+          </div>
+          <div class="bn-field">
+            <label for="inv-role">Default role on join</label>
+            <select id="inv-role">
+              <option value="Student">Student</option>
+              <option value="Moderator">Moderator</option>
+            </select>
+          </div>
+          <div class="bn-field">
+            <label for="inv-max">Max uses (optional)</label>
+            <input type="number" id="inv-max" min="1" placeholder="Unlimited if empty" />
+          </div>
+          <div class="bn-field">
+            <label>Can expire</label>
+            <div class="bn-flex" style="gap:0.75rem; margin-top:0.35rem;">
+              <label class="bn-flex" style="gap:0.35rem; font-size:0.9rem; cursor:pointer;">
+                <input type="radio" name="can-expire" value="off" checked id="expire-off" />
+                OFF — never expires (unless revoked)
+              </label>
+            </div>
+            <div class="bn-flex" style="gap:0.75rem; margin-top:0.35rem;">
+              <label class="bn-flex" style="gap:0.35rem; font-size:0.9rem; cursor:pointer;">
+                <input type="radio" name="can-expire" value="on" id="expire-on" />
+                ON — choose expiration
+              </label>
+            </div>
+            <div id="expire-calendar-wrap" hidden style="margin-top:0.5rem;">
+              <input type="datetime-local" id="inv-expires" style="width:100%; padding:0.45rem 0.65rem; border:1px solid var(--bn-border-strong); border-radius:var(--bn-radius-sm); font:inherit; background:var(--bn-bg); color:var(--bn-text);" />
+            </div>
+          </div>
+          <div style="grid-column:1 / -1;">
+            <button type="submit" class="bn-btn bn-btn-primary">Generate invite code</button>
+            <p id="inv-create-msg" class="bn-text-sm bn-mt-1" style="display:none;"></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="bn-card" style="margin-bottom:1.25rem;">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">Class masterlist</h2>
+        </div>
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead>
+              <tr>
+                <th>Full name</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Last login</th>
+                <th>Role</th>
+                <th>Change role</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="6" class="bn-empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bn-card">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">Invite codes (class-scoped)</h2>
+        </div>
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Class</th>
+                <th>Role</th>
+                <th>Uses</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="invites-tbody">
+              <tr><td colspan="7" class="bn-empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) { location.href = "login.html"; return; }
+      if (user.role !== "Admin") {
+        alert("Admin Users is for class Admins only (not Developers).");
+        location.href = user.role === "Developer" ? "developer.html" : "dashboard.html";
+        return;
+      }
+
+      const panel = document.getElementById("create-invite-panel");
+      document.getElementById("btn-open-create-invite").onclick = () => { panel.hidden = false; };
+      document.getElementById("btn-close-create-invite").onclick = () => { panel.hidden = true; };
+
+      const wrap = document.getElementById("expire-calendar-wrap");
+      document.querySelectorAll('input[name="can-expire"]').forEach((r) => {
+        r.addEventListener("change", () => {
+          wrap.hidden = document.getElementById("expire-off").checked;
+          if (wrap.hidden) document.getElementById("inv-expires").value = "";
+        });
+      });
+
+      function esc(s) {
+        return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      }
+
+      async function renderUsers() {
+        const list = await Phase1.listClassUsers(user);
+        const body = document.getElementById("users-tbody");
+        if (!list.length) {
+          body.innerHTML = `<tr><td colspan="6" class="bn-empty"><strong>No class users</strong></td></tr>`;
+          return;
+        }
+        body.innerHTML = list.map((u) => {
+          const roleClass =
+            u.role === "Admin" ? "bn-role-admin" :
+            u.role === "Moderator" ? "bn-role-moderator" : "bn-role-student";
+          const login = u.last_login ? BN.formatDateTime(u.last_login) : "—";
+          const canChange = u.id !== user.id;
+          return `<tr>
+            <td>${esc(u.full_name)}</td>
+            <td class="bn-muted">${esc(u.email)}</td>
+            <td>${esc(u.username)}</td>
+            <td class="bn-muted bn-text-sm">${login}</td>
+            <td><span class="bn-role-pill ${roleClass}">${esc(u.role)}</span></td>
+            <td>${canChange ? `
+              <select data-user="${esc(u.id)}" class="bn-role-select" style="padding:0.25rem 0.4rem; font:inherit; border-radius:6px; border:1px solid var(--bn-border-strong); background:var(--bn-bg); color:var(--bn-text);">
+                <option value="Student" ${u.role==="Student"?"selected":""}>Student</option>
+                <option value="Moderator" ${u.role==="Moderator"?"selected":""}>Moderator</option>
+                <option value="Admin" ${u.role==="Admin"?"selected":""}>Admin</option>
+              </select>` : `<span class="bn-muted bn-text-sm">You</span>`}
+            </td>
+          </tr>`;
+        }).join("");
+
+        body.querySelectorAll(".bn-role-select").forEach((sel) => {
+          sel.addEventListener("change", () => {
+            const res = Phase1.changeUserRole(sel.dataset.user, sel.value, user);
+            if (!res.ok) {
+              alert(res.error);
+              renderUsers();
+              return;
+            }
+            renderUsers();
+          });
+        });
+      }
+
+      async function renderInvites() {
+        const codes = await Phase1.listInviteCodesFor(user);
+        const body = document.getElementById("invites-tbody");
+        if (!codes.length) {
+          body.innerHTML = `<tr><td colspan="7" class="bn-empty"><strong>No class invite codes</strong></td></tr>`;
+          return;
+        }
+        body.innerHTML = codes.map((c) => {
+          const revoked = !!c.revoked_at;
+          const expired = c.expires_at && new Date(c.expires_at) < new Date();
+          const status = revoked ? "REVOKED" : expired ? "EXPIRED" : "ACTIVE";
+          const uses = c.max_uses == null ? `${c.use_count||0} / ∞` : `${c.use_count||0} / ${c.max_uses}`;
+          const exp = c.expires_at ? BN.formatDateTime(c.expires_at) : "Never";
+          return `<tr>
+            <td><code>${esc(c.code)}</code></td>
+            <td class="bn-muted bn-text-sm">${esc(c.class_name||"—")}</td>
+            <td>${esc(c.default_role||"Student")}</td>
+            <td>${uses}</td>
+            <td class="bn-muted">${exp}</td>
+            <td><span class="bn-badge ${status==="ACTIVE"?"bn-badge-open":"bn-badge-closed"}">${status}</span></td>
+            <td>${status==="ACTIVE" ? `<button type="button" class="bn-btn bn-btn-secondary bn-revoke" data-code="${esc(c.code)}" style="padding:0.3rem 0.55rem; font-size:0.75rem;">Revoke</button>` : ""}</td>
+          </tr>`;
+        }).join("");
+
+        body.querySelectorAll(".bn-revoke").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            if (!confirm("Revoke " + btn.dataset.code + "?")) return;
+            const r = await Phase1.revokeInviteCode(btn.dataset.code, user);
+            if (!r.ok) alert(r.error);
+            await renderInvites();
+          });
+        });
+      }
+
+      document.getElementById("create-invite-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const classSel = document.getElementById("inv-class");
+        const canExpire = document.getElementById("expire-on").checked;
+        const expRaw = document.getElementById("inv-expires").value;
+        if (canExpire && !expRaw) {
+          alert("Choose an expiration date or set Can Expire to OFF.");
+          return;
+        }
+        const maxRaw = document.getElementById("inv-max").value;
+        const result = await Phase1.createInviteCode({
+          class_id: classSel.value,
+          class_name: classSel.options[classSel.selectedIndex].textContent,
+          max_uses: maxRaw === "" ? null : Number(maxRaw),
+          expires_at: canExpire ? new Date(expRaw).toISOString() : null,
+          default_role: document.getElementById("inv-role").value,
+          created_by: user.id,
+          actor_role: user.role
+        });
+        const msg = document.getElementById("inv-create-msg");
+        msg.style.display = "block";
+        if (!result.ok) {
+          msg.style.color = "var(--bn-danger)";
+          msg.textContent = result.error;
+          return;
+        }
+        msg.style.color = "var(--bn-success)";
+        msg.textContent = "Created: " + result.invite.code + (canExpire ? "" : " (never expires until revoked)");
+        await renderInvites();
+      });
+
+      await renderUsers();
+      await renderInvites();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Directory — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="developer.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="developer.html" class="active">Directory</a>
+        <a href="#">System</a>
+        <a href="#">Logs</a>
+        <a href="#">Storage</a>
+        <a href="#">Maintenance</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">DB</div>
+        <span>Dev Blue</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Role</span>
+        <strong>Developer</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Platform-level · Heavily audited</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">Developer Directory</h1>
+        <p class="bn-muted bn-text-sm">
+          Phase 9 — System monitoring, diagnostics, backups, maintenance mode, recovery tools.
+          Milestone: Maintain the platform without manually poking inside the server every time something fails.
+          <strong>Admin = manage the classroom · Developer = manage the machine running the classroom.</strong>
+        </p>
+      </div>
+
+      <!-- System status -->
+      <div class="bn-card" style="margin-bottom:1.25rem;">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">System status</h2>
+          <span class="bn-badge bn-badge-open">All nominal (demo)</span>
+        </div>
+        <div class="bn-stat-grid">
+          <div class="bn-stat-card">
+            <div class="num" style="color:var(--bn-success);">OK</div>
+            <div class="label">Application</div>
+          </div>
+          <div class="bn-stat-card">
+            <div class="num" style="color:var(--bn-success);">OK</div>
+            <div class="label">Database</div>
+          </div>
+          <div class="bn-stat-card">
+            <div class="num" style="color:var(--bn-success);">OK</div>
+            <div class="label">File storage</div>
+          </div>
+          <div class="bn-stat-card">
+            <div class="num" style="color:var(--bn-success);">OK</div>
+            <div class="label">Chat</div>
+          </div>
+          <div class="bn-stat-card">
+            <div class="num" style="color:var(--bn-success);">OK</div>
+            <div class="label">Auth</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bn-grid-2">
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Storage usage</h2>
+          </div>
+          <p class="bn-muted bn-text-sm bn-mb-1">
+            Logical path: <code>/storage/classes/{class_id}/assignments/…</code><br>
+            Database holds metadata; <code>storage_key</code> is opaque.
+          </p>
+          <div style="background:var(--bn-bg); border-radius:var(--bn-radius); height:10px; overflow:hidden; margin:0.75rem 0;">
+            <div style="width:34%; height:100%; background:var(--bn-primary-light);"></div>
+          </div>
+          <p class="bn-text-sm"><strong>1.7 GB</strong> <span class="bn-muted">/ 5 GB demo quota</span></p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Inspect storage</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Error logs &amp; diagnostics</h2>
+          </div>
+          <div class="bn-table-wrap">
+            <table class="bn-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Level</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="bn-muted">08:12</td>
+                  <td><span class="bn-badge bn-badge-draft">WARN</span></td>
+                  <td class="bn-muted">Rate limit near threshold (auth)</td>
+                </tr>
+                <tr>
+                  <td class="bn-muted">07:55</td>
+                  <td><span class="bn-badge bn-badge-submitted">INFO</span></td>
+                  <td class="bn-muted">Backup job completed</td>
+                </tr>
+                <tr>
+                  <td class="bn-muted">Yesterday</td>
+                  <td><span class="bn-badge bn-badge-late">ERROR</span></td>
+                  <td class="bn-muted">Transient DB connection blip (recovered)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Open full logs</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Backups &amp; recovery</h2>
+          </div>
+          <ul style="list-style:none; font-size:0.9rem; display:flex; flex-direction:column; gap:0.4rem;">
+            <li class="bn-flex-between"><span>Last full backup</span><span class="bn-muted">Sep 17 · 02:00</span></li>
+            <li class="bn-flex-between"><span>Last incremental</span><span class="bn-muted">Sep 18 · 06:00</span></li>
+            <li class="bn-flex-between"><span>Retention</span><span class="bn-muted">14 days (demo)</span></li>
+          </ul>
+          <div class="bn-flex bn-mt-1" style="gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="bn-btn bn-btn-primary" style="font-size:0.85rem;">Run backup</button>
+            <button type="button" class="bn-btn bn-btn-secondary" style="font-size:0.85rem;">Restore…</button>
+          </div>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Maintenance mode</h2>
+          </div>
+          <p class="bn-muted bn-text-sm bn-mb-1">
+            Blocks non-Developer sessions. Emits DEVELOPER_ACTION audit records.
+          </p>
+          <div class="bn-flex" style="gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="bn-btn bn-btn-secondary" style="font-size:0.85rem;">Enter maintenance</button>
+            <button type="button" class="bn-btn bn-btn-ghost" style="font-size:0.85rem;">Configuration</button>
+          </div>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Database tools</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Diagnostics only in this UI. The database remains the final bouncer for ownership invariants.
+            Physical schema changes go through migrations, not this panel.
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">Open diagnostics</button>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Developer audit</h2>
+          </div>
+          <p class="bn-muted bn-text-sm">
+            Every elevated Developer action must produce an audit record
+            (actor_id, actor_role_at_time=Developer, action, target, metadata).
+          </p>
+          <button type="button" class="bn-btn bn-btn-secondary bn-mt-1" style="font-size:0.85rem;">View developer audit</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = BN.getCurrentUser();
+      if (!user) {
+        location.href = "login.html";
+        return;
+      }
+      if (user.role !== "Developer") {
+        alert("This directory is for Developer only.");
+        if (user.role === "Admin") location.href = "admin.html";
+        else if (user.role === "Moderator") location.href = "moderator.html";
+        else location.href = "dashboard.html";
+      }
+    });
+  </script>
+</body>
+</html>

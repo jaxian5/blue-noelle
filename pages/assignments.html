@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignments — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="dashboard.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="assignments.html" class="active">Assignments</a>
+        <a href="#">Schedule</a>
+        <a href="#">Chat</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">JD</div>
+        <span>Juan Dela Cruz</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Current class</span>
+        <strong id="bn-current-class">—</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Next</span>
+        <strong id="bn-next-class">—</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Asia/Manila</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">Assignments</h1>
+        <p class="bn-muted bn-text-sm">Subject → Assignment. Work created by Admin (Phase 2) appears here.</p>
+      </div>
+      <div id="student-assignment-root"></div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script src="../js/phase2-assignments.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) { location.href = "login.html"; return; }
+      const classId = user.class_memberships?.[0]?.class_id || "class-educ2-a";
+      const groups = await Phase2.groupedBySubject(classId);
+      const root = document.getElementById("student-assignment-root");
+      const open = groups.flatMap((g) => g.assignments.filter((a) => a.status === "OPEN"));
+      if (!groups.length || !groups.some((g) => g.assignments.length)) {
+        root.innerHTML = `<div class="bn-card"><div class="bn-empty"><strong>No assignments yet</strong>When an Admin creates classwork, it will show here.</div></div>`;
+        return;
+      }
+      root.innerHTML = groups.map(({ subject, assignments }) => {
+        if (!assignments.length) return "";
+        return `<div class="bn-card" style="margin-bottom:1rem;">
+          <div class="bn-card-header"><h2 class="bn-card-title">${subject.name}</h2></div>
+          <div class="bn-table-wrap">
+            <table class="bn-table">
+              <thead><tr><th>Assignment</th><th>Type</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                ${assignments.map((a) => `
+                  <tr>
+                    <td><strong>${a.name}</strong><div class="bn-muted bn-text-sm">${a.description||""}</div></td>
+                    <td>${a.is_group?"Group":"Individual"}</td>
+                    <td class="bn-muted">${a.deadline?BN.formatDateTime(a.deadline):"—"}</td>
+                    <td><span class="bn-badge ${a.status==="OPEN"?"bn-badge-open":"bn-badge-closed"}">${a.status}</span></td>
+                    <td>${a.status==="OPEN"?`<a class="bn-btn bn-btn-primary" style="padding:0.3rem 0.65rem;font-size:0.8rem;" href="submission.html?assignment=${a.id}">Open</a>`:""}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+      }).join("") || `<div class="bn-card"><div class="bn-empty"><strong>No assignments</strong></div></div>`;
+    });
+  </script>
+</body>
+</html>

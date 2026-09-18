@@ -1,0 +1,83 @@
+{
+  "_comment": "Phase 1 temp store until SQL/API. Passwords plain for demo only — hash before production. invite_code is the class invite used at registration (required to view/edit password).",
+  "version": "0.2.0-phase1",
+  "updated": "2026-09-18",
+  "accounts": [
+    {
+      "id": "user-student-001",
+      "role": "Student",
+      "full_name": "Juan Dela Cruz",
+      "email": "juan.delacruz@student.bluenoelle.local",
+      "username": "jdelacruz",
+      "password": "Student@2026",
+      "invite_code": "BN-EDUC2-2026",
+      "student_id": "2026-EDUC-001",
+      "avatar": null,
+      "class_memberships": [
+        {
+          "class_id": "class-educ2-a",
+          "class_name": "EDUC 2 · The Teaching Profession · Section A",
+          "role": "Student",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "user-moderator-001",
+      "role": "Moderator",
+      "full_name": "Maria Santos",
+      "email": "maria.santos@mod.bluenoelle.local",
+      "username": "msantos",
+      "password": "Moderator@2026",
+      "invite_code": "BN-STAFF-2026",
+      "student_id": null,
+      "avatar": null,
+      "class_memberships": [
+        {
+          "class_id": "class-educ2-a",
+          "class_name": "EDUC 2 · The Teaching Profession · Section A",
+          "role": "Moderator",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "user-admin-001",
+      "role": "Admin",
+      "full_name": "Ana Reyes",
+      "email": "ana.reyes@admin.bluenoelle.local",
+      "username": "areyes",
+      "password": "Admin@2026",
+      "invite_code": "BN-STAFF-2026",
+      "student_id": null,
+      "avatar": null,
+      "class_memberships": [
+        {
+          "class_id": "class-educ2-a",
+          "class_name": "EDUC 2 · The Teaching Profession · Section A",
+          "role": "Admin",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "user-developer-001",
+      "role": "Developer",
+      "full_name": "Dev Blue",
+      "email": "dev@bluenoelle.local",
+      "username": "devblue",
+      "password": "Developer@2026",
+      "invite_code": "BN-DEV-2026",
+      "student_id": null,
+      "avatar": null,
+      "class_memberships": [],
+      "notes": "Platform-level role. Not class-scoped. All Developer actions must be audited."
+    }
+  ],
+  "role_summary": {
+    "Student": "Uses the platform for assignments, files, chat, schedule.",
+    "Moderator": "User verification and basic moderation. Limited management powers.",
+    "Admin": "Full class-management authority for a specific Class/Section.",
+    "Developer": "System-level access and technical maintenance. Platform-wide, heavily audited."
+  }
+}

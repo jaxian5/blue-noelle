@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class masterlist — Moderator · Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="moderator.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="moderator.html">Directory</a>
+        <a href="moderator-verification.html">Verification</a>
+        <a href="moderator-users.html" class="active">Masterlist</a>
+        <a href="#">Chat mod</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">MS</div>
+        <span>Maria Santos</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item"><span>Role</span><strong>Moderator</strong></div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Names &amp; emails only</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">Class masterlist</h1>
+        <p class="bn-muted bn-text-sm">
+          Moderators see <strong>full names</strong> and <strong>emails</strong> of class members (including themselves).
+          Usernames, last login, and role changes are Admin-only.
+        </p>
+      </div>
+
+      <div class="bn-card">
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead>
+              <tr>
+                <th>Full name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="master-tbody">
+              <tr><td colspan="2" class="bn-empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) { location.href = "login.html"; return; }
+      if (user.role !== "Moderator" && user.role !== "Admin") {
+        alert("Class masterlist is for Moderator / Admin.");
+        location.href = "dashboard.html";
+        return;
+      }
+      const list = await Phase1.listClassUsers(user);
+      const body = document.getElementById("master-tbody");
+      if (!list.length) {
+        body.innerHTML = `<tr><td colspan="2" class="bn-empty"><strong>No members</strong></td></tr>`;
+        return;
+      }
+      body.innerHTML = list
+        .map(
+          (u) =>
+            `<tr><td>${u.full_name.replace(/</g,"")}</td><td class="bn-muted">${u.email.replace(/</g,"")}</td></tr>`
+        )
+        .join("");
+    });
+  </script>
+</body>
+</html>

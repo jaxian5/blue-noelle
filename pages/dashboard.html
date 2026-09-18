@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <!-- ========== HEADER ========== -->
+    <header class="bn-header">
+      <a href="dashboard.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+
+      <nav class="bn-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="assignments.html">Assignments</a>
+        <a href="#">Schedule</a>
+        <a href="#">Chat</a>
+      </nav>
+
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">JD</div>
+        <span>Juan Dela Cruz</span>
+      </div>
+    </header>
+
+    <!-- ========== CLASS CLOCK (permanent component) ========== -->
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Current class</span>
+        <strong id="bn-current-class">—</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Next</span>
+        <strong id="bn-next-class">—</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span class="bn-muted" style="color:#94a3b8;">Asia/Manila</span>
+      </div>
+    </div>
+
+    <!-- ========== MAIN ========== -->
+    <main class="bn-main">
+      <div class="bn-flex-between bn-mb-1" style="margin-bottom:1.25rem;">
+        <div>
+          <h1 style="font-size:1.35rem; font-weight:700; letter-spacing:-0.02em;">Good morning, Juan</h1>
+          <p class="bn-muted bn-text-sm">EDUC 2 · The Teaching Profession · Section A</p>
+        </div>
+      </div>
+
+      <div class="bn-dashboard">
+        <!-- LEFT COLUMN -->
+        <div>
+          <div class="bn-card">
+            <div class="bn-card-header">
+              <h2 class="bn-card-title">Upcoming Assignments</h2>
+              <a href="assignments.html" class="bn-btn bn-btn-ghost bn-text-sm">View all</a>
+            </div>
+            <div id="dash-upcoming" class="bn-empty">
+              <strong>No assignments yet</strong>
+              When an Admin creates classwork (Phase 2), it will appear here with deadlines and countdowns.
+            </div>
+          </div>
+
+          <div class="bn-card bn-mt-2">
+            <div class="bn-card-header">
+              <h2 class="bn-card-title">Your Submissions</h2>
+            </div>
+            <div class="bn-empty">
+              <strong>No submissions yet</strong>
+              Submissions appear after Phase 3 (Files &amp; Submissions). Seed demo data was cleared for clean integration.
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+          <div class="bn-card">
+            <div class="bn-card-header">
+              <h2 class="bn-card-title">Announcements</h2>
+            </div>
+            <div class="bn-empty" style="padding:1.5rem;">
+              <strong>No announcements</strong>
+              Moderators and Admins can post announcements once authorized.
+            </div>
+          </div>
+
+          <div class="bn-card bn-mt-2">
+            <h2 class="bn-card-title bn-mb-1">Quick Status</h2>
+            <ul style="list-style:none; font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem;">
+              <li class="bn-flex-between">
+                <span class="bn-muted">Open assignments</span>
+                <strong id="stat-assignments">0</strong>
+              </li>
+              <li class="bn-flex-between">
+                <span class="bn-muted">Your submissions</span>
+                <strong id="stat-submissions">0</strong>
+              </li>
+              <li class="bn-flex-between">
+                <span class="bn-muted">Chat unread</span>
+                <strong>0</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script src="../js/phase2-assignments.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = BN.getCurrentUser();
+      if (!user) {
+        location.href = "login.html";
+        return;
+      }
+      const greet = document.querySelector(".bn-main h1");
+      if (greet && user.full_name) {
+        const first = user.full_name.split(/\s+/)[0];
+        greet.textContent = `Welcome, ${first}`;
+      }
+      const sub = document.querySelector(".bn-main .bn-muted.bn-text-sm");
+      if (sub && user.class_memberships?.[0]) {
+        sub.textContent = user.class_memberships[0].class_name || "";
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!window.Phase2) return;
+      const user = BN.getCurrentUser();
+      if (!user) return;
+      const classId = user.class_memberships?.[0]?.class_id || "class-educ2-a";
+      const groups = await Phase2.groupedBySubject(classId);
+      const open = groups.flatMap(g => g.assignments.filter(a => a.status === "OPEN"));
+      const el = document.getElementById("dash-upcoming");
+      const stat = document.getElementById("stat-assignments");
+      if (stat) stat.textContent = String(open.length);
+      if (!el) return;
+      if (!open.length) return;
+      el.className = "bn-grid-2";
+      el.innerHTML = open.slice(0, 4).map(a => {
+        const urgency = a.deadline ? BN.getUrgency(a.deadline) : "ok";
+        const cd = a.deadline ? BN.countdown(a.deadline) : "";
+        return `<div class="bn-card bn-assign-card urgency-${urgency}" style="padding:1rem;">
+          <div class="bn-flex-between"><strong>${a.name}</strong><span class="bn-badge bn-badge-open">OPEN</span></div>
+          <p class="bn-muted bn-text-sm bn-mt-1">${a.is_group ? "Group" : "Individual"}</p>
+          <div class="bn-assign-meta"><span>${cd || (a.deadline ? BN.formatDateTime(a.deadline) : "No deadline")}</span></div>
+          <a href="submission.html?assignment=${a.id}" class="bn-btn bn-btn-primary bn-mt-2" style="width:100%;font-size:0.85rem;">Open</a>
+        </div>`;
+      }).join("");
+    });
+  </script>
+
+</body>
+</html>

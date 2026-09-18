@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification — Moderator · Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="moderator.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="moderator.html">Directory</a>
+        <a href="moderator-verification.html" class="active">Verification</a>
+        <a href="#">Chat mod</a>
+        <a href="#">Submissions</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">MS</div>
+        <span>Maria Santos</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Role</span>
+        <strong>Moderator</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Phase 1 · Registration flow</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">User verification</h1>
+        <p class="bn-muted bn-text-sm">
+          Framework flow: Register with invite code → PENDING → Moderator approve / reject → ACTIVE.
+          Approve emits USER_APPROVED; reject emits USER_REJECTED (audit).
+        </p>
+      </div>
+
+      <div class="bn-stat-grid" style="margin-bottom:1.25rem;">
+        <div class="bn-stat-card">
+          <div class="num" id="mod-stat-pending">0</div>
+          <div class="label">Pending</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num" id="mod-stat-verified">—</div>
+          <div class="label">Can approve / reject</div>
+        </div>
+      </div>
+
+      <div class="bn-card">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">Registration queue (PENDING)</h2>
+          <span class="bn-badge bn-badge-draft" id="mod-pending-badge">0 waiting</span>
+        </div>
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Invite</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="mod-pending-body">
+              <tr>
+                <td colspan="7" class="bn-empty" style="padding:1.5rem;">
+                  <strong>Queue empty</strong>
+                  Registrations with a valid invite code appear here.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bn-card bn-mt-2">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">How verification works</h2>
+        </div>
+        <ol class="bn-muted bn-text-sm" style="padding-left:1.2rem; line-height:1.7;">
+          <li>Student registers with a <strong>class-scoped</strong> invite code.</li>
+          <li>Request is stored as PENDING (cannot log in yet).</li>
+          <li>You Approve → membership ACTIVE · USER_APPROVED audit.</li>
+          <li>You Reject → REJECTED · USER_REJECTED audit.</li>
+          <li>Invite codes: not revoked, not expired, under max uses (invariants).</li>
+        </ol>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) {
+        location.href = "login.html";
+        return;
+      }
+      if (user.role !== "Moderator" && user.role !== "Admin" && user.role !== "Developer") {
+        alert("Verification is for Moderator (or higher).");
+        location.href = "dashboard.html";
+        return;
+      }
+      await Phase1.renderPendingQueue();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignments — Admin · Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="admin.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="admin.html">Directory</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-assignments.html" class="active">Assignments</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">AR</div>
+        <span>Ana Reyes</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item"><span>Role</span><strong>Admin</strong></div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Phase 2 · Subject → Assignment</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div class="bn-flex-between" style="margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <h1 style="font-size:1.35rem; font-weight:700;">Subjects &amp; assignments</h1>
+          <p class="bn-muted bn-text-sm">
+            Framework §5: Subject 1→N Assignments. Individual or Group — not mixed. Status OPEN | CLOSED | ARCHIVED.
+          </p>
+        </div>
+        <div class="bn-flex" style="gap:0.5rem;">
+          <button type="button" class="bn-btn bn-btn-secondary" id="btn-new-subject">New subject</button>
+          <button type="button" class="bn-btn bn-btn-primary" id="btn-new-assignment">New assignment</button>
+        </div>
+      </div>
+
+      <div class="bn-card" id="form-subject" hidden style="margin-bottom:1rem;">
+        <h2 class="bn-card-title bn-mb-1">Create subject</h2>
+        <form id="subject-form" class="bn-form" style="max-width:420px;">
+          <div class="bn-field">
+            <label for="subj-name">Name</label>
+            <input id="subj-name" required placeholder="e.g. EDUC 2 · The Teaching Profession" />
+          </div>
+          <button type="submit" class="bn-btn bn-btn-primary">Save subject</button>
+        </form>
+      </div>
+
+      <div class="bn-card" id="form-assignment" hidden style="margin-bottom:1rem;">
+        <h2 class="bn-card-title bn-mb-1">Create assignment</h2>
+        <form id="assignment-form" style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
+          <div class="bn-field" style="grid-column:1 / -1;">
+            <label for="asgn-subject">Subject</label>
+            <select id="asgn-subject" required></select>
+          </div>
+          <div class="bn-field">
+            <label for="asgn-name">Name</label>
+            <input id="asgn-name" required placeholder="e.g. E-Journal" />
+          </div>
+          <div class="bn-field">
+            <label for="asgn-deadline">Deadline (Asia/Manila local)</label>
+            <input type="datetime-local" id="asgn-deadline" />
+          </div>
+          <div class="bn-field" style="grid-column:1 / -1;">
+            <label for="asgn-desc">Description</label>
+            <textarea id="asgn-desc" rows="2" style="width:100%; padding:0.5rem; font:inherit; border:1px solid var(--bn-border-strong); border-radius:6px; background:var(--bn-bg); color:var(--bn-text);"></textarea>
+          </div>
+          <div class="bn-field" style="grid-column:1 / -1;">
+            <label for="asgn-instr">Instructions</label>
+            <textarea id="asgn-instr" rows="2" style="width:100%; padding:0.5rem; font:inherit; border:1px solid var(--bn-border-strong); border-radius:6px; background:var(--bn-bg); color:var(--bn-text);"></textarea>
+          </div>
+          <div class="bn-field">
+            <label>Type</label>
+            <select id="asgn-type">
+              <option value="individual">Individual</option>
+              <option value="group">Group</option>
+            </select>
+          </div>
+          <div class="bn-field">
+            <label for="asgn-files">Required file types (comma)</label>
+            <input id="asgn-files" placeholder="pdf, docx" />
+          </div>
+          <div style="grid-column:1 / -1;">
+            <button type="submit" class="bn-btn bn-btn-primary">Create assignment</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="assignment-list"></div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script src="../js/phase2-assignments.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) { location.href = "login.html"; return; }
+      if (user.role !== "Admin" && user.role !== "Developer") {
+        alert("Only Admin can manage assignments.");
+        location.href = "dashboard.html";
+        return;
+      }
+
+      const classId = user.class_memberships?.[0]?.class_id || "class-educ2-a";
+      const fs = document.getElementById("form-subject");
+      const fa = document.getElementById("form-assignment");
+      document.getElementById("btn-new-subject").onclick = () => { fs.hidden = !fs.hidden; fa.hidden = true; };
+      document.getElementById("btn-new-assignment").onclick = async () => {
+        fa.hidden = !fa.hidden; fs.hidden = true;
+        await fillSubjects();
+      };
+
+      async function fillSubjects() {
+        const subjects = await Phase2.listSubjects(classId);
+        const sel = document.getElementById("asgn-subject");
+        sel.innerHTML = subjects.length
+          ? subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("")
+          : `<option value="">Create a subject first</option>`;
+      }
+
+      document.getElementById("subject-form").onsubmit = async (e) => {
+        e.preventDefault();
+        const r = await Phase2.createSubject({
+          class_id: classId,
+          name: document.getElementById("subj-name").value,
+          created_by: user.id
+        });
+        if (!r.ok) { alert(r.error); return; }
+        document.getElementById("subj-name").value = "";
+        fs.hidden = true;
+        await render();
+      };
+
+      document.getElementById("assignment-form").onsubmit = async (e) => {
+        e.preventDefault();
+        const types = document.getElementById("asgn-files").value
+          .split(",").map((x) => x.trim()).filter(Boolean);
+        const dl = document.getElementById("asgn-deadline").value;
+        const r = await Phase2.createAssignment({
+          subject_id: document.getElementById("asgn-subject").value,
+          name: document.getElementById("asgn-name").value,
+          description: document.getElementById("asgn-desc").value,
+          instructions: document.getElementById("asgn-instr").value,
+          deadline: dl ? new Date(dl).toISOString() : null,
+          is_group: document.getElementById("asgn-type").value === "group",
+          required_file_types: types,
+          created_by: user.id
+        });
+        if (!r.ok) { alert(r.error); return; }
+        fa.hidden = true;
+        e.target.reset();
+        await render();
+      };
+
+      async function render() {
+        const groups = await Phase2.groupedBySubject(classId);
+        const root = document.getElementById("assignment-list");
+        if (!groups.length) {
+          root.innerHTML = `<div class="bn-card"><div class="bn-empty"><strong>No subjects yet</strong>Create a subject, then an assignment. Students will see OPEN work on their Assignments page.</div></div>`;
+          return;
+        }
+        root.innerHTML = groups.map(({ subject, assignments }) => `
+          <div class="bn-card" style="margin-bottom:1rem;">
+            <div class="bn-card-header">
+              <h2 class="bn-card-title">${subject.name}</h2>
+            </div>
+            ${assignments.length ? `
+            <div class="bn-table-wrap">
+              <table class="bn-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  ${assignments.map((a) => `
+                    <tr>
+                      <td><strong>${a.name}</strong><div class="bn-muted bn-text-sm">${a.description || ""}</div></td>
+                      <td>${a.is_group ? "Group" : "Individual"}</td>
+                      <td class="bn-muted">${a.deadline ? BN.formatDateTime(a.deadline) : "—"}</td>
+                      <td><span class="bn-badge ${a.status==="OPEN"?"bn-badge-open":"bn-badge-closed"}">${a.status}</span></td>
+                      <td>
+                        <select data-id="${a.id}" class="bn-status-sel" style="font:inherit; padding:0.25rem; border-radius:6px; border:1px solid var(--bn-border-strong); background:var(--bn-bg); color:var(--bn-text);">
+                          <option value="OPEN" ${a.status==="OPEN"?"selected":""}>OPEN</option>
+                          <option value="CLOSED" ${a.status==="CLOSED"?"selected":""}>CLOSED</option>
+                          <option value="ARCHIVED" ${a.status==="ARCHIVED"?"selected":""}>ARCHIVED</option>
+                        </select>
+                      </td>
+                    </tr>`).join("")}
+                </tbody>
+              </table>
+            </div>` : `<div class="bn-empty" style="padding:1rem;"><strong>No assignments</strong> under this subject.</div>`}
+          </div>`).join("");
+
+        root.querySelectorAll(".bn-status-sel").forEach((sel) => {
+          sel.onchange = async () => {
+            await Phase2.setAssignmentStatus(sel.dataset.id, sel.value, user);
+            await render();
+          };
+        });
+      }
+
+      await render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-auth-page">
+    <div class="bn-auth-card" style="max-width:460px;">
+      <div class="bn-logo" style="margin-bottom:1.25rem;">
+        <div class="bn-logo-mark">BN</div>
+        <span style="color:var(--bn-text);">Blue Noelle</span>
+      </div>
+
+      <h1>Create account</h1>
+      <p class="subtitle">
+        Registration requires a valid class invite code. A Moderator will review your request.
+      </p>
+
+      <!--
+        Registration Flow (Phase 0 / 1):
+        1. Student registers with class invite code
+        2. Status → PENDING
+        3. Moderator reviews (approve / reject)
+        4. Approved → ACTIVE membership, student can access platform
+
+        Invite codes are class-scoped:
+        code, class_id, created_by, created_at, expires_at, revoked_at, max_uses
+      -->
+      <form class="bn-form" id="register-form" action="#" method="post">
+        <div class="bn-field">
+          <label for="invite">Class Invite Code <span class="bn-muted">*</span></label>
+          <input type="text" id="invite" name="invite_code" required placeholder="e.g. BN-EDUC2-2026" autocomplete="off" />
+        </div>
+
+        <div class="bn-field">
+          <label for="fullname">Full Name <span class="bn-muted">*</span></label>
+          <input type="text" id="fullname" name="full_name" required autocomplete="name" />
+        </div>
+
+        <div class="bn-field">
+          <label for="student_id">Student ID</label>
+          <input type="text" id="student_id" name="student_id" placeholder="Optional but recommended" />
+        </div>
+
+        <div class="bn-field">
+          <label for="email">Email <span class="bn-muted">*</span></label>
+          <input type="email" id="email" name="email" required autocomplete="email" />
+        </div>
+
+        <div class="bn-field">
+          <label for="username">Username <span class="bn-muted">*</span></label>
+          <input type="text" id="username" name="username" required autocomplete="username" />
+        </div>
+
+        <div class="bn-field">
+          <label for="password">Password <span class="bn-muted">*</span></label>
+          <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" />
+        </div>
+
+        <p id="register-error" class="bn-text-sm" style="color:var(--bn-danger); display:none;"></p>
+
+        <button type="submit" class="bn-btn bn-btn-primary" style="width:100%; margin-top:0.25rem;">
+          Submit registration
+        </button>
+      </form>
+
+      <div class="bn-auth-footer">
+        Already registered? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    // Framework §4 Registration Flow:
+    // 1. Student registers with class invite code
+    // 2. Status → PENDING
+    // 3. Moderator reviews
+    // 4. Approved → ACTIVE membership
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById("register-error");
+      errEl.style.display = "none";
+      const form = {
+        invite_code: document.getElementById("invite").value,
+        full_name: document.getElementById("fullname").value,
+        student_id: document.getElementById("student_id").value,
+        email: document.getElementById("email").value,
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+      };
+      const result = await Phase1.register(form);
+      if (!result.ok) {
+        errEl.textContent = result.error || "Registration failed";
+        errEl.style.display = "block";
+        return;
+      }
+      alert(
+        "Registration submitted.\n\nStatus: PENDING\n" +
+          "A Moderator will review your request shortly.\n" +
+          "You will be able to sign in once approved."
+      );
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

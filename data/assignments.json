@@ -1,0 +1,6 @@
+{
+  "_comment": "Phase 2 — Subjects and Assignments. Empty by design until Admin creates classwork. Subject 1→N Assignments; Individual OR Group not mixed.",
+  "version": "0.3.0-phase2",
+  "subjects": [],
+  "assignments": []
+}

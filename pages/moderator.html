@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderator Directory — Blue Noelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div class="bn-app">
+    <header class="bn-header">
+      <a href="moderator.html" class="bn-logo">
+        <div class="bn-logo-mark">BN</div>
+        <span>Blue Noelle</span>
+      </a>
+      <nav class="bn-nav">
+        <a href="moderator.html" class="active">Directory</a>
+        <a href="moderator-verification.html">Verification</a>
+        <a href="moderator-users.html">Masterlist</a>
+        <a href="#">Chat mod</a>
+      </nav>
+      <div class="bn-user-chip" id="bn-user-chip" title="Account">
+        <div class="bn-avatar">MS</div>
+        <span>Maria Santos</span>
+      </div>
+    </header>
+
+    <div class="bn-clock-strip">
+      <div class="bn-clock-item">
+        <span>Now</span>
+        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
+      </div>
+      <div class="bn-clock-item">
+        <span>Role</span>
+        <strong>Moderator</strong>
+      </div>
+      <div class="bn-clock-item" style="margin-left:auto;">
+        <span style="color:#94a3b8;">Asia/Manila · Class-scoped</span>
+      </div>
+    </div>
+
+    <main class="bn-main">
+      <div style="margin-bottom:1.25rem;">
+        <h1 style="font-size:1.35rem; font-weight:700;">Moderator Directory</h1>
+        <p class="bn-muted bn-text-sm">
+          Verification, basic moderation, and submission monitoring.
+          Should not automatically have access to sensitive system functions.
+        </p>
+      </div>
+
+      <div class="bn-stat-grid" style="margin-bottom:1.25rem;">
+        <div class="bn-stat-card">
+          <div class="num" id="mod-stat-pending">0</div>
+          <div class="label">Pending verification</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num" id="mod-stat-verified">0</div>
+          <div class="label">Verified students</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num">0</div>
+          <div class="label">Chat reports</div>
+        </div>
+        <div class="bn-stat-card">
+          <div class="num">0</div>
+          <div class="label">Submissions today</div>
+        </div>
+      </div>
+
+      <!-- Pending verification queue — wired to Phase 1 pending store -->
+      <div class="bn-card">
+        <div class="bn-card-header">
+          <h2 class="bn-card-title">Registration queue (PENDING)</h2>
+          <div class="bn-flex" style="gap:0.5rem;">
+            <span class="bn-badge bn-badge-draft" id="mod-pending-badge">0 waiting</span>
+            <a href="moderator-verification.html" class="bn-btn bn-btn-ghost bn-text-sm">Open Verification</a>
+          </div>
+        </div>
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Email</th>
+                <th>Invite</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="mod-pending-body">
+              <tr>
+                <td colspan="6" class="bn-empty" style="padding:1.5rem;">
+                  <strong>Queue empty</strong>
+                  New registrations appear here after invite-code signup (Phase 1).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bn-muted bn-text-sm bn-mt-1">
+          Approve → ClassMembership status ACTIVE · USER_APPROVED audit event.
+          Reject → REJECTED · USER_REJECTED audit event.
+        </p>
+      </div>
+
+      <!-- Chat moderation + monitoring -->
+      <div class="bn-dashboard bn-mt-2">
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Chat reports</h2>
+          </div>
+          <div class="bn-table-wrap">
+            <table class="bn-table">
+              <thead>
+                <tr>
+                  <th>Message</th>
+                  <th>From</th>
+                  <th>Reported</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4" class="bn-empty" style="padding:1.25rem;">
+                    <strong>No reports</strong>
+                    Chat moderation is Phase 6. Queue kept empty for clean Phase 1.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bn-card">
+          <div class="bn-card-header">
+            <h2 class="bn-card-title">Capabilities (locked)</h2>
+          </div>
+          <ul style="list-style:none; font-size:0.9rem; display:flex; flex-direction:column; gap:0.45rem;">
+            <li>✓ Review registration (approve / reject)</li>
+            <li>✓ View verified students</li>
+            <li>✓ Moderate chat / remove messages</li>
+            <li>✓ Create announcements (if permitted)</li>
+            <li>✓ Monitor submissions</li>
+            <li class="bn-muted">✗ Sensitive system functions</li>
+            <li class="bn-muted">✗ Database / storage tools</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/phase1-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = BN.getCurrentUser();
+      if (!user) {
+        location.href = "login.html";
+        return;
+      }
+      if (user.role !== "Moderator" && user.role !== "Admin" && user.role !== "Developer") {
+        alert("This directory is for Moderator (or higher).");
+        location.href = "dashboard.html";
+        return;
+      }
+      if (window.Phase1?.renderPendingQueue) {
+        await Phase1.renderPendingQueue();
+      }
+    });
+  </script>
+</body>
+</html>
