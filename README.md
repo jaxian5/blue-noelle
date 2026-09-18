@@ -1,6 +1,6 @@
 # PROJECT: Blue Noelle
 
-**Version 0.2 · Phase 1 complete · September 2026**  
+**Version 0.4 · Phase 2 complete · September 2026**  
 Status: **Phase 0 locked** · **Phase 1 complete** (auth, verification, invite links, password UX).
 
 Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE1-COMPLETE.md`.
@@ -104,5 +104,4 @@ See `docs/PHASE0-COMPLETE.md` for the full checklist.
 
 ## Next
 
-**Phase 1 — Authentication & Class Membership**  
-Milestone: *A verified student can securely enter their class.*
+**Phase 2 polishing and finalization**
