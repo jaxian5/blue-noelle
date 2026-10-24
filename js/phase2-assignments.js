@@ -14,6 +14,16 @@
 const Phase2 = {
   STORAGE_KEY: "bn_phase2_assignments",
 
+  newId(prefix) {
+    return prefix + (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  },
+
+  actorCanManage(classId) {
+    const user = window.BN?.getCurrentUser?.();
+    return !!user && user.role === "Admin" &&
+      !!user.class_memberships?.some((m) => m.class_id === classId && m.status === "ACTIVE");
+  },
+
   async loadBase() {
     for (const url of ["../data/assignments.json", "data/assignments.json"]) {
       try {
@@ -62,15 +72,16 @@ const Phase2 = {
     const s = await this.ensureStore();
     const subjects = await this.listSubjects(classId);
     const ids = new Set(subjects.map((x) => x.id));
-    return (s.assignments || []).filter((a) => ids.has(a.subject_id) || !classId);
+    return (s.assignments || []).filter((a) => !classId || ids.has(a.subject_id));
   },
 
   async createSubject({ class_id, name, created_by }) {
     if (!name?.trim()) return { ok: false, error: "Subject name required" };
+    if (!class_id || !this.actorCanManage(class_id)) return { ok: false, error: "Admin membership is required for this class" };
     const s = await this.ensureStore();
     const row = {
-      id: "subj-" + Date.now(),
-      class_id: class_id || "class-educ2-a",
+      id: this.newId("subj-"),
+      class_id,
       name: name.trim(),
       created_by: created_by || null,
       created_at: new Date().toISOString()
@@ -107,12 +118,13 @@ const Phase2 = {
     if (!name?.trim()) return { ok: false, error: "Assignment name required" };
 
     const s = await this.ensureStore();
-    if (!s.subjects.some((x) => x.id === subject_id)) {
-      return { ok: false, error: "Subject not found" };
-    }
+    const subject = s.subjects.find((x) => x.id === subject_id);
+    if (!subject) return { ok: false, error: "Subject not found" };
+    if (!this.actorCanManage(subject.class_id)) return { ok: false, error: "Admin membership is required for this class" };
+    if (deadline && !Number.isFinite(Date.parse(deadline))) return { ok: false, error: "Invalid deadline" };
 
     const row = {
-      id: "asgn-" + Date.now(),
+      id: this.newId("asgn-"),
       subject_id,
       name: name.trim(),
       description: description || "",
@@ -133,7 +145,7 @@ const Phase2 = {
       Phase1.appendAudit({
         actor_id: created_by,
         actor_role_at_time: "Admin",
-        class_id: null,
+        class_id: subject.class_id,
         action: "ASSIGNMENT_CREATED",
         target_type: "Assignment",
         target_id: row.id,
@@ -150,6 +162,10 @@ const Phase2 = {
     const s = await this.ensureStore();
     const a = s.assignments.find((x) => x.id === id);
     if (!a) return { ok: false, error: "Not found" };
+    const subject = s.subjects.find((x) => x.id === a.subject_id);
+    if (!subject || !this.actorCanManage(subject.class_id)) return { ok: false, error: "Admin membership is required for this class" };
+    if (a.status === status) return { ok: true };
+    const previousStatus = a.status;
     a.status = status;
     a.updated_at = new Date().toISOString();
     this.setStore(s);
@@ -157,11 +173,11 @@ const Phase2 = {
       Phase1.appendAudit({
         actor_id: actor?.id,
         actor_role_at_time: actor?.role || "Admin",
-        class_id: null,
+        class_id: subject.class_id,
         action: "ASSIGNMENT_STATUS_CHANGED",
         target_type: "Assignment",
         target_id: id,
-        metadata: { status }
+        metadata: { previous_status: previousStatus, status }
       });
     }
     return { ok: true };
