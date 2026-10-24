@@ -1,6 +1,6 @@
 # Supabase integration preparation · October 2026
 
-**Status: real Supabase project URL configured in the repository, but no connection or migrations have been verified.** Project reference: `zllphzqalkurnibfctyl`. The publishable key is still a placeholder; no accounts or live data have been migrated.
+**Status: project URL and browser publishable key have been configured in `js/supabase-config.js`.** Project reference: `zllphzqalkurnibfctyl`. This enables Supabase client initialization on pages that load the adapter; migrations, authentication and RLS have **not** been tested against the hosted project, and no accounts or live data have been migrated.
 
 ## Architecture
 
@@ -16,7 +16,7 @@
 2. In your local repository install Supabase CLI (see docs) and link: `npx supabase login`, `npx supabase link --project-ref zllphzqalkurnibfctyl`.
 3. Review the migration and test against a disposable project/local stack **before** running `npx supabase db push` on the hosted project. CLI local stack requires a Docker-compatible runtime.
 4. Set the project's Site URL and redirect allowlist to your real hosted origin when implementing Supabase Auth.
-5. Update the existing tracked `js/supabase-config.js`: the project URL is already configured. Replace **only** `sb_publishable_REPLACE_ME` with the project's `sb_publishable_...` key. This is public GitHub Pages browser configuration; RLS must be properly tested before enabling real users. The class-operations page already loads the Supabase JS browser bundle and adapter.
+5. The existing tracked `js/supabase-config.js` now contains the project's public URL and publishable key. The Class Operations page loads this config with `supabase-js` and the adapter. This is public GitHub Pages browser configuration; thoroughly validate RLS and migrations before onboarding real users.
 6. Never commit `sb_secret_...`, legacy `service_role`, database passwords, or connection strings. `.env.example` is for tooling documentation, not automatically consumed by static HTML/GitHub Pages. Static sites cannot securely store server secrets.
 7. Creating the Supabase project and including its URL in code does **not** apply the SQL migrations or create an Admin account. Connect the Supabase plugin to administer this project from ChatGPT, or run the migrations through an authorized local CLI workflow.
 
