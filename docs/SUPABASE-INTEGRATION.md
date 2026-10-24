@@ -1,6 +1,6 @@
 # Supabase integration preparation · October 2026
 
-**Status: placeholder and initial migration only, NOT deployed.** No real project, API credentials, migrated accounts or connected pages exist yet.
+**Status: real Supabase project URL configured in the repository, but no connection or migrations have been verified.** Project reference: `zllphzqalkurnibfctyl`. The publishable key is still a placeholder; no accounts or live data have been migrated.
 
 ## Architecture
 
@@ -13,11 +13,12 @@
 ## Create and connect a hosted project
 
 1. Create a Supabase project in the Supabase dashboard (manual owner step).
-2. In your local repository install Supabase CLI (see docs) and link: `npx supabase login`, `npx supabase link --project-ref YOUR_PROJECT_REF`.
+2. In your local repository install Supabase CLI (see docs) and link: `npx supabase login`, `npx supabase link --project-ref zllphzqalkurnibfctyl`.
 3. Review the migration and test against a disposable project/local stack **before** running `npx supabase db push` on the hosted project. CLI local stack requires a Docker-compatible runtime.
 4. Set the project's Site URL and redirect allowlist to your real hosted origin when implementing Supabase Auth.
-5. Copy `js/supabase-config.example.js` to `js/supabase-config.js` locally and replace placeholders with **project URL and publishable key only**. Add official supabase-js browser bundle and this adapter when deliberately enabling an integration test page.
-6. Never commit secret/service-role keys. `.env.example` is for tooling documentation, not automatically consumed by static HTML/GitHub Pages. Static sites cannot securely store server secrets.
+5. Update the existing tracked `js/supabase-config.js`: the project URL is already configured. Replace **only** `sb_publishable_REPLACE_ME` with the project's `sb_publishable_...` key. This is public GitHub Pages browser configuration; RLS must be properly tested before enabling real users. The class-operations page already loads the Supabase JS browser bundle and adapter.
+6. Never commit `sb_secret_...`, legacy `service_role`, database passwords, or connection strings. `.env.example` is for tooling documentation, not automatically consumed by static HTML/GitHub Pages. Static sites cannot securely store server secrets.
+7. Creating the Supabase project and including its URL in code does **not** apply the SQL migrations or create an Admin account. Connect the Supabase plugin to administer this project from ChatGPT, or run the migrations through an authorized local CLI workflow.
 
 ## Test criteria before switching off demo mode
 
