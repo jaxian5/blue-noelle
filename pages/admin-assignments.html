@@ -113,16 +113,17 @@
   <script src="../js/phase1-auth.js"></script>
   <script src="../js/phase2-assignments.js"></script>
   <script>
+    const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
     document.addEventListener("DOMContentLoaded", async () => {
       const user = BN.getCurrentUser();
       if (!user) { location.href = "login.html"; return; }
-      if (user.role !== "Admin" && user.role !== "Developer") {
+      if (user.role !== "Admin" || !user.class_memberships?.some((m) => m.role === "Admin" && m.status === "ACTIVE")) {
         alert("Only Admin can manage assignments.");
         location.href = "dashboard.html";
         return;
       }
 
-      const classId = user.class_memberships?.[0]?.class_id || "class-educ2-a";
+      const classId = user.class_memberships.find((m) => m.role === "Admin" && m.status === "ACTIVE").class_id;
       const fs = document.getElementById("form-subject");
       const fa = document.getElementById("form-assignment");
       document.getElementById("btn-new-subject").onclick = () => { fs.hidden = !fs.hidden; fa.hidden = true; };
@@ -135,7 +136,7 @@
         const subjects = await Phase2.listSubjects(classId);
         const sel = document.getElementById("asgn-subject");
         sel.innerHTML = subjects.length
-          ? subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("")
+          ? subjects.map((s) => `<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`).join("")
           : `<option value="">Create a subject first</option>`;
       }
 
@@ -183,7 +184,7 @@
         root.innerHTML = groups.map(({ subject, assignments }) => `
           <div class="bn-card" style="margin-bottom:1rem;">
             <div class="bn-card-header">
-              <h2 class="bn-card-title">${subject.name}</h2>
+              <h2 class="bn-card-title">${escapeHTML(subject.name)}</h2>
             </div>
             ${assignments.length ? `
             <div class="bn-table-wrap">
@@ -192,12 +193,12 @@
                 <tbody>
                   ${assignments.map((a) => `
                     <tr>
-                      <td><strong>${a.name}</strong><div class="bn-muted bn-text-sm">${a.description || ""}</div></td>
+                      <td><strong>${escapeHTML(a.name)}</strong><div class="bn-muted bn-text-sm">${escapeHTML(a.description || "")}</div></td>
                       <td>${a.is_group ? "Group" : "Individual"}</td>
                       <td class="bn-muted">${a.deadline ? BN.formatDateTime(a.deadline) : "—"}</td>
                       <td><span class="bn-badge ${a.status==="OPEN"?"bn-badge-open":"bn-badge-closed"}">${a.status}</span></td>
                       <td>
-                        <select data-id="${a.id}" class="bn-status-sel" style="font:inherit; padding:0.25rem; border-radius:6px; border:1px solid var(--bn-border-strong); background:var(--bn-bg); color:var(--bn-text);">
+                        <select data-id="${encodeURIComponent(a.id)}" class="bn-status-sel" style="font:inherit; padding:0.25rem; border-radius:6px; border:1px solid var(--bn-border-strong); background:var(--bn-bg); color:var(--bn-text);">
                           <option value="OPEN" ${a.status==="OPEN"?"selected":""}>OPEN</option>
                           <option value="CLOSED" ${a.status==="CLOSED"?"selected":""}>CLOSED</option>
                           <option value="ARCHIVED" ${a.status==="ARCHIVED"?"selected":""}>ARCHIVED</option>
