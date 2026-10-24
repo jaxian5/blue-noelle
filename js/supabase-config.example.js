@@ -1,8 +1,9 @@
-/* Copy to supabase-config.js after creating a Supabase project.
- * This is PUBLIC browser configuration, never use secret/service_role keys here.
- * supabase-config.js is gitignored, and missing config keeps the demo offline.
+/* Template for Blue Noelle's public browser configuration.
+ * js/supabase-config.js is now tracked and contains the confirmed project URL.
+ * Set its publishableKey to your sb_publishable_... key when ready.
+ * Never use a secret/service-role key or a database password here.
  */
 window.BN_SUPABASE_CONFIG = Object.freeze({
-  url: "https://YOUR_PROJECT_REF.supabase.co",
+  url: "https://zllphzqalkurnibfctyl.supabase.co",
   publishableKey: "sb_publishable_REPLACE_ME"
 });
