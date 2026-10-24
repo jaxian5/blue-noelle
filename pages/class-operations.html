@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Class Operations · Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css">
+<style>
+.ops-layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.ops-list{width:100%;border-collapse:collapse;font-size:.88rem}
+.ops-list th,.ops-list td{padding:.5rem;border-bottom:1px solid var(--bn-border-strong);text-align:left}
+.ops-form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.ops-form label{display:grid;gap:.2rem;font-size:.85rem}
+.ops-form input,.ops-form select{width:100%;padding:.55rem;border:1px solid var(--bn-border-strong);border-radius:6px;background:var(--bn-bg);color:var(--bn-text)}
+.ops-wide{grid-column:1/-1}
+.ops-message{padding:.75rem;border-radius:6px;margin:1rem 0}
+@media(max-width:800px){.ops-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bn-app">
+<header class="bn-header">
+<a href="admin.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+<nav class="bn-nav"><a href="admin.html">Admin</a><a href="moderator.html">Moderator</a><a href="class-operations.html" class="active">Class Operations</a></nav>
+</header>
+<main class="bn-main">
+<h1>Class Operations</h1>
+<p class="bn-muted">Supabase preview · Class-scoped users and weekly schedules. Changes are saved directly to PostgreSQL once signed in through Supabase Auth.</p>
+<div id="ops-message" class="ops-message" role="status" aria-live="polite">Checking backend availability…</div>
+<section class="bn-card"><h2 class="bn-card-title">Supabase sign-in</h2><p class="bn-muted bn-text-sm">Use your Supabase Auth account. Demo login is separate.</p>
+<form id="supabase-login-form" class="ops-form"><label>Email<input id="supabase-email" type="email" autocomplete="username" required></label><label>Password<input id="supabase-password" type="password" autocomplete="current-password" required></label><button class="bn-btn bn-btn-primary" type="submit">Sign in</button><button class="bn-btn bn-btn-secondary" type="button" id="supabase-logout">Sign out</button></form></section>
+<div class="bn-card">
+<label for="class-choice">Active class</label>
+<select id="class-choice" class="bn-btn bn-btn-secondary"></select>
+</div>
+<div id="ops-panel" hidden>
+<div class="ops-layout bn-mt-2">
+<section class="bn-card"><h2 class="bn-card-title">Members</h2><p class="bn-muted bn-text-sm">Moderators can review the directory. Only Admin can change roles or membership statuses.</p>
+<div class="bn-table-wrap"><table class="ops-list"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="member-rows"></tbody></table></div></section>
+<section class="bn-card"><h2 class="bn-card-title">Recurring weekly schedule</h2>
+<form id="slot-form" class="ops-form">
+<label>Day<select name="day_of_week" required><option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option></select></label>
+<label>Class / activity<input name="label" required maxlength="120" placeholder="e.g. Programming 3"></label>
+<label>Starts (Manila)<input type="time" name="start_local" required></label>
+<label>Ends (Manila)<input type="time" name="end_local" required></label>
+<button class="bn-btn bn-btn-primary ops-wide" type="submit">Add schedule slot</button>
+</form>
+<div class="bn-table-wrap bn-mt-1"><table class="ops-list"><thead><tr><th>Day</th><th>Time</th><th>Activity</th><th></th></tr></thead><tbody id="slot-rows"></tbody></table></div></section>
+<section class="bn-card"><h2 class="bn-card-title">Schedule exceptions</h2><p class="bn-muted bn-text-sm">Holidays, cancellations and reschedules for a specific date.</p>
+<form id="exception-form" class="ops-form">
+<label>Date<input type="date" name="exception_date" required></label>
+<label>Type<select name="kind"><option value="holiday">Holiday</option><option value="cancelled">Cancelled</option><option value="special">Special</option><option value="rescheduled">Rescheduled</option></select></label>
+<label class="ops-wide">Note<input name="note" maxlength="250" placeholder="e.g. No classes"></label>
+<button class="bn-btn bn-btn-primary ops-wide" type="submit">Add exception</button>
+</form>
+<div class="bn-table-wrap bn-mt-1"><table class="ops-list"><thead><tr><th>Date</th><th>Type</th><th>Note</th><th></th></tr></thead><tbody id="exception-rows"></tbody></table></div></section>
+<section class="bn-card"><h2 class="bn-card-title">Integration status</h2><p class="bn-muted">This interface connects to Supabase only after project configuration and Supabase Auth sign-in. The existing browser demonstration remains separate. Privileged actions are checked in PostgreSQL, not trusted to frontend role controls.</p></section>
+</div></div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-adapter.js"></script>
+<script src="../js/class-operations.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+const $=id=>document.getElementById(id), msg=$('ops-message'), choice=$('class-choice');
+const status=t=>{msg.textContent=t;};
+const node=(tag,text)=>{const el=document.createElement(tag);el.textContent=String(text??'');return el;};
+const td=(row,t)=>row.appendChild(node('td',t));
+const addButton=(row,title,click)=>{const cell=row.insertCell();const b=node('button',title);b.type='button';b.className='bn-btn bn-btn-secondary';b.addEventListener('click',click);cell.appendChild(b);};
+const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let roles=new Map();
+const call=async fn=>{try{await fn();status('Saved successfully.');}catch(err){status('Error: '+err.message);}};
+async function refresh(){
+const id=choice.value,role=roles.get(id),admin=role==='Admin';
+const [members,slots,exceptions]=await Promise.all([BNClassOps.directory(id),BNClassOps.slots(id),BNClassOps.exceptions(id)]);
+for(const key of ['member-rows','slot-rows','exception-rows']) $(key).replaceChildren();
+members.forEach(m=>{const tr=$('member-rows').insertRow();td(tr,m.full_name);td(tr,m.role);td(tr,m.status);
+if(!admin){td(tr,'Read only');return;}
+const cell=tr.insertCell(),role=node('select');['Student','Moderator','Admin'].forEach(v=>{const o=node('option',v);o.value=v;role.appendChild(o);});role.value=m.role;
+const state=node('select');['PENDING','ACTIVE','REJECTED','REMOVED'].forEach(v=>{const o=node('option',v);o.value=v;state.appendChild(o);});state.value=m.status;
+const save=node('button','Save');save.type='button';save.className='bn-btn bn-btn-secondary';save.addEventListener('click',()=>call(async()=>{await BNClassOps.updateMember(m.membership_id,role.value,state.value);await refresh();}));
+cell.append(role,state,save);
+});
+slots.forEach(s=>{const tr=$('slot-rows').insertRow();td(tr,days[s.day_of_week]);td(tr,s.start_local.slice(0,5)+'–'+s.end_local.slice(0,5));td(tr,s.label);
+if(admin) addButton(tr,'Delete',()=>{if(confirm('Delete this schedule slot?'))call(async()=>{await BNClassOps.deleteSlot(s.id);await refresh();});});else td(tr,'Read only');
+});
+exceptions.forEach(e=>{const tr=$('exception-rows').insertRow();td(tr,e.exception_date);td(tr,e.kind);td(tr,e.note);
+if(admin)addButton(tr,'Delete',()=>{if(confirm('Delete this exception?'))call(async()=>{await BNClassOps.deleteException(e.id);await refresh();});});else td(tr,'Read only');
+});
+for(const id of ['slot-form','exception-form']) $(id).querySelector('button[type=submit]').disabled=!admin;
+}
+if(!window.BNClassOps?.ready()){status('Supabase is not configured. Create js/supabase-config.js locally and connect Supabase Auth first.');return;}
+$('supabase-login-form').addEventListener('submit',async e=>{
+e.preventDefault();
+try{
+const {error}=await BNBackend.client.auth.signInWithPassword({email:$('supabase-email').value,password:$('supabase-password').value});
+if(error)throw error;$('supabase-password').value='';location.reload();
+}catch(error){status('Sign-in failed: '+error.message);}
+});
+$('supabase-logout').addEventListener('click',async()=>{await BNBackend.client.auth.signOut();location.reload();});
+try {
+const memberships=await BNClassOps.memberships();
+memberships.filter(m=>['Admin','Moderator'].includes(m.role)).forEach(m=>{roles.set(m.class_id,m.role);const o=node('option',m.class_id+' ('+m.role+')');o.value=m.class_id;choice.appendChild(o);});
+if(!choice.options.length){status('No active Admin or Moderator class membership found for the signed-in user.');return;}
+$('ops-panel').hidden=false;choice.onchange=()=>call(refresh);await refresh();status('Connected to Supabase. Schedule timezone: Asia/Manila.');
+}catch(e){status('Connection failed: '+e.message);}
+$('slot-form').addEventListener('submit',e=>{e.preventDefault();call(async()=>{const f=new FormData(e.target);
+const start=f.get('start_local'),end=f.get('end_local');if(start>=end)throw Error('End time must be after start time.');
+await BNClassOps.createSlot({class_id:choice.value,day_of_week:Number(f.get('day_of_week')),label:String(f.get('label')).trim(),start_local:start,end_local:end});
+e.target.reset();await refresh();});});
+$('exception-form').addEventListener('submit',e=>{e.preventDefault();call(async()=>{const f=new FormData(e.target);
+await BNClassOps.createException({class_id:choice.value,exception_date:f.get('exception_date'),kind:f.get('kind'),note:String(f.get('note')||'')});e.target.reset();await refresh();});});
+});
+</script>
+</body></html>
