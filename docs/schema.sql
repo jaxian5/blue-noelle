@@ -149,13 +149,16 @@ CREATE TABLE "SubmissionVersion" (
   version_number  INT NOT NULL,
   uploaded_by     UUID REFERENCES "User"(id), -- shows “Uploaded by [name]” for groups
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (submission_id, version_number)
+  UNIQUE (submission_id, version_number),
+  UNIQUE (id, submission_id) -- supports composite FKs that enforce version ownership
 );
 
--- current_version must belong to same submission (enforce via trigger or composite FK pattern)
+-- Current version must belong to this very submission (composite FK, deferred for inserts).
 ALTER TABLE "Submission"
   ADD CONSTRAINT submission_current_version_fk
-  FOREIGN KEY (current_version_id) REFERENCES "SubmissionVersion"(id);
+  FOREIGN KEY (current_version_id, id)
+  REFERENCES "SubmissionVersion"(id, submission_id)
+  DEFERRABLE INITIALLY DEFERRED;
 
 CREATE TABLE "File" (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -177,7 +180,10 @@ CREATE TABLE "Compilation" (
   source_version_id   UUID NOT NULL REFERENCES "SubmissionVersion"(id),
   generated_file_id   UUID REFERENCES "File"(id),
   generated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
-  generated_by        UUID REFERENCES "User"(id)
+  generated_by        UUID REFERENCES "User"(id),
+  CONSTRAINT compilation_source_same_submission
+    FOREIGN KEY (source_version_id, submission_id)
+    REFERENCES "SubmissionVersion"(id, submission_id)
 );
 
 -- ---------- Schedule (Class Clock) ----------
@@ -266,5 +272,5 @@ CREATE INDEX idx_notification_user ON "Notification"(user_id, created_at DESC);
 -- 2. InviteCode belongs to one Class
 -- 3. Soft-delete columns on academic entities
 -- 4. submitted_at / deadline_at_submission treated as immutable in app layer
--- 5. Compilation links exact source_version_id
+-- 5. Compilation links exact source_version_id within the same submission
 -- ============================================================
