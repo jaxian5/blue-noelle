@@ -26,6 +26,8 @@
 <h1>Class Operations</h1>
 <p class="bn-muted">Supabase preview · Class-scoped users and weekly schedules. Changes are saved directly to PostgreSQL once signed in through Supabase Auth.</p>
 <div id="ops-message" class="ops-message" role="status" aria-live="polite">Checking backend availability…</div>
+<section class="bn-card"><h2 class="bn-card-title">Supabase sign-in</h2><p class="bn-muted bn-text-sm">Use your Supabase Auth account. Demo login is separate.</p>
+<form id="supabase-login-form" class="ops-form"><label>Email<input id="supabase-email" type="email" autocomplete="username" required></label><label>Password<input id="supabase-password" type="password" autocomplete="current-password" required></label><button class="bn-btn bn-btn-primary" type="submit">Sign in</button><button class="bn-btn bn-btn-secondary" type="button" id="supabase-logout">Sign out</button></form></section>
 <div class="bn-card">
 <label for="class-choice">Active class</label>
 <select id="class-choice" class="bn-btn bn-btn-secondary"></select>
@@ -88,6 +90,14 @@ if(admin)addButton(tr,'Delete',()=>{if(confirm('Delete this exception?'))call(as
 for(const id of ['slot-form','exception-form']) $(id).querySelector('button[type=submit]').disabled=!admin;
 }
 if(!window.BNClassOps?.ready()){status('Supabase is not configured. Create js/supabase-config.js locally and connect Supabase Auth first.');return;}
+$('supabase-login-form').addEventListener('submit',async e=>{
+e.preventDefault();
+try{
+const {error}=await BNBackend.client.auth.signInWithPassword({email:$('supabase-email').value,password:$('supabase-password').value});
+if(error)throw error;$('supabase-password').value='';location.reload();
+}catch(error){status('Sign-in failed: '+error.message);}
+});
+$('supabase-logout').addEventListener('click',async()=>{await BNBackend.client.auth.signOut();location.reload();});
 try {
 const memberships=await BNClassOps.memberships();
 memberships.filter(m=>['Admin','Moderator'].includes(m.role)).forEach(m=>{roles.set(m.class_id,m.role);const o=node('option',m.class_id+' ('+m.role+')');o.value=m.class_id;choice.appendChild(o);});
