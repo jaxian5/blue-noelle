@@ -6,7 +6,7 @@
 
 **Status 2026-10-25:** core PostgreSQL/RPC workflow implemented; canonical login and registration UI added for controlled testing. **Not production certified until the sign-up/confirm/approve/active path passes real multi-account tests.** The canonical login and registration pages now use Supabase Auth, not the old localStorage demo. Historical academic dashboards remain unintegrated.
 
-## Flow (authoritative)
+## Student invitation flow (Admin creation is described in the multi-class update)
 1. A **real, verified Admin** issues a cryptographically random **Student** invitation using `bn_issue_class_invite`. Database saves only SHA-256 hash and restrictions, never the raw code.
 2. A student creates a real Supabase Auth account using email, password and full name at `pages/register.html`. Supabase stores password credentials, not our `User` table.
 3. Student verifies email (when confirmation required), signs in at `pages/login.html`, then enters code, username and Student ID at `pages/register.html` via `bn_join_class`. Raw code isn't kept in localStorage.
@@ -32,30 +32,13 @@
 
 The RPC entry points are SECURITY INVOKER in public; internal elevated functions live in non-API `bn_private`. All public entry points refuse anonymous role EXECUTE. Admin/Moderator authorization is verified on the server. `bn_private."InviteAttempt"` is not available through the browser Data API.
 
-## First administrator bootstrap, ONCE, using trusted Supabase SQL editor
-No Admin can be created by signup or by knowing a demo code. There are currently **zero** Auth users and active memberships. To configure the first Admin safely:
+## Admin self-service for multiple classes
 
-1. Open `pages/register.html` after deployment and sign up with the **actual administrator's** email and a unique private password.
-2. Confirm the email and sign in; note that you must not use a demo account from `data/roles.json`.
-3. In Supabase's trusted SQL editor, find the exact `auth.users.id` of that account and its `public."User"` profile. Replace the two explicit placeholders below with values you have verified:
+Manual initial Admin bootstrap has been **retired** by the October 25 multi-class architecture. The verified Admin signup now creates a new classroom using `bn_create_owned_class` and becomes its owner in the same trusted database transaction. The server enforces **one owned class per Admin account**; no administrator may claim the original sample class or become Admin of another class through a browser request.
 
-```sql
--- Run exactly once after verifying the account email and target classroom.
--- Choose YOUR real class id, not a sample class by accident.
-insert into public."ClassMembership"(user_id,class_id,role,status,joined_at)
-select u.id, c.id, 'Admin', 'ACTIVE', now()
-from auth.users u
-join public."User" p on p.id=u.id
-cross join public."Class" c
-where u.id = 'REPLACE_WITH_VERIFIED_AUTH_USER_UUID'::uuid
-  and c.id = 'REPLACE_WITH_VERIFIED_CLASS_UUID'::uuid
-  and u.email_confirmed_at is not null
-on conflict(user_id,class_id) do nothing;
-```
+The first tested Auth account remains registered as **Student**. For the revised live test, create a **new** Admin account and complete class creation through `pages/register.html`. See [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the release tests.
 
-This is an intentional first-time trust bootstrap, not an ongoing administrative workflow. Thereafter, class officers issue invites and review memberships through the website. Never provide an unauthenticated admin bootstrap code or expose service-role keys in browser code.
-
-## Required testing before retiring demo login
+## Required testing before Phase 1 sign-off
 - [ ] Supabase Auth signup, email confirmation and sign-in via real browser.
 - [ ] Auth trigger creates `public."User"` profile with correct UUID.
 - [ ] Admin issues invite; plaintext never persists in DB; valid code only creates Student/PENDING.
