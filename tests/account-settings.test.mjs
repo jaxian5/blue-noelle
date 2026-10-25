@@ -133,7 +133,7 @@ test("reject oversized or unsupported photos and preserve private bucket rules",
  x.$("profile-photo-file").files=[{type:"image/svg+xml",size:120,name:"malware.svg"}];
  await x.$("profile-photo-form").listeners.submit({preventDefault(){}});
  assert.equal(x.calls.filter(c=>c[0]==="upload").length,0);
- assert.match(sql,/public,2097152/);
+ assert.match(sql,/false,2097152/);
  assert.match(sql,/bn-avatars/);
  assert.match(sql,/auth\.uid\(\)/);
  assert.match(sql,/UPDATE\(full_name\)/);
