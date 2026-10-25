@@ -1,174 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — Blue Noelle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/main.css" />
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071e42">
+<title>Class Dashboard | Blue Noelle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
-  <div class="bn-app">
-    <!-- ========== HEADER ========== -->
-    <header class="bn-header">
-      <a href="dashboard.html" class="bn-logo">
-        <div class="bn-logo-mark">BN</div>
-        <span>Blue Noelle</span>
-      </a>
-
-      <nav class="bn-nav">
-        <a href="dashboard.html" class="active">Dashboard</a>
-        <a href="assignments.html">Assignments</a>
-        <a href="#">Schedule</a>
-        <a href="#">Chat</a>
-      </nav>
-
-      <div class="bn-user-chip" id="bn-user-chip" title="Account">
-        <div class="bn-avatar">JD</div>
-        <span>Juan Dela Cruz</span>
-      </div>
-    </header>
-
-    <!-- ========== CLASS CLOCK (permanent component) ========== -->
-    <div class="bn-clock-strip">
-      <div class="bn-clock-item">
-        <span>Now</span>
-        <strong class="bn-clock-live" id="bn-live-clock">--:--:--</strong>
-      </div>
-      <div class="bn-clock-item">
-        <span>Current class</span>
-        <strong id="bn-current-class">—</strong>
-      </div>
-      <div class="bn-clock-item">
-        <span>Next</span>
-        <strong id="bn-next-class">—</strong>
-      </div>
-      <div class="bn-clock-item" style="margin-left:auto;">
-        <span class="bn-muted" style="color:#94a3b8;">Asia/Manila</span>
+<div class="bn-workspace">
+<aside class="bn-workspace-sidebar" aria-label="Workspace navigation">
+  <a href="../index.html" class="bn-workspace-brand">
+    <span class="bn-brand-glyph" aria-hidden="true">BN</span>
+    <span class="bn-brand-name">Blue Noelle<small>CLASSROOM PLATFORM</small></span>
+  </a>
+  <div class="bn-side-caption">WORKSPACE</div>
+  <nav class="bn-side-links" aria-label="Classroom">
+    <a href="dashboard.html" class="bn-side-link selected" aria-current="page"><span aria-hidden="true">◫</span> Overview</a>
+    <a href="classwork.html" class="bn-side-link"><span aria-hidden="true">▦</span> Subjects &amp; assignments</a>
+    <a id="dash-admin-link" href="admin-classwork.html" class="bn-side-link" hidden><span aria-hidden="true">✎</span> Manage classwork</a>
+    <a href="account.html" class="bn-side-link"><span aria-hidden="true">◇</span> My account</a>
+  </nav>
+  <div class="bn-side-spacer"></div>
+  <div class="bn-side-info"><span class="bn-side-info-dot"></span><span>Phase 2 · Live classroom</span></div>
+  <div class="bn-side-note">Your actual subjects, assignments and deadlines. No demo records.</div>
+</aside>
+<div class="bn-workspace-main">
+  <header class="bn-topbar">
+    <div class="bn-breadcrumb">BLUE NOELLE <span>/</span> DASHBOARD</div>
+    <div class="bn-top-actions">
+      <span id="dash-current-date" class="bn-top-date"></span>
+      <a class="bn-top-account" href="account.html" aria-label="Open My Account"><span id="dash-avatar">BN</span></a>
+    </div>
+  </header>
+  <main class="bn-dashboard-body">
+    <div class="bn-hero">
+      <div><p class="bn-overline">YOUR CLASSROOM, IN FOCUS</p><h1 id="dash-greeting">Welcome back.</h1>
+      <p id="dash-subtitle">Checking your verified classroom memberships…</p></div>
+      <div class="bn-hero-symbol" aria-hidden="true">✳</div>
+    </div>
+    <div id="dash-alert" class="bn-dashboard-notice" role="status" aria-live="polite">Loading your classroom…</div>
+    <section class="bn-dashboard-classpicker" aria-label="Classroom context">
+      <div><label for="dash-class">Current classroom</label><select id="dash-class" disabled><option value="">Loading…</option></select></div>
+      <div class="bn-class-role"><span>YOUR ROLE</span><strong id="dash-role">Checking…</strong></div>
+      <a href="classwork.html" class="bn-primary-link">Browse classwork <span aria-hidden="true">↗</span></a>
+    </section>
+    <section class="bn-metric-grid" aria-label="Classroom summary">
+      <article class="bn-metric"><div class="bn-metric-top"><span>MY CLASSROOMS</span><span class="bn-metric-icon" aria-hidden="true">▦</span></div><strong id="dash-count-classes">0</strong><p>Active memberships</p></article>
+      <article class="bn-metric"><div class="bn-metric-top"><span>SUBJECTS</span><span class="bn-metric-icon" aria-hidden="true">◈</span></div><strong id="dash-count-subjects">0</strong><p>In this classroom</p></article>
+      <article class="bn-metric"><div class="bn-metric-top"><span>OPEN ASSIGNMENTS</span><span class="bn-metric-icon" aria-hidden="true">☷</span></div><strong id="dash-count-open">0</strong><p>Visible classwork</p></article>
+      <article class="bn-metric"><div class="bn-metric-top"><span>DUE IN 7 DAYS</span><span class="bn-metric-icon" aria-hidden="true">◷</span></div><strong id="dash-count-soon">0</strong><p>Upcoming deadlines</p></article>
+    </section>
+    <div class="bn-content-grid">
+      <section class="bn-dashboard-card bn-upcoming" aria-labelledby="dash-upcoming-title">
+        <div class="bn-panel-head"><div><span class="bn-panel-overline">TO-DO &amp; DEADLINES</span><h2 id="dash-upcoming-title">Upcoming classwork</h2></div>
+          <a href="classwork.html">View all ↗</a></div>
+        <div id="dash-upcoming" class="bn-upcoming-list"><p class="bn-empty">Loading assignments…</p></div>
+      </section>
+      <div class="bn-dashboard-rail">
+        <section class="bn-dashboard-card" aria-labelledby="dash-subject-title">
+          <div class="bn-panel-head"><div><span class="bn-panel-overline">CURRICULUM</span><h2 id="dash-subject-title">Your subjects</h2></div></div>
+          <div id="dash-subjects" class="bn-subject-list"><p class="bn-empty">Loading subjects…</p></div>
+        </section>
+        <section class="bn-next-phase">
+          <div class="bn-next-icon" aria-hidden="true">⬡</div>
+          <h2>Submission workspace</h2>
+          <p>Phase 3 will bring private file uploads, submission history, and version tracking to each assignment.</p>
+          <span>COMING IN PHASE 3</span>
+        </section>
       </div>
     </div>
-
-    <!-- ========== MAIN ========== -->
-    <main class="bn-main">
-      <div class="bn-flex-between bn-mb-1" style="margin-bottom:1.25rem;">
-        <div>
-          <h1 style="font-size:1.35rem; font-weight:700; letter-spacing:-0.02em;">Good morning, Juan</h1>
-          <p class="bn-muted bn-text-sm">EDUC 2 · The Teaching Profession · Section A</p>
-        </div>
-      </div>
-
-      <div class="bn-dashboard">
-        <!-- LEFT COLUMN -->
-        <div>
-          <div class="bn-card">
-            <div class="bn-card-header">
-              <h2 class="bn-card-title">Upcoming Assignments</h2>
-              <a href="assignments.html" class="bn-btn bn-btn-ghost bn-text-sm">View all</a>
-            </div>
-            <div id="dash-upcoming" class="bn-empty">
-              <strong>No assignments yet</strong>
-              When an Admin creates classwork (Phase 2), it will appear here with deadlines and countdowns.
-            </div>
-          </div>
-
-          <div class="bn-card bn-mt-2">
-            <div class="bn-card-header">
-              <h2 class="bn-card-title">Your Submissions</h2>
-            </div>
-            <div class="bn-empty">
-              <strong>No submissions yet</strong>
-              Submissions appear after Phase 3 (Files &amp; Submissions). Seed demo data was cleared for clean integration.
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN -->
-        <div>
-          <div class="bn-card">
-            <div class="bn-card-header">
-              <h2 class="bn-card-title">Announcements</h2>
-            </div>
-            <div class="bn-empty" style="padding:1.5rem;">
-              <strong>No announcements</strong>
-              Moderators and Admins can post announcements once authorized.
-            </div>
-          </div>
-
-          <div class="bn-card bn-mt-2">
-            <h2 class="bn-card-title bn-mb-1">Quick Status</h2>
-            <ul style="list-style:none; font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem;">
-              <li class="bn-flex-between">
-                <span class="bn-muted">Open assignments</span>
-                <strong id="stat-assignments">0</strong>
-              </li>
-              <li class="bn-flex-between">
-                <span class="bn-muted">Your submissions</span>
-                <strong id="stat-submissions">0</strong>
-              </li>
-              <li class="bn-flex-between">
-                <span class="bn-muted">Chat unread</span>
-                <strong>0</strong>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script src="../js/core.js"></script>
-  <script src="../js/phase1-auth.js"></script>
-  <script src="../js/phase2-assignments.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const user = BN.getCurrentUser();
-      if (!user) {
-        location.href = "login.html";
-        return;
-      }
-      const greet = document.querySelector(".bn-main h1");
-      if (greet && user.full_name) {
-        const first = user.full_name.split(/\s+/)[0];
-        greet.textContent = `Welcome, ${first}`;
-      }
-      const sub = document.querySelector(".bn-main .bn-muted.bn-text-sm");
-      if (sub && user.class_memberships?.[0]) {
-        sub.textContent = user.class_memberships[0].class_name || "";
-      }
-    });
-  </script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      if (!window.Phase2) return;
-      const user = BN.getCurrentUser();
-      if (!user) return;
-      const classId = user.class_memberships?.find(m => m.status === "ACTIVE")?.class_id;
-      if (!classId) return;
-      const groups = await Phase2.groupedBySubject(classId);
-      const open = groups.flatMap(g => g.assignments.filter(a => a.status === "OPEN"));
-      const el = document.getElementById("dash-upcoming");
-      const stat = document.getElementById("stat-assignments");
-      if (stat) stat.textContent = String(open.length);
-      if (!el) return;
-      if (!open.length) return;
-      el.className = "bn-grid-2";
-      const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g,
-        ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch]);
-      el.innerHTML = open.slice(0, 4).map(a => {
-        const urgency = a.deadline ? BN.getUrgency(a.deadline) : "ok";
-        const cd = a.deadline ? BN.countdown(a.deadline) : "";
-        return `<div class="bn-card bn-assign-card urgency-${urgency}" style="padding:1rem;">
-          <div class="bn-flex-between"><strong>${escapeHTML(a.name)}</strong><span class="bn-badge bn-badge-open">OPEN</span></div>
-          <p class="bn-muted bn-text-sm bn-mt-1">${a.is_group ? "Group" : "Individual"}</p>
-          <div class="bn-assign-meta"><span>${cd || (a.deadline ? BN.formatDateTime(a.deadline) : "No deadline")}</span></div>
-          <a href="submission.html?assignment=${encodeURIComponent(a.id)}" class="bn-btn bn-btn-primary bn-mt-2" style="width:100%;font-size:0.85rem;">Open</a>
-        </div>`;
-      }).join("");
-    });
-  </script>
-
-</body>
-</html>
+    <footer class="bn-dashboard-footer">Blue Noelle · Class-scoped data · All dates shown in Asia/Manila</footer>
+  </main>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-adapter.js"></script>
+<script src="../js/dashboard-live.js"></script>
+</body></html>

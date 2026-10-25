@@ -81,6 +81,7 @@
       if(current!==generation) return;
       const membership = allowed.get(classId);
       $("classwork-role").textContent = membership.role + " · ACTIVE";
+      $("classwork-admin-link").hidden = membership.role !== "Admin";
       if (!subjects.length) {
         target.append(node("div","No subjects yet. An Admin will create the first subject.","bn-card bn-classwork-empty"));
       } else {

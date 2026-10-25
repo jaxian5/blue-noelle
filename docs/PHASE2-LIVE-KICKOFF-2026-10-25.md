@@ -1,4 +1,4 @@
-# Phase 2 live kickoff: Subjects & Assignments
+> **Progress update:** The read-only viewer described below was merged as PR #20. The next branch adds an audited production Admin editor and fully redesigned live dashboard. See [Phase 2 production status](PHASE2-PRODUCTION-2026-10-25.md).\n\n# Phase 2 live kickoff: Subjects & Assignments
 
 **Date:** October 25, 2026  
 **Phase 0:** Accepted. **Phase 1:** Approved by project owner.  
