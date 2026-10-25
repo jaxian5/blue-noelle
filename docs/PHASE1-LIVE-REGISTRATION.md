@@ -1,5 +1,8 @@
 # Blue Noelle: Phase 1 Live Registration Implementation
 
+> **Phase 1 QA / PR #12 merge (2026-10-25):** The original role-scoped invitation, review, RLS and audit integration tests passed. The least-privilege table grant fix was deployed in migration `20261025042230`. [QA report](PHASE1-QA-2026-10-25.md) documents those results **under the original single-class setup**; its manual Admin bootstrap step is historical and superseded by the [multi-class Admin self-registration design](MULTICLASS-PHASE1.md). Live multi-account testing of the revised flow remains pending. Supabase Free still reports the plan-dependent leaked-password-protection advisory.
+
+
 > **MULTI-CLASS UPDATE (2026-10-25):** The original manual "first administrator bootstrap" guidance further below is **superseded**. Admin signup now creates a new Admin account type, and the confirmed Admin creates their own class using `bn_create_owned_class`. Students continue joining by invitation. Consult [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the current authoritative flow. Do not run the old bootstrap SQL.
 
 **Source:** `PROJECT_ Blue Noelle.docx`, September 18, 2026, §§3–4, 14–15, 19–20.
