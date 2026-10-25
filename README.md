@@ -1,4 +1,4 @@
-> **OTP verification upgrade (pending deployment):** Blue Noelle's new eight-digit email confirmation page is in review. Before merging it, update the Supabase Confirm signup template to use `{{ .Token }}` and verify Brevo SMTP delivery. See [Brevo email OTP guide](docs/EMAIL-OTP-BREVO-SETUP.md). The existing approved class-scoped authorization model is unchanged.
+> **Phase 2 live kickoff (October 25, 2026):** The first real-Supabase classwork page is under review. It is **read-only** and restricted to ACTIVE classroom memberships, not the legacy localStorage demo. See [Phase 2 rollout and acceptance](docs/PHASE2-LIVE-KICKOFF-2026-10-25.md).\n\n> **OTP verification upgrade (pending deployment):** Blue Noelle's new eight-digit email confirmation page is in review. Before merging it, update the Supabase Confirm signup template to use `{{ .Token }}` and verify Brevo SMTP delivery. See [Brevo email OTP guide](docs/EMAIL-OTP-BREVO-SETUP.md). The existing approved class-scoped authorization model is unchanged.
 
 > **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Phase 1 was approved by the project owner after live multi-account testing; the final confirmation-dialog polish is pending merge.
 
@@ -7,7 +7,7 @@
 # PROJECT: Blue Noelle
 
 **Architecture: Phase 0 formally accepted (October 25, 2026).**  
-**Live implementation:** Phase 1 approved (Admin/Student self-service signup, invite redemption, class-scoped review, real Auth). Final email-confirmation dialog polish is in review. Phase 2 assignments remain a separate localStorage demo.
+**Live implementation:** Phase 1 approved (Admin/Student self-service signup, invite redemption, class-scoped review, real Auth). Email verification UX is deployed, but delivery reliability remains unresolved. Phase 2 production data access is being implemented separately from the old localStorage demo.
 
 Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`, `docs/ADR-0001-supabase-architecture.md`, and `docs/PHASE1-LIVE-REGISTRATION.md`. [Phase 1 completion](docs/PHASE1-COMPLETE.md) records the owner's live-system acceptance and remaining non-blocking work.
 
