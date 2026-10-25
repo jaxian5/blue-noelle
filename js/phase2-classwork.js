@@ -50,7 +50,7 @@
       if(role==="Student"){
         const link=node("a","Open submission","bn-btn bn-btn-secondary");
         link.href="submission.html?assignment="+encodeURIComponent(item.id);
-        link.setAttribute("aria-label","Open submission for "+item.name);
+        link.ariaLabel="Open submission for "+item.name;
         meta.append(link);
       }
       row.append(left,meta);
