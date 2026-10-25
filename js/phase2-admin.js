@@ -157,7 +157,10 @@
      }));
      const edit=node("button","Edit","bn-btn bn-btn-secondary");
      edit.type="button";edit.addEventListener("click",()=>editAssignment(item));
-     controls.append(status,save,edit);row.append(info,controls);root.append(row);
+     const review=node("a","Submissions","bn-btn bn-btn-secondary");
+     review.href="submission.html?assignment="+encodeURIComponent(item.id);
+     review.setAttribute("aria-label","Review submissions for "+item.name);
+     controls.append(status,save,edit,review);row.append(info,controls);root.append(row);
    }
  }
  async function init(){
