@@ -27,7 +27,13 @@ The owner reports completing and approving the actual registration/approval work
 
 The test evidence is sufficient for the *owner's development milestone approval*; it does **not** constitute an independent third-party security certification or a claim that every cross-browser or email-provider edge case was exercised.
 
-## Signup confirmation UX (final polish)
+## New OTP verification follow-up (requires deployment checklist)
+
+After the original Phase 1 acceptance, registration is being upgraded to six-digit confirmation codes sent by Brevo's external SMTP. The signup alert will open `pages/verify-email.html`, Supabase Auth will verify the code, and the user will then sign in with their password. The approved Student/Admin membership and class permissions do not change.
+
+**This is not yet a production-certified change:** the Supabase Confirm signup email template must use `{{ .Token }}` before the OTP UI is deployed, and a real new-account email delivery and verification test remains necessary. See [Brevo OTP setup](EMAIL-OTP-BREVO-SETUP.md).
+
+## Historical signup confirmation UX (previous release)
 
 After a successful Student or Admin signup, an accessible confirmation dialog instructs the user to **check their email**. The user selects **Continue to Sign In** (or closes the dialog) to reach the canonical sign-in page. The signup screen no longer remains the end of the flow. When Supabase creates a session immediately, the client signs out before directing the user to sign in. On signup failure, no success dialog or redirect is shown.
 
