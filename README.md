@@ -1,4 +1,4 @@
-> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), and [classwork import](pages/import-local-data.html).
+> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), [real registration](pages/register.html), [membership status](pages/account.html), and [classwork import](pages/import-local-data.html).
 
 # PROJECT: Blue Noelle
 
@@ -11,7 +11,7 @@ Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`
 
 ---
 
-## Project layout
+**Canonical authentication:** `pages/login.html` → `pages/account.html`; register via `pages/register.html`; approved officers use `pages/phase1-class-staff.html`. See [AUTH-ENTRY](docs/AUTH-ENTRY.md). The old demo dashboard/assignments are not linked as authenticated academic destinations.\n\n## Project layout
 
 ```
 blue-noelle/
