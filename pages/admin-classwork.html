@@ -29,7 +29,7 @@
   <span class="bn-admin-count" id="subject-count">0 subjects</span></div>
   <form id="subject-create-form" class="bn-admin-inline-form">
    <label for="new-subject">Subject name</label>
-   <div class="bn-admin-form-row"><input id="new-subject" maxlength="160" required placeholder="e.g. Data Structures and Algorithms">
+   <div class="bn-admin-form-row"><input id="new-subject" maxlength="160" required minlength="2" placeholder="e.g. Data Structures and Algorithms">
    <button type="submit" class="bn-btn bn-btn-primary">+ Create subject</button></div>
   </form>
   <div id="admin-subject-list" class="bn-admin-subject-list"></div>
@@ -46,7 +46,7 @@
     <label class="bn-admin-wide">Instructions <textarea id="assignment-instructions" maxlength="20000" rows="4" placeholder="Steps, requirements, and grading notes"></textarea></label>
     <label>Deadline (device-local time) <input type="datetime-local" id="assignment-deadline"></label>
     <label>Assignment type <select id="assignment-type"><option value="individual">Individual</option><option value="group">Group</option></select></label>
-    <label>Required MIME types (comma separated) <input id="assignment-file-types" placeholder="application/pdf, image/png"></label>
+    <label>Required MIME types (comma separated) <input id="assignment-file-types" placeholder="application/pdf, image/png" aria-describedby="mime-hint"><small id="mime-hint">Separate permitted MIME types with commas. Leave blank to accept supported file types.</small></label>
     <label>Maximum file size (MiB, optional; 40 MiB maximum on Free) <input id="assignment-max-mib" type="number" min="1" max="40" step="1" placeholder="e.g. 10"></label>
    </div>
    <div class="bn-admin-actions"><button type="submit" id="assignment-submit" class="bn-btn bn-btn-primary">Create assignment</button>
