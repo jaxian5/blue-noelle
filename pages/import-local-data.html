@@ -1,96 +1,14 @@
 <!doctype html>
 <html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Import Local Classwork · Blue Noelle</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Legacy Import Retired | Blue Noelle</title>
 <link rel="stylesheet" href="../css/main.css">
-<style>
-.bn-migrate{max-width:860px;margin:auto}.bn-migrate label{display:block;margin:1rem 0 .3rem}
-.bn-migrate select,.bn-migrate input[type=file]{max-width:100%;padding:.6rem;border:1px solid var(--bn-border-strong);background:var(--bn-bg);color:var(--bn-text);border-radius:6px}
-.bn-migrate pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto}
-</style>
-</head><body>
-<div class="bn-app"><header class="bn-header"><a class="bn-logo" href="class-operations.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<nav class="bn-nav"><a href="account.html">My Account</a><a href="class-operations.html">Class Operations</a><a href="import-local-data.html" class="active">Import</a></nav></header>
-<main class="bn-main bn-migrate">
-<h1>Import old classwork</h1>
-<p class="bn-muted">Move subjects and assignments saved in this browser to your Supabase class. For a different device, choose a JSON export of the old <code>bn_phase2_assignments</code> store. Accounts, demo passwords and public demonstration invite codes are never imported.</p>
-<div class="bn-card">
-<p id="import-state" role="status" aria-live="polite">Checking authenticated classroom access…</p>
-<label for="import-class">Destination class (real Supabase Admin membership required)</label>
-<select id="import-class"></select>
-<label for="import-file">Optional JSON backup file (maximum 512 KB)</label>
-<input type="file" id="import-file" accept=".json,application/json">
-<p><button class="bn-btn bn-btn-secondary" id="import-browser" type="button">Inspect this browser's classwork</button>
-<button class="bn-btn bn-btn-secondary" id="export-browser" type="button">Export browser backup</button></p>
-<pre id="import-preview">No source loaded.</pre>
-<button class="bn-btn bn-btn-primary" id="import-submit" type="button" disabled>Import reviewed classwork to Supabase</button>
-<p class="bn-muted bn-text-sm">Import compares existing subject names and assignment name + deadline + type to avoid most duplicates. Re-running is usually safe but titles are not globally unique. Records are added progressively, not in one transaction; resolve errors and retry.</p>
-</div>
-</main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
-<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
-<script src="../js/migrate-local.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const $ = id => document.getElementById(id);
-  const state = s => { $("import-state").textContent = s; };
-  let source = null;
-  const show = data => {
-    source = BNLegacyImport.validate(data);
-    $("import-preview").textContent =
-      "Subjects: " + data.subjects.length + "\nAssignments: " + data.assignments.length +
-      "\nTitles: " + data.assignments.slice(0,12).map(a=>a.name).join("; ") +
-      "\n\nOnly classwork is included. No password/invite/role data is imported.";
-    $("import-submit").disabled = !$("import-class").value || !(data.subjects.length || data.assignments.length);
-    state("Source validated. Review the destination and preview before importing.");
-  };
-  const fromBrowser = () => {
-    const raw = localStorage.getItem("bn_phase2_assignments");
-    if(!raw) throw Error("No local Phase 2 classwork found in this browser.");
-    return JSON.parse(raw);
-  };
-  $("import-browser").addEventListener("click",()=>{
-    try { show(fromBrowser()); } catch(e){ state(e.message); }
-  });
-  $("export-browser").addEventListener("click",()=>{
-    try {
-      const data=BNLegacyImport.validate(fromBrowser());
-      const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement("a");a.href=url;a.download="blue-noelle-classwork-backup.json";a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),1000);
-      state("Browser classwork backup exported. Keep the file private.");
-    }catch(e){state(e.message);}
-  });
-  $("import-file").addEventListener("change", async e => {
-    try {
-      const file=e.target.files[0];if(!file)return;
-      if(file.size>512*1024)throw Error("File exceeds 512 KB.");
-      show(JSON.parse(await file.text()));
-    }catch(error){source=null;$("import-submit").disabled=true;state(error.message);}
-  });
-  $("import-submit").addEventListener("click",async()=>{
-    if(!source || !$("import-class").value) return;
-    if(!confirm("Import the reviewed subjects and assignments to this Supabase class?"))return;
-    $("import-submit").disabled=true;state("Import in progress…");
-    try {
-      const result=await BNLegacyImport.migrate($("import-class").value,source);
-      state("Completed: "+result.addedSubjects+" subjects and "+result.addedAssignments+
-        " assignments created; "+result.skippedSubjects+" subjects and "+result.skippedAssignments+" assignments already present.");
-    }catch(e){state("Import interrupted: "+e.message+". Some rows may have been imported; review the destination before retrying.");}
-    $("import-submit").disabled=false;
-  });
-  if(!window.BNBackend?.configured){state("Supabase client is not configured.");return;}
-  try {
-    const {data,error}=await BNBackend.client.auth.getUser();
-    if(error||!data.user)throw Error("Sign in through login.html first, then return to this page.");
-    const memberships=await BNBackend.listMyClasses();
-    for(const m of memberships.filter(m=>m.role==="Admin"&&m.status==="ACTIVE")){
-      const option=document.createElement("option");option.value=m.class_id;option.textContent=m.class_id+" (Admin)";
-      $("import-class").appendChild(option);
-    }
-    if(!$("import-class").options.length)throw Error("No active Supabase Admin class membership available.");
-    state("Authenticated. Choose a source to inspect.");
-  }catch(e){state(e.message);}
-});
-</script></body></html>
+</head><body><main style="max-width:650px;margin:9vh auto;padding:1.5rem">
+<section class="bn-card" style="padding:1.75rem">
+<h1>Legacy classwork importer retired</h1>
+<p>This historical import route was built for the old browser-local classroom prototype. It used direct Subject and Assignment inserts, which are now intentionally blocked by the audited, class-scoped Supabase backend.</p>
+<p>No demonstration identities, passwords, invitation codes, or browser-local sample records are automatically migrated. Production records must be created through the authorized classwork operations.</p>
+<p><a class="bn-btn bn-btn-primary" href="admin-classwork.html">Manage real classwork</a>
+<a class="bn-btn bn-btn-secondary" href="dashboard.html">Back to dashboard</a></p>
+</section></main></body></html>
