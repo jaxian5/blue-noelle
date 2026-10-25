@@ -6,7 +6,7 @@
 (function(w){
  "use strict";
  const $=id=>document.getElementById(id);
- const activeName=()=>location.pathname.split("/").pop()||"dashboard.html";
+ const activeName=()=>String(w.location?.pathname||"").split("/").pop()||"dashboard.html";
  const page=activeName();
  const accountPage=page==="account.html";
  const items=[
