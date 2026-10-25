@@ -111,6 +111,7 @@
      const alreadyOwns = isAdmin && list.some(m => m.role === "Admin" && m.status === "ACTIVE");
      $("join-section").hidden = !user || isAdmin;
      $("create-section").hidden = !user || !isAdmin || alreadyOwns;
+     $("already-owned-section").hidden = !alreadyOwns;
      signupInfo.hidden = Boolean(user);
      $("signed-as").textContent = user ? "Signed in: " + (user.email || "Verified account") : "";
      if (!isAdmin && list.length) {
