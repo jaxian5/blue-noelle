@@ -23,7 +23,7 @@
    // Confirm-signup uses the six-digit {{ .Token }} emitted by Supabase Auth.
    async verifySignupCode(email,token){
      const sanitized=String(token||"").trim();
-     if(!/^\\d{6}$/.test(sanitized))throw Error("Enter a valid six-digit verification code.");
+     if(!/^\d{6}$/.test(sanitized))throw Error("Enter a valid six-digit verification code.");
      const {data,error}=await client().auth.verifyOtp({
        email:email.trim(),token:sanitized,type:"email"
      });
