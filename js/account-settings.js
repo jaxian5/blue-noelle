@@ -133,6 +133,8 @@
        const {error:updateError}=await db().auth.updateUser({password:next});
        if(updateError)throw updateError;
        $("profile-password-form").reset();
+       // Clear credential fields explicitly even in environments without native form reset.
+       for(const id of ["profile-current-password","profile-new-password","profile-confirm-password"])$(id).value="";
        message("Password updated successfully. Use your new password next time you sign in.","success");
      }catch(e){
        $("profile-current-password").value="";
