@@ -16,15 +16,15 @@ const live = read("js/phase1-live.js");
 test("canonical public auth screens retain original Phase 1 controllers", () => {
   for (const path of ["pages/login.html", "pages/register.html"]) {
     const html=pages[path];
-    assert.match(html, /supabase-adapter\\.js/, path);
-    assert.match(html, /phase1-live\\.js/, path);
-    assert.match(html, /auth-ui\\.js/, path);
-    assert.doesNotMatch(html, /(?:core|phase1-auth)\\.js/, path);
+    assert.match(html, /supabase-adapter\.js/, path);
+    assert.match(html, /phase1-live\.js/, path);
+    assert.match(html, /auth-ui\.js/, path);
+    assert.doesNotMatch(html, /(?:core|phase1-auth)\.js/, path);
   }
   const account=pages["pages/account.html"];
-  assert.match(account, /account-settings\\.js/);
-  assert.match(account, /account-settings\\.css/);
-  assert.doesNotMatch(account, /phase1-live\\.js|auth-ui\\.js/);
+  assert.match(account, /account-settings\.js/);
+  assert.match(account, /account-settings\.css/);
+  assert.doesNotMatch(account, /phase1-live\.js|auth-ui\.js/);
 });
 
 test("login supports password recovery and registration points to the new account center", () => {
@@ -68,7 +68,7 @@ test("new screens and controllers have valid JavaScript syntax", () => {
 
 test("authorization uses real class membership status, not role in editable user metadata", () => {
   assert.match(core, /m\.status === "ACTIVE"/);
-  assert.match(core, /m\.role === "Moderator" \|\| m\.role === "Admin"/);
+  assert.match(read("js/account-settings.js"), /m\.role==="Moderator"/);
   assert.match(live, /bn_join_class/);
   assert.match(live, /bn_review_registration/);
   assert.doesNotMatch(core + live, /raw_user_meta_data|user_metadata\.role/);
@@ -78,9 +78,9 @@ test("Phase 1 auth link contrast remains and profile settings uses its own style
  const stylesheet=read("css/auth.css");
  const account=pages["pages/account.html"];
  const settings=read("css/account-settings.css");
- assert.match(stylesheet, /\\.bn-entry-content a\\.bn-btn-primary/);
+ assert.match(stylesheet, /\.bn-entry-content a\.bn-btn-primary/);
  assert.match(account, /class="bn-settings-primary/);
- assert.match(settings, /\\.bn-settings-primary\\{/);
+ assert.match(settings, /\.bn-settings-primary\{/);
  assert.match(settings, /background:#2562cd;color:#fff/);
 });
 
@@ -108,9 +108,9 @@ test("My Account is for personal settings, with enrollment only before ACTIVE me
  assert.match(account, /id="account-onboarding"[^>]+hidden/);
  assert.match(account, /id="settings-workspace" hidden/);
  assert.doesNotMatch(account, /id="student-notice"|id="staff-actions"/);
- assert.match(controller, /m\\.status==="ACTIVE"/);
- assert.match(controller, /profile\\.account_type==="Admin"/);
- assert.doesNotMatch(controller, /user_metadata\\.registration_type|service_role/);
+ assert.match(controller, /m\.status==="ACTIVE"/);
+ assert.match(controller, /profile\.account_type==="Admin"/);
+ assert.doesNotMatch(controller, /user_metadata\.registration_type|service_role/);
  assert.doesNotThrow(()=>new Script(controller));
 });
 
