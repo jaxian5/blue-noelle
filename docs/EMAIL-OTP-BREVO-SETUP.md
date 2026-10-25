@@ -53,3 +53,18 @@
 - https://supabase.com/docs/reference/javascript/auth-verifyotp
 - https://supabase.com/docs/reference/javascript/auth-resend
 - https://supabase.com/docs/guides/auth/auth-smtp
+
+
+## Duplicate signup and missing email troubleshooting (2026-10-25)
+
+**Do not reveal whether an arbitrary entered email exists in Supabase Auth.** With email confirmations enabled, Supabase may respond HTTP 200 to a repeated signup for an existing account. The response cannot be treated as proof of email dispatch or account creation. An unauthenticated preflight API endpoint that returns "already registered" would enable account enumeration and is intentionally not implemented.
+
+The browser instead offers contextual recovery routes:
+- Already registered and confirmed? **Sign In** using the existing password; choose **Forgot password** if necessary.
+- Registered but not yet confirmed? Open **Verify Email**, enter any valid code already received, or request a new code after the cooldown (subject to Supabase server limits).
+- Fresh signup? Open the OTP email. Do not click Create Account repeatedly to "resend" a code.
+- Received no message? Inspect **Brevo → Transactional → Email → Logs**. Distinguish *sent*, *delivered*, *deferred*, *blocked*, and *bounced* events. A smaller sending allowance does **not** prove inbox delivery. Check spam/junk and the sender's authenticated domain. Do not include addresses, codes, full logs or SMTP credentials in public issues.
+
+**Observed (privacy-preserving) diagnostics:** An October 25 Supabase Auth log inspection identified HTTP 200 events for a new confirmation request, a repeated signup, a resend request, and a password-recovery request. These confirm requests reached Supabase; only Brevo's delivery logs and the user's inbox can establish delivery. The live auth platform already contains verified and unverified accounts. Do not infer the status of a particular email from these aggregates.
+
+**Email template prerequisite:** The Supabase *Confirm signup* template must contain `{{ .Token }}` instead of solely `{{ .ConfirmationURL }}`; otherwise the interface will ask for a code that is not present in the email. The template source lives in `docs/EMAIL-OTP-TEMPLATE.html`. Modifying the repository file alone does not update Supabase's live email template.

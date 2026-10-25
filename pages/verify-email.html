@@ -22,7 +22,7 @@
 <form id="otp-form" novalidate>
 <label for="otp-email">Email address</label>
 <input id="otp-email" type="email" autocomplete="email" placeholder="you@example.com" required>
-<p id="otp-email-hint" class="bn-entry-note">Use the email address you registered with. Check Spam if the message isn't in your inbox.</p>
+<p id="otp-email-hint" class="bn-entry-note">Use the email address you registered with. Check Spam if no message appears. If this address was already confirmed, a new signup code may not be sent. <a href="login.html">Try signing in</a> or use password recovery instead.</p>
 <fieldset class="bn-otp-fieldset">
 <legend>Six-digit verification code</legend>
 <div id="otp-digits" class="bn-otp-digits" role="group" aria-label="Six-digit code">
@@ -36,7 +36,7 @@
 </fieldset>
 <button class="bn-primary-action" id="verify-submit" type="submit">Verify email</button>
 </form>
-<div class="bn-otp-resend"><span>Didn't receive a code?</span>
+<div class="bn-otp-resend"><span>Didn't receive a code for an unverified account?</span>
 <button type="button" id="resend-otp" class="bn-inline-button">Resend code</button>
 <p id="otp-resend-timer" class="bn-entry-note" role="status" aria-live="polite"></p></div>
 <div id="otp-complete" class="bn-entry-card" hidden aria-live="polite">

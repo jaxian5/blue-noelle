@@ -19,8 +19,16 @@
    try { await handler(); } catch (error) {
      const limited = error?.code === "over_email_send_rate_limit" ||
        /email rate limit exceeded/i.test(error?.message || "");
+     const unconfirmed = error?.code === "email_not_confirmed" ||
+       /email not confirmed/i.test(error?.message || "");
+     const duplicate = error?.code === "user_already_exists" ||
+       /user already registered|user already exists/i.test(error?.message || "");
      status(limited
-       ? "Too many confirmation or recovery emails have been requested. Supabase is temporarily limiting email delivery. Please try again later, or use a confirmation email you already received."
+       ? "Too many confirmation or recovery emails have been requested. Email delivery is temporarily limited. Please try again later, or use an existing code."
+       : unconfirmed
+       ? "Your email is not verified. Open Verify Email below and enter your confirmation code, or request a new code from that page."
+       : duplicate
+       ? "An account may already exist for this email. Try signing in or using Forgot password instead of registering again."
        : (error?.message || "Unable to complete your request. Please try again."), "error");
    } finally { submitLock(form, false); }
  }
@@ -163,12 +171,14 @@
          } catch (_) { /* Verification page also accepts manually typed email. */ }
          $("signup-confirm-title").textContent = "Check your email";
          $("signup-confirm-description").textContent =
-           "We sent a six-digit verification code. Open the verification page and enter the code to confirm your account.";
+           "If this is a new account, check your inbox for a six-digit verification code. Already registered? Sign in instead. A successful signup response does not always mean a new email was sent.";
        }
        $("signup-confirm-continue").href = confirmationDestination;
        $("signup-continue-label").textContent =
          result?.session ? "Continue to Sign-In " : "Enter verification code ";
-       status("Registration received. Continue to Sign In after reviewing the next step.", "success");
+       status(result?.session
+         ? "Account ready. Continue to sign in."
+         : "Request processed. If this is a new account, check your email for a verification code. Already registered? Sign in or recover your password.", "info");
        if (typeof confirmation.showModal === "function") {
          confirmation.showModal();
        } else {
