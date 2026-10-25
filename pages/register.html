@@ -4,25 +4,44 @@
 <body data-auth-page="register">
 <div class="bn-entry"><aside class="bn-entry-aside" aria-label="Blue Noelle">
 <a href="../index.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<div><div class="bn-entry-kicker">Enrollment, made clear</div><h2>A place in your classroom begins here.</h2>
-<p>Verify your email, request Student membership with a private class invitation, then await approval from your class officer.</p>
+<div><div class="bn-entry-kicker">Multiple classes · One platform</div><h2>Your class starts with your choice.</h2>
+<p>Create and manage your own class as an Admin, or join a class through a private invitation as a Student. Every classroom has separate members and data.</p>
 <ul class="bn-phase-list" aria-label="Registration steps">
 <li><span class="bn-step">1</span> Create your account</li><li><span class="bn-step">2</span> Confirm your email</li>
-<li><span class="bn-step">3</span> Redeem your class invite</li><li><span class="bn-step">4</span> Await officer approval</li>
+<li><span class="bn-step">3</span> Admin: create your class · Student: redeem invite</li><li><span class="bn-step">4</span> Start managing or await approval</li>
 </ul></div><footer>BLUE NOELLE · VERIFIED CLASS MEMBERSHIP</footer></aside>
 <main class="bn-entry-main"><div class="bn-entry-content">
-<p class="bn-eyebrow">Student registration</p><h1>Join Blue Noelle</h1>
-<p class="bn-entry-lead">You need a genuine account and a class invitation. A valid invite creates a pending request, not instant access.</p>
+<p class="bn-eyebrow">Classroom registration</p><h1>Create your Blue Noelle account</h1>
+<p class="bn-entry-lead">Select your account type when signing up. Admins can create one class of their own. Students join existing classes using invitations.</p>
 <div id="auth-status" class="bn-auth-notice" role="status" aria-live="polite">Checking account…</div>
 <section id="signup-info" aria-label="Create your account"><h2 style="font-size:1.05rem">Step 1 · Create your account</h2>
 <form id="signup-form">
+<fieldset class="bn-role-choice" aria-describedby="registration-type-hint">
+ <legend>Sign up as</legend>
+ <label class="bn-role-option"><input type="radio" name="registration-type" value="Student" checked>
+ <span><strong>Student</strong><small>Join classes by invitation, then await approval.</small></span></label>
+ <label class="bn-role-option"><input type="radio" name="registration-type" value="Admin">
+ <span><strong>Admin</strong><small>Create one class, manage its students and moderators.</small></span></label>
+</fieldset>
+<p id="registration-type-hint" class="bn-entry-note">Your choice is saved at account creation and cannot be changed from this form. Admin is limited to the class they create.</p>
 <label for="signup-name">Full name</label><input type="text" id="signup-name" autocomplete="name" minlength="2" maxlength="120" required>
 <label for="signup-email">Email address</label><input type="email" id="signup-email" autocomplete="email" required>
 <label for="signup-password">Password (at least 8 characters)</label><input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
 <label for="signup-confirm">Confirm password</label><input type="password" id="signup-confirm" autocomplete="new-password" minlength="8" required>
 <button type="submit" class="bn-primary-action">Create account</button></form>
 <div class="bn-entry-secondary"><span>Already confirmed your email?</span><a href="login.html">Sign in</a></div>
-<p class="bn-entry-note">After signup, use the email confirmation link to verify your identity. Passwords are handled by Supabase Auth, never by public demo files.</p></section>
+<p class="bn-entry-note">After signup, confirm your email and sign in. Your chosen account type is recorded once at registration. Existing Student accounts will remain Students.</p></section>
+<section id="create-section" hidden aria-label="Create your class">
+<h2 style="font-size:1.05rem">Step 3 · Create your class</h2>
+<p class="bn-entry-note" id="create-hint">Only verified Admin accounts can create a class. You will automatically become its ACTIVE Admin. You can create only one.</p>
+<form id="create-form">
+<label for="create-name">Class name</label>
+<input id="create-name" type="text" minlength="3" maxlength="100" placeholder="BSIT 2-A" required>
+<label for="create-section-name">Section (optional)</label>
+<input id="create-section-name" type="text" maxlength="80" placeholder="Section A">
+<button type="submit" class="bn-primary-action">Create my class</button>
+</form><div class="bn-entry-secondary"><a href="account.html">View My Account</a></div>
+</section>
 <section id="join-section" hidden aria-label="Request class membership">
 <h2 style="font-size:1.05rem">Step 3 · Enter class invitation</h2>
 <p id="signed-as" class="bn-entry-note" style="margin-bottom:1rem"></p>
