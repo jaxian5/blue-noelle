@@ -2,10 +2,10 @@
 
 # PROJECT: Blue Noelle
 
-**Version 0.4 · Phase 2 complete · September 2026**  
-Status: **Phase 0 locked** · **Phase 1 complete** (auth, verification, invite links, password UX).
+**Architecture: Phase 0 formally accepted (October 25, 2026).**  
+**Live implementation:** Phase 1 invited registration and moderation RPCs deployed; real-account acceptance testing and first trusted Admin bootstrap still pending. Phase 2 assignments remain a separate localStorage demo.
 
-Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE1-COMPLETE.md`.
+Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`, `docs/ADR-0001-supabase-architecture.md`, and `docs/PHASE1-LIVE-REGISTRATION.md`. The old `PHASE1-COMPLETE.md` applies to the **demo only**.
 
 > The database enforces invariants. The backend enforces business rules. The frontend enforces usability.
 
@@ -32,14 +32,9 @@ blue-noelle/
     ├── moderator.html · admin.html · developer.html
 ```
 
-## Test accounts (temporary)
+## Legacy test accounts
 
-| Role | Username | Password |
-|------|----------|----------|
-| Student | jdelacruz | Student@2026 |
-| Moderator | msantos | Moderator@2026 |
-| Admin | areyes | Admin@2026 |
-| Developer | devblue | Developer@2026 |
+Demo accounts and intentionally public sample credentials remain in `data/roles.json` exclusively for the isolated legacy frontend. **Never use them as real accounts or import their passwords into Supabase.**
 
 ## Philosophy
 
@@ -55,14 +50,14 @@ Always check the Blue Noelle documentation (Working Framework) before changing b
 
 1. **New page** — Copy header + Class Clock (student-facing) + load `core.js`. Gate by role using `BN.getCurrentUser()`.
 2. **New permission** — Add to `docs/permission-matrix.md` and `BN.can()` in the same change.
-3. **New entity** — Update `docs/schema.sql` first; enforce invariants in SQL, not only in UI.
+3. **New entity** — Create a versioned Supabase migration under `supabase/migrations/`; update the ER diagram and acceptance tests. The old `docs/schema.sql` is a non-executable historical draft.
 4. **New file upload path** — Follow `docs/storage-spec.md` (`storage_key` opaque, hierarchy under class/assignment/submission/version).
 
 ### Expand
 
 | Goal | Where to start |
 |------|----------------|
-| Real auth | Phase 1 · replace `roles.json` login with hashed passwords + sessions |
+| Real auth | Phase 1 · Supabase Auth + trusted invite redemption and moderator review. Start with `pages/phase1-onboarding.html` and `pages/phase1-class-staff.html`. |
 | Real submissions | Phase 3 · true MVP boundary |
 | Groups + PDF compile | Phase 5 · compilation is a separate artifact |
 | Class chat | Phase 6 · controlled scope, not Discord 2.0 |
@@ -106,4 +101,4 @@ See `docs/PHASE0-COMPLETE.md` for the full checklist.
 
 ## Next
 
-**Phase 2 polishing and finalization**
+**Phase 1 real-account acceptance testing**. Bootstrap the first Admin through a trusted operator after Supabase signup, verify invite issuance, PENDING review, ACTIVE membership and cross-class RLS. Only then retire the old demo login and continue Phase 2.

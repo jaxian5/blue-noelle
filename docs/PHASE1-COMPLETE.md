@@ -1,9 +1,9 @@
-# Phase 1 — Complete
+# Phase 1 — Legacy demo complete; live implementation in progress
 
 **PROJECT: Blue Noelle · Version 0.2 · Phase 1**  
 **Reference:** PROJECT_ Blue Noelle.docx — Authentication & Class Membership  
 
-**Milestone achieved (frontend shell):** *A verified student can securely enter their class* via invite → PENDING → Moderator approval → login.
+**DEMO ONLY (not production milestone):** *A verified student can securely enter their class* via invite → PENDING → Moderator approval → login.
 
 ## Framework checklist
 
@@ -50,7 +50,7 @@
 3. Persist users, memberships, invite codes, audit to PostgreSQL (`docs/schema.sql`).  
 4. Increment `use_count` on successful registration against real InviteCode row.
 
-## Next phase
+## Live Supabase Phase 1 handoff\n\nThe real signup/invite/approval workflow is implemented separately in [Phase 1 Live Registration](PHASE1-LIVE-REGISTRATION.md). It requires the first trusted Admin bootstrap and end-to-end multi-user testing before the original milestone can be signed off. The legacy browser password-view and localStorage stores are explicitly **unsafe for real users**.\n\n## Next phase
 
 **Phase 2 — Assignments**  
 Admin creates subjects/assignments; students can see them.

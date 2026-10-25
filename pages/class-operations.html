@@ -20,13 +20,13 @@
 <div class="bn-app">
 <header class="bn-header">
 <a href="admin.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<nav class="bn-nav"><a href="admin.html">Admin</a><a href="moderator.html">Moderator</a><a href="class-operations.html" class="active">Class Operations</a><a href="import-local-data.html">Import local data</a></nav>
+<nav class="bn-nav"><a href="admin.html">Admin</a><a href="moderator.html">Moderator</a><a href="class-operations.html" class="active">Class Operations</a><a href="import-local-data.html">Import local data</a><a href="phase1-class-staff.html">Registration queue</a></nav>
 </header>
 <main class="bn-main">
 <h1>Class Operations</h1>
 <p class="bn-muted">Supabase preview · Class-scoped users and weekly schedules. Changes are saved directly to PostgreSQL once signed in through Supabase Auth.</p>
 <div id="ops-message" class="ops-message" role="status" aria-live="polite">Checking backend availability…</div>
-<section class="bn-card"><h2 class="bn-card-title">Supabase sign-in</h2><p class="bn-muted bn-text-sm">Use your Supabase Auth account. Demo login is separate. <a href="supabase-auth.html">Create or check your test account</a>.</p>
+<section class="bn-card"><h2 class="bn-card-title">Supabase sign-in</h2><p class="bn-muted bn-text-sm">Use your Supabase Auth account. Demo login is separate. <a href="phase1-onboarding.html">Create or verify an account</a>.</p>
 <form id="supabase-login-form" class="ops-form"><label>Email<input id="supabase-email" type="email" autocomplete="username" required></label><label>Password<input id="supabase-password" type="password" autocomplete="current-password" required></label><button class="bn-btn bn-btn-primary" type="submit">Sign in</button><button class="bn-btn bn-btn-secondary" type="button" id="supabase-logout">Sign out</button></form></section>
 <div class="bn-card">
 <label for="class-choice">Active class</label>
