@@ -68,3 +68,11 @@ The browser instead offers contextual recovery routes:
 **Observed (privacy-preserving) diagnostics:** An October 25 Supabase Auth log inspection identified HTTP 200 events for a new confirmation request, a repeated signup, a resend request, and a password-recovery request. These confirm requests reached Supabase; only Brevo's delivery logs and the user's inbox can establish delivery. The live auth platform already contains verified and unverified accounts. Do not infer the status of a particular email from these aggregates.
 
 **Email template prerequisite:** The Supabase *Confirm signup* template must contain `{{ .Token }}` instead of solely `{{ .ConfirmationURL }}`; otherwise the interface will ask for a code that is not present in the email. The template source lives in `docs/EMAIL-OTP-TEMPLATE.html`. Modifying the repository file alone does not update Supabase's live email template.
+
+## OTP length synchronization
+
+**October 25, 2026:** The project owner observed an **eight-digit** code from the configured Supabase/Brevo email flow. The website's prior six-box frontend would reject it before calling Supabase. The current verification UI, adapter validation and regression tests now expect **exactly eight numeric digits**.
+
+Supabase's documented default email OTP length is **6** and the Auth platform supports configured lengths from **6 to 10** (see [Supabase CLI email OTP settings](https://supabase.com/docs/guides/local-development/cli/config#authemailotp_length)). This frontend must match the configured backend length. If the Supabase OTP length is later changed, update the interface, the API check, copy and tests in the same pull request. **The email template's `{{ .Token }}` placeholder remains unchanged**: it supplies the actual generated token; its HTML does not set the token length.
+
+Do not paste real verification codes into GitHub issues, this repository, or support screenshots. Use a real inbox that you control for subsequent end-to-end tests, not a deliberately nonexistent address, because rejected emails can create hard bounces and affect sender reputation.
