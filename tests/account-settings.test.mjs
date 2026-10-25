@@ -7,7 +7,7 @@ import {fileURLToPath} from "node:url";
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const read=p=>readFileSync(resolve(root,p),"utf8");
 const controller=read("js/account-settings.js"),page=read("pages/account.html");
-const sql=read("supabase/migrations/20261025231200_account_settings_private_avatars.sql");
+const sql=read("supabase/migrations/20261025232001_account_settings_private_avatars.sql");
 const flush=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setImmediate(r))};
 
 function fixture({active=true,admin=false}={}){
