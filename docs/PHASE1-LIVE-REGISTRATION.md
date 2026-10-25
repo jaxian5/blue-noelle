@@ -73,7 +73,7 @@ This is an intentional first-time trust bootstrap, not an ongoing administrative
 
 | Test | Result |
 | --- | --- |
-| Migration applied to connected Supabase project | PASS: `20261025032100_phase1_invited_registration_and_review` |
+| Migrations applied to connected Supabase project | PASS: `20261025032100_phase1_invited_registration_and_review` and `20261025032803_move_privileged_management_rpcs_private` |
 | Public registration RPCs allow `authenticated` | PASS |
 | Public registration RPCs deny `anon` | PASS (verified `has_function_privilege`) |
 | Private invite-attempt table inaccessible to browser roles | PASS |
@@ -84,6 +84,6 @@ This is an intentional first-time trust bootstrap, not an ongoing administrative
 | Page scripts parse / frontend adapter smoke | PASS (static syntax and mocked RPC arguments) |
 | Real student, Moderator, Admin lifecycle | PENDING real confirmed accounts |
 | Email redirect and Auth deliverability | PENDING deployment/configuration |
-| Supabase Security Advisor | Existing 3 authenticated-executable SECURITY DEFINER warnings on old public helper RPCs, plus INFO for deny-by-default tables. These are tracked technical debt, not an indication of zero warnings. |
+| Supabase Security Advisor | **No security WARN/ERROR** after migration `20261025032803`: the original 3 public SECURITY DEFINER RPCs were replaced with SECURITY INVOKER wrappers; elevated implementations now live privately. INFO notices remain for 12 intentionally deny-by-default tables, including the private invite-attempt table. |
 
 For details, see [Supabase's production checklist](https://supabase.com/docs/guides/deployment/going-into-prod) and [database security linter](https://supabase.com/docs/guides/database/database-linter).
