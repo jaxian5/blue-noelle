@@ -4,7 +4,7 @@ import {readFileSync} from "node:fs";
 import {dirname,resolve} from "node:path";
 import {fileURLToPath} from "node:url";
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
-const sql=readFileSync(resolve(root,"supabase/migrations/20261026063000_phase3_immutable_version_snapshots.sql"),"utf8");
+const sql=readFileSync(resolve(root,"supabase/migrations/20261025222705_phase3_immutable_version_snapshots.sql"),"utf8");
 test("resubmission keeps V1 snapshot while storing new READY version snapshot",()=>{
   assert.match(sql,/ADD COLUMN IF NOT EXISTS submitted_at timestamptz/);
   assert.match(sql,/guard_version_submission_snapshot/);
