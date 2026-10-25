@@ -43,7 +43,11 @@ function fixture({session=true,role="Student",group=false,assignmentStatus="OPEN
   click(){},scrollIntoView(){}
  });
  const $=id=>{
-  if(!map.has(id))map.set(id,elem("id:"+id));
+  if(!map.has(id)){
+   const el=elem("id:"+id);
+   el.hidden=["sub-assignment","student-area","staff-area","group-management","sub-draft-panel","sub-progress","group-notice"].includes(id);
+   map.set(id,el);
+  }
   return map.get(id);
  };
  const document={
@@ -161,7 +165,7 @@ test("Staff role can view versions but not Student upload widget",async()=>{
  await x.ready();
  assert.equal(x.$("student-area").hidden,true);
  assert.equal(x.$("staff-area").hidden,false);
- assert.equal(x.$("group-management").hidden,false===true);
+ assert.equal(x.$("group-management").hidden,true);
  assert.ok(x.calls.find(c=>c.name==="bn_p3_details"));
 });
 test("Admin role loads audited group management list and Student roster",async()=>{
