@@ -1,4 +1,4 @@
-> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Supabase Auth test](pages/supabase-auth.html), and [classwork import](pages/import-local-data.html).
+> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), and [classwork import](pages/import-local-data.html).
 
 # PROJECT: Blue Noelle
 
@@ -32,7 +32,7 @@ blue-noelle/
     ├── moderator.html · admin.html · developer.html
 ```
 
-## Legacy test accounts
+## Historical prototype data
 
 Demo accounts and intentionally public sample credentials remain in `data/roles.json` exclusively for the isolated legacy frontend. **Never use them as real accounts or import their passwords into Supabase.**
 
@@ -57,7 +57,7 @@ Always check the Blue Noelle documentation (Working Framework) before changing b
 
 | Goal | Where to start |
 |------|----------------|
-| Real auth | Phase 1 · Supabase Auth + trusted invite redemption and moderator review. Start with `pages/phase1-onboarding.html` and `pages/phase1-class-staff.html`. |
+| Real auth | Phase 1 · Supabase Auth + trusted invite redemption and moderator review. Start with `pages/login.html`, `pages/register.html` and `pages/account.html`; staff review lives in `pages/phase1-class-staff.html`. |
 | Real submissions | Phase 3 · true MVP boundary |
 | Groups + PDF compile | Phase 5 · compilation is a separate artifact |
 | Class chat | Phase 6 · controlled scope, not Discord 2.0 |
