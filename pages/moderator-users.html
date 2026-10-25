@@ -83,10 +83,12 @@
         body.innerHTML = `<tr><td colspan="2" class="bn-empty"><strong>No members</strong></td></tr>`;
         return;
       }
+      const esc = value => String(value ?? "").replace(/[&<>"']/g,
+        ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch]);
       body.innerHTML = list
         .map(
           (u) =>
-            `<tr><td>${u.full_name.replace(/</g,"")}</td><td class="bn-muted">${u.email.replace(/</g,"")}</td></tr>`
+            `<tr><td>${esc(u.full_name)}</td><td class="bn-muted">${esc(u.email)}</td></tr>`
         )
         .join("");
     });

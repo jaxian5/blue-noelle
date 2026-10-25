@@ -60,11 +60,12 @@
         <div>
           <div class="bn-card">
             <div class="bn-card-header">
-              <h2 class="bn-card-title">Current Submission</h2>
+              <h2 class="bn-card-title">Submission Preview (not saved)</h2>
               <span class="bn-badge bn-badge-draft" id="status-badge">DRAFT</span>
             </div>
 
-            <p class="bn-text-sm bn-muted bn-mb-1">
+            <p class="bn-text-sm bn-muted bn-mb-1" role="status">
+              This screen is a UI prototype. Files are not uploaded or persisted. Do not use it for actual coursework.<br>
               Ownership invariant: exactly one owner (Student <em>or</em> Group).  
               This submission belongs to <strong>you</strong> (student_id set, group_id NULL).
             </p>
@@ -192,7 +193,10 @@
   <script src="../js/core.js"></script>
   <script src="../js/phase1-auth.js"></script>
   <script>
-    // Demo file upload handling (client-side only)
+    // Demo file picker: previews file metadata only. NEVER claim a saved upload.
+    if (!BN.getCurrentUser()) { location.href = "login.html"; }
+    const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g,
+      ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch]);
     const fileInput = document.getElementById("file-input");
     const fileList  = document.getElementById("file-list");
     let demoFiles   = [];
@@ -221,7 +225,7 @@
       }
       fileList.innerHTML = demoFiles.map((f, i) => `
         <tr>
-          <td>${f.name}</td>
+          <td>${escapeHTML(f.name)}</td>
           <td class="bn-muted">${f.size}</td>
           <td class="bn-muted">${f.uploaded}</td>
           <td><button type="button" class="bn-btn bn-btn-ghost" style="padding:0.2rem 0.5rem; font-size:0.75rem;" onclick="removeFile(${i})">Remove</button></td>
@@ -239,13 +243,11 @@
         alert("Please upload at least one file before submitting.");
         return;
       }
-      document.getElementById("status-badge").textContent = "SUBMITTED";
-      document.getElementById("status-badge").className = "bn-badge bn-badge-submitted";
-      alert("Submission recorded.\n\nStatus → SUBMITTED\nA new SubmissionVersion was created.\nsubmitted_at and deadline_at_submission are now immutable.");
+      alert("PREVIEW ONLY: Your files have NOT been uploaded or submitted.\n\nReal submissions will be available after Phase 3 storage and authorization are implemented.");
     });
 
     document.getElementById("btn-save-draft").addEventListener("click", () => {
-      alert("Draft saved. Status remains DRAFT. You can continue editing.");
+      alert("PREVIEW ONLY: This draft is not saved to the server. The file list exists only in this open page.");
     });
 
     // Title from query param (demo)

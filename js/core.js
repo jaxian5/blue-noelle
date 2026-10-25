@@ -211,7 +211,8 @@ const BN = {
   /* ---------- Avatar (demo: localStorage data-URL) ---------- */
   getAvatar(userId) {
     if (!userId) return null;
-    return localStorage.getItem(this.STORAGE_AVATAR_PREFIX + userId) || null;
+    const url = localStorage.getItem(this.STORAGE_AVATAR_PREFIX + userId);
+    return /^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(url || "") ? url : null;
   },
 
   setAvatar(userId, dataUrl) {
@@ -427,7 +428,10 @@ function populateSidebar() {
 
   const avatarEl = document.getElementById("bn-sidebar-avatar");
   if (avatarUrl) {
-    avatarEl.innerHTML = `<img src="${avatarUrl}" alt="" />`;
+    const img = document.createElement("img");
+    img.src = avatarUrl;
+    img.alt = "";
+    avatarEl.replaceChildren(img);
   } else {
     avatarEl.textContent = BN.initials(name);
     avatarEl.querySelector("img")?.remove();
@@ -456,7 +460,10 @@ function updateHeaderChip(user) {
   if (avatarBox) {
     const url = BN.getAvatar(user.id);
     if (url) {
-      avatarBox.innerHTML = `<img src="${url}" alt="" />`;
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "";
+      avatarBox.replaceChildren(img);
     } else {
       avatarBox.textContent = BN.initials(user.full_name);
     }
@@ -497,7 +504,10 @@ function bindSidebarEvents() {
 
   document.getElementById("bn-avatar-input")?.addEventListener("change", (e) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) return;
+    if (!file || !["image/png","image/jpeg","image/gif","image/webp"].includes(file.type)) {
+      alert("Please select PNG, JPEG, GIF, or WebP.");
+      return;
+    }
     if (file.size > 2 * 1024 * 1024) {
       alert("Please choose an image under 2 MB.");
       return;
