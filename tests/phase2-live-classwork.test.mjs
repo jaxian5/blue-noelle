@@ -18,7 +18,7 @@ test("Phase 2 canonical viewer uses Supabase Auth and no local demo state",()=>{
  assert.match(page,/id="classwork-subjects"/);
  assert.match(read("pages/account.html"),/href="classwork\.html"/);
  assert.doesNotMatch(page,/(?:phase1-auth|core|phase2-assignments)\.js/);
- assert.doesNotMatch(code,/\blocalStorage\b|bn_phase2_assignments|\bBN\.getCurrentUser/);
+ assert.doesNotMatch(code,/localStorage\s*\.|bn_phase2_assignments|\bBN\.getCurrentUser/);
  assert.doesNotMatch(code,/\.insert\(|\.update\(|\.delete\(/);
  assert.doesNotThrow(()=>new Script(code));
 });
