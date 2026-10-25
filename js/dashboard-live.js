@@ -9,6 +9,22 @@
  const db=()=>w.BNBackend?.client;
  const PH="Asia/Manila";
  let memberships=[],rooms=[],generation=0;
+ let personalAvatarUrl=null;
+ async function hydratePersonalAvatar(uid){
+   if(!db()?.storage?.from||typeof URL==="undefined"||!URL.createObjectURL)return;
+   try{
+     const {data,error}=await db().storage.from("bn-avatars").download(uid+"/avatar");
+     if(error||!data)return;
+     personalAvatarUrl=URL.createObjectURL(data);
+     $("dash-avatar-img").src=personalAvatarUrl;
+     $("dash-avatar-img").hidden=false;
+     $("dash-avatar").hidden=true;
+   }catch(_){/* No photo yet, or private download unavailable. Keep initials. */}
+ }
+ w.addEventListener?.("beforeunload",()=>{
+   if(personalAvatarUrl&&typeof URL!=="undefined")URL.revokeObjectURL(personalAvatarUrl);
+ });
+
  function say(message,state="info"){
    $("dash-alert").textContent=message;
    $("dash-alert").dataset.state=state;
@@ -289,6 +305,7 @@
      text("dash-greeting","Welcome back, "+first+".");
      text("dash-user-name",name||"Your account");
      text("dash-avatar",(name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("")||"BN").toUpperCase());
+     void hydratePersonalAvatar(user.id);
      memberships=await query(db().from("ClassMembership").select("class_id,role,status").eq("status","ACTIVE"));
      memberships=memberships.filter(m=>m.status==="ACTIVE");
      text("dash-count-classes",new Set(memberships.map(m=>m.class_id)).size);
