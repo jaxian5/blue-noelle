@@ -1,4 +1,6 @@
 # Blue Noelle: Phase 1 Live Registration Implementation
+> **Phase 1 QA update (2026-10-25):** Transactional role-separated invite, enrollment, moderation, audit and rate-limit tests passed. Canonical login is merged and one confirmed Auth account has signed in. **Full production sign-off is still blocked on trusted Admin bootstrap and live multi-account browser testing.** Read [Phase 1 QA report](PHASE1-QA-2026-10-25.md). Least-privilege grants were tightened in the deployed migration `20261025042230`.
+
 **Source:** `PROJECT_ Blue Noelle.docx`, September 18, 2026, §§3–4, 14–15, 19–20.
 
 **Status 2026-10-25:** core PostgreSQL/RPC workflow implemented; canonical login and registration UI added for controlled testing. **Not production certified until the sign-up/confirm/approve/active path passes real multi-account tests.** The canonical login and registration pages now use Supabase Auth, not the old localStorage demo. Historical academic dashboards remain unintegrated.
