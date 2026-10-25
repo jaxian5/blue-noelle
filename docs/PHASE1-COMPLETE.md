@@ -1,56 +1,52 @@
-# Phase 1 — Legacy demo complete; live implementation in progress
+# Phase 1 — Authentication & Class Membership: Approved
 
-**PROJECT: Blue Noelle · Version 0.2 · Phase 1**  
-**Reference:** PROJECT_ Blue Noelle.docx — Authentication & Class Membership  
+**Project:** Blue Noelle · **Date:** October 25, 2026  
+**Reference:** `PROJECT_ Blue Noelle.docx` — Phase 1, Authentication & Class Membership  
+**Milestone decision:** **APPROVED by project owner following live testing.**  
+**Scope:** Real Supabase Auth identity, Admin/Student self-service signup, one-class Admin ownership, invitations, verification, class-scoped membership status and role controls.
 
-**DEMO ONLY (not production milestone):** *A verified student can securely enter their class* via invite → PENDING → Moderator approval → login.
+## Authoritative implementation
 
-## Framework checklist
+| Deliverable | Implementation | Acceptance |
+| --- | --- | --- |
+| Create a secure user account | `pages/register.html` + Supabase Auth `signUp`; profile trigger | Approved |
+| Choose Admin or Student once | `User.account_type` captures signup choice; browser cannot edit it | Approved |
+| Confirm email | Supabase Auth confirmation and GitHub Pages redirect | Approved |
+| Confirm signup then sign in | Modal reminder → `pages/login.html` (final polish PR) | Final regression/merge required |
+| Canonical sign-in and password recovery entry | `pages/login.html`; no demo credentials | Approved entry flow |
+| Admin creates one owned class | `bn_create_owned_class`, UNIQUE `Class.owner_user_id`, ACTIVE Admin membership | Approved |
+| Student joins by private invite | `bn_join_class`; pending Student membership | Approved |
+| Admin/Moderator reviews pending members | `pages/phase1-class-staff.html`, `bn_review_registration` | Approved |
+| Class-scoped authorization and audit | RLS + private RPCs + `AuditLog`/`ClassActionLog` | Approved for Phase 1 scope |
+| Membership status and signout | `pages/account.html` | Approved |
+| Regression checks | `tests/auth-contract.test.mjs` + GitHub Actions | Final polish PR checks required |
 
-| Item | Status |
-|------|--------|
-| Login | Done (rate-limited demo) |
-| Registration + invite code | Done |
-| Verification (approve / reject) | Done — `moderator-verification.html` |
-| Roles / Class membership concept | Done |
-| Profiles (sidebar) | Done |
-| Permissions matrix (client helper) | Done |
-| Basic audit logging | Done (local demo store) |
-| Password hashing | **Deferred to backend** (documented) |
-| Secure HTTP sessions | **Deferred to backend** |
-| Login rate limiting | Done (client demo) |
+## Live acceptance evidence
 
-## Invite Code invariants (§19) enforced in UI logic
+The owner reports completing and approving the actual registration/approval workflow. A read-only Supabase snapshot on October 25 verified **2 Auth accounts** (**1 Admin, 1 Student**), **1 Admin-owned class**, **1 ACTIVE Admin membership**, **1 ACTIVE Student membership**, and **0 pending Student memberships**. Previous transactional integration tests separately verified invite issuance, PENDING, moderator review, RLS cross-class isolation, rejection, invalid/revoked/expired codes, rate limiting, and audit history. See [Phase 1 QA](PHASE1-QA-2026-10-25.md) and [Multi-class implementation](MULTICLASS-PHASE1.md).
 
-- Belongs to one Class (`class_id` required on create)  
-- Can expire (`expires_at`)  
-- Can be revoked (`revoked_at`)  
-- Optional usage limit (`max_uses`)  
-- Create Invite Link: Admin Users directory  
-- Codes stored in `data/invite-codes.json` + session extras (`localStorage bn_invite_codes_extra`)
+The test evidence is sufficient for the *owner's development milestone approval*; it does **not** constitute an independent third-party security certification or a claim that every cross-browser or email-provider edge case was exercised.
 
-## Password security UX
+## Signup confirmation UX (final polish)
 
-1. Invite code required **once per browser session**.  
-2. Unlock stored in `sessionStorage.bn_password_unlocked` — cleared on sign-out or full refresh.  
-3. **View** ↔ **Hide** toggle for password visibility.  
-4. **Edit** still requires unlock; after unlock, edit panel opens without re-prompt until session ends.
+After a successful Student or Admin signup, an accessible confirmation dialog instructs the user to **check their email**. The user selects **Continue to Sign In** (or closes the dialog) to reach the canonical sign-in page. The signup screen no longer remains the end of the flow. When Supabase creates a session immediately, the client signs out before directing the user to sign in. On signup failure, no success dialog or redirect is shown.
 
-## Pages added
+See [AUTH-ENTRY](AUTH-ENTRY.md) for the canonical routes and email redirect configuration.
 
-| Page | Role |
-|------|------|
-| `pages/admin-users.html` | Admin — users list, Create Invite Link, revoke codes |
-| `pages/moderator-verification.html` | Moderator — full verification queue |
+## Explicitly deferred, not Phase 1 blockers under the owner's sign-off
 
-## Remaining for production Phase 1
+- Phase 2 shared Subjects and Assignments: current academic pages still use isolated demo storage and are **not** treated as production classroom routes.
+- Phase 3 file uploads and E-Journal submissions: not yet implemented.
+- Invites: backend supports revocation, but a user-facing invite-revocation workflow is a follow-up enhancement.
+- Rejected registration reapplication/appeal policy: to be finalized with future administration work.
+- Password recovery delivery across various email providers, mobile browser testing, and broader abuse prevention merit continued operational testing.
+- Supabase **Free** plan cannot enable the optional leaked-password-protection feature; the advisor warning is documented.
+- Older `js/phase1-auth.js`, `data/roles.json`, and legacy academic pages exist for historic prototypes only. **They must never be used for new production authentication.**
 
-1. Server password hashing (bcrypt/argon2).  
-2. HTTP-only secure session cookies.  
-3. Persist users, memberships, invite codes, audit to PostgreSQL (`docs/schema.sql`).  
-4. Increment `use_count` on successful registration against real InviteCode row.
+## Transition
 
-## Live Supabase Phase 1 handoff\n\nThe real signup/invite/approval workflow is implemented separately in [Phase 1 Live Registration](PHASE1-LIVE-REGISTRATION.md). It requires the first trusted Admin bootstrap and end-to-end multi-user testing before the original milestone can be signed off. The legacy browser password-view and localStorage stores are explicitly **unsafe for real users**.\n\n## Next phase
+**Phase 0:** formally accepted architectural baseline.  
+**Phase 1:** approved by the owner; final signup UX polish pending PR merge and CI.  
+**Phase 2:** cleared for implementation once this polish PR merges. Replace localStorage assignments with secure, class-scoped Supabase CRUD and test actual multi-account access.
 
-**Phase 2 — Assignments**  
-Admin creates subjects/assignments; students can see them.
+The database enforces invariants. The backend enforces business rules. The frontend enforces usability.
