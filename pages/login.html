@@ -1,89 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in — Blue Noelle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/main.css" />
-</head>
-<body>
-  <div class="bn-auth-page">
-    <div class="bn-auth-card">
-      <div class="bn-logo" style="margin-bottom:1.25rem;">
-        <div class="bn-logo-mark">BN</div>
-        <span style="color:var(--bn-text);">Blue Noelle</span>
-      </div>
-
-      <h1>Sign in</h1>
-      <p class="subtitle">Legacy demonstration login only. To try the real Supabase registration and approval process, <a href="phase1-onboarding.html">use the new registration preview</a>.</p>
-
-      <form class="bn-form" id="login-form" action="#" method="post">
-        <div class="bn-field">
-          <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" required autocomplete="username" placeholder="e.g. jdelacruz" />
-        </div>
-
-        <div class="bn-field">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
-        </div>
-
-        <p id="login-error" class="bn-text-sm" style="color:var(--bn-danger); display:none;"></p>
-
-        <button type="submit" class="bn-btn bn-btn-primary" style="width:100%; margin-top:0.25rem;">
-          Sign in
-        </button>
-      </form>
-
-      <div class="bn-auth-footer">
-        No account yet? <a href="register.html">Register with class invite code</a>
-      </div>
-
-      <details style="margin-top:1.25rem; font-size:0.8rem; color:var(--bn-text-muted);">
-        <summary style="cursor:pointer;">Test accounts · Phase 1 (temporary)</summary>
-        <ul style="margin-top:0.5rem; padding-left:1.1rem; line-height:1.6;">
-          <li><strong>Student</strong> — jdelacruz / Student@2026 · invite BN-EDUC2-2026</li>
-          <li><strong>Moderator</strong> — msantos / Moderator@2026 · invite BN-STAFF-2026</li>
-          <li><strong>Admin</strong> — areyes / Admin@2026 · invite BN-STAFF-2026</li>
-          <li><strong>Developer</strong> — devblue / Developer@2026 · invite BN-DEV-2026</li>
-        </ul>
-      </details>
-    </div>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>Sign In | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/auth.css"></head>
+<body data-auth-page="login">
+<div class="bn-entry">
+ <aside class="bn-entry-aside" aria-label="Blue Noelle">
+  <a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+  <div><div class="bn-entry-kicker">Your classroom, together</div>
+   <h2>Everything for class, one place.</h2>
+   <p>Assignments, deadlines, class schedules, and shared work. Start with an account approved for your classroom.</p>
   </div>
-
-  <script src="../js/core.js"></script>
-  <script src="../js/phase1-auth.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const user = BN.getCurrentUser();
-      if (user) redirectByRole(user.role);
-    });
-
-    function redirectByRole(role) {
-      if (role === "Moderator") location.href = "moderator.html";
-      else if (role === "Admin") location.href = "admin.html";
-      else if (role === "Developer") location.href = "developer.html";
-      else location.href = "dashboard.html";
-    }
-
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      const errEl = document.getElementById("login-error");
-      errEl.style.display = "none";
-
-      const result = await BN.login(username, password);
-      if (!result.ok) {
-        errEl.textContent = result.error || "Login failed";
-        errEl.style.display = "block";
-        return;
-      }
-      redirectByRole(result.user.role);
-    });
-  </script>
-</body>
-</html>
+  <footer>BLUE NOELLE · PHASE 1 · SECURE CLASS ACCESS</footer>
+ </aside>
+ <main class="bn-entry-main">
+ <div class="bn-entry-content">
+  <p class="bn-eyebrow">Welcome back</p><h1>Sign in to Blue Noelle</h1>
+  <p class="bn-entry-lead">Use the email and password from your real Blue Noelle account. Class access depends on your verified membership.</p>
+  <div id="auth-status" class="bn-auth-notice" role="status" aria-live="polite">Checking authentication…</div>
+  <section id="signin-section" aria-label="Sign in">
+   <form id="signin-form">
+    <label for="signin-email">Email address</label>
+    <input id="signin-email" type="email" autocomplete="email" required placeholder="you@example.com">
+    <label for="signin-password">Password</label>
+    <input id="signin-password" type="password" autocomplete="current-password" required placeholder="Enter your password">
+    <button type="submit" class="bn-primary-action">Sign in</button>
+   </form>
+   <div class="bn-entry-secondary"><button id="show-forgot" type="button" class="bn-inline-button">Forgot password?</button><a href="register.html">Create an account</a></div>
+  </section>
+  <section id="forgot-section" hidden aria-label="Reset password">
+   <h2>Reset your password</h2><p class="bn-entry-lead">We'll send a recovery link if that email is registered.</p>
+   <form id="forgot-form"><label for="forgot-email">Account email</label><input type="email" id="forgot-email" autocomplete="email" required>
+    <button type="submit" class="bn-primary-action">Send recovery email</button></form>
+   <div class="bn-entry-secondary"><button type="button" id="back-to-login" class="bn-inline-button">Back to sign in</button></div>
+  </section>
+  <section id="recovery-section" hidden aria-label="Choose a new password">
+   <h2>Choose a new password</h2><p class="bn-entry-lead">Only a valid password-recovery email link will enable an update.</p>
+   <form id="change-password-form" hidden><label for="new-password">New password</label><input id="new-password" type="password" minlength="8" autocomplete="new-password" required>
+    <label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" minlength="8" autocomplete="new-password" required>
+    <button class="bn-primary-action" type="submit">Save new password</button></form>
+   <div class="bn-entry-secondary"><a href="login.html">Back to sign in</a></div>
+  </section>
+  <div class="bn-entry-divider">NEW TO BLUE NOELLE?</div>
+  <p class="bn-entry-note">Class enrollment requires an invitation and approval from a Moderator or Admin. Creating an account alone does not unlock classwork.</p>
+  <a href="register.html" class="bn-btn bn-btn-secondary" style="display:block;text-align:center;margin-top:1rem">Start registration</a>
+ </div></main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/phase1-live.js"></script><script src="../js/auth-ui.js"></script>
+</body></html>
