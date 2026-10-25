@@ -73,7 +73,7 @@ test("auth call-to-action links retain readable contrast over button backgrounds
   const stylesheet = read("css/auth.css");
   const account = read("pages/account.html");
   assert.match(account, /id="join-action"[^>]+class="bn-btn bn-btn-primary"/);
-  assert.match(account, /href="phase1-class-staff\.html" class="bn-btn bn-btn-primary"/);
+  assert.match(account, /class="bn-btn bn-btn-primary" href="phase1-class-staff\.html"/);
   // Specificity (.bn-entry-content a.bn-btn-primary) beats the generic
   // .bn-entry-content a rule that formerly rendered blue-on-blue text.
   assert.match(stylesheet,
