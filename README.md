@@ -10,6 +10,21 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 > - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. **Live file-byte upload/download and cross-account Storage acceptance are outstanding.** A merged PR is not itself proof of production readiness.
 > - **Later phases:** chat, announcements, notifications and compilation remain **deny-by-default schema placeholders** until separately implemented and tested.
 
+## Signed-in workspaces
+
+Successful sign-in now opens [Dashboard](pages/dashboard.html), not the
+Phase 1 [My Account](pages/account.html) enrollment center. The same
+authenticated dashboard renders a **Student study overview** or an
+**Admin operations overview** depending on the ACTIVE role in the
+selected classroom; Moderators have classwork reading and authorized
+staff navigation. The UI stays connected to Supabase Auth, RLS and
+guarded RPCs. Signed-in accounts without an ACTIVE membership see an
+enrollment/approval entry point instead of fictional classroom data.
+
+The Phase 1 sign-in, signup and OTP page designs have not changed.
+See [post-login workspace specification](docs/POST-LOGIN-WORKSPACES-2026-10-26.md).
+This frontend redesign does **not** count as Phase 2/3 final live acceptance.
+
 ## Canonical production routes
 
 | Workflow | Entry |
