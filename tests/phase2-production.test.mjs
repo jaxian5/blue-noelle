@@ -171,3 +171,34 @@ test("Admin deadline input uses Asia/Manila even when host browser timezone diff
  assert.throws(()=>w.__testTime.parseManilaDatetime("2026-02-30T22:00"),/Invalid Asia\/Manila/);
  assert.match(admin,/parseManilaDatetime\(raw\)/);
 });
+
+test("Admin saves checkbox MIME formats through the existing audited assignment RPC",async()=>{
+ const p=fakePage(),b=queryBackend();
+ const choices=[
+  {name:"assignment-file-format",value:"application/pdf",checked:false},
+  {name:"assignment-file-format",value:"image/png",checked:false},
+  {name:"assignment-file-format",value:"text/plain",checked:false}
+ ];
+ const legacy=p.elem("assignment-legacy-options");
+ p.elem("assignment-file-types").querySelectorAll=()=>
+   [...choices,...legacy.children.map(label=>label.children[0])];
+ const context={window:{BNBackend:{configured:true,client:b.db},location:{replace(){}}},
+   document:p.document,Intl,Date,Number,Error,Set,Array,Map,Object};
+ new Script(admin).runInNewContext(context);
+ await p.ready();
+ p.elem("new-assignment").listeners.click();
+ p.elem("assignment-subject").value="subject-1";
+ p.elem("assignment-name").value="File Format Regression";
+ p.elem("assignment-deadline").value="2026-11-04T22:00";
+ choices[0].checked=true;choices[1].checked=true;
+ p.elem("assignment-file-types").listeners.change({target:choices[1]});
+ assert.equal(p.elem("assignment-format-count").textContent,"2 formats selected");
+ p.elem("assignment-form").listeners.submit({preventDefault(){}});
+ await flush();
+ const call=b.calls.find(x=>x.rpc==="bn_manage_classwork"&&x.args.p_action==="assignment.create");
+ assert.ok(call);
+ assert.deepEqual([...call.args.p_data.required_file_types],["application/pdf","image/png"]);
+ assert.equal(call.args.p_data.deadline,"2026-11-04T14:00:00.000Z");
+ assert.equal(call.args.p_data.is_group,false);
+ assert.equal(call.args.p_class,"class-1");
+});
