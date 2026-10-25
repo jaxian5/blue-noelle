@@ -1,81 +1,105 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#071e42">
-<title>Class Dashboard | Blue Noelle</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#10264d"><meta name="color-scheme" content="light">
+<title>Workspace | Blue Noelle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/dashboard.css">
 </head>
-<body>
+<body class="bn-portal" data-workspace="loading">
 <div class="bn-workspace">
-<aside class="bn-workspace-sidebar" aria-label="Workspace navigation">
-  <a href="../index.html" class="bn-workspace-brand">
-    <span class="bn-brand-glyph" aria-hidden="true">BN</span>
-    <span class="bn-brand-name">Blue Noelle<small>CLASSROOM PLATFORM</small></span>
-  </a>
-  <div class="bn-side-caption">WORKSPACE</div>
-  <nav class="bn-side-links" aria-label="Classroom">
-    <a href="dashboard.html" class="bn-side-link selected" aria-current="page"><span aria-hidden="true">◫</span> Overview</a>
-    <a href="classwork.html" class="bn-side-link"><span aria-hidden="true">▦</span> Subjects &amp; assignments</a>
-    <a id="dash-admin-link" href="admin-classwork.html" class="bn-side-link" hidden><span aria-hidden="true">✎</span> Manage classwork</a>
-    <a href="account.html" class="bn-side-link"><span aria-hidden="true">◇</span> My account</a>
-  </nav>
-  <div class="bn-side-spacer"></div>
-  <div class="bn-side-info"><span class="bn-side-info-dot"></span><span>Phase 2 · Live classroom</span></div>
-  <div class="bn-side-note">Your actual subjects, assignments and deadlines. No demo records.</div>
-</aside>
-<div class="bn-workspace-main">
-  <header class="bn-topbar">
-    <div class="bn-breadcrumb">BLUE NOELLE <span>/</span> DASHBOARD</div>
-    <div class="bn-top-actions">
-      <span id="dash-current-date" class="bn-top-date"></span>
-      <a class="bn-top-account" href="account.html" aria-label="Open My Account"><span id="dash-avatar">BN</span></a>
-    </div>
-  </header>
-  <main class="bn-dashboard-body">
-    <div class="bn-hero">
-      <div><p class="bn-overline">YOUR CLASSROOM, IN FOCUS</p><h1 id="dash-greeting">Welcome back.</h1>
-      <p id="dash-subtitle">Checking your verified classroom memberships…</p></div>
-      <div class="bn-hero-symbol" aria-hidden="true">✳</div>
-    </div>
-    <div id="dash-alert" class="bn-dashboard-notice" role="status" aria-live="polite">Loading your classroom…</div>
-    <section class="bn-dashboard-classpicker" aria-label="Classroom context">
-      <div><label for="dash-class">Current classroom</label><select id="dash-class" disabled><option value="">Loading…</option></select></div>
-      <div class="bn-class-role"><span>YOUR ROLE</span><strong id="dash-role">Checking…</strong></div>
-      <a href="classwork.html" class="bn-primary-link">Browse classwork <span aria-hidden="true">↗</span></a>
-    </section>
-    <section class="bn-metric-grid" aria-label="Classroom summary">
-      <article class="bn-metric"><div class="bn-metric-top"><span>MY CLASSROOMS</span><span class="bn-metric-icon" aria-hidden="true">▦</span></div><strong id="dash-count-classes">0</strong><p>Active memberships</p></article>
-      <article class="bn-metric"><div class="bn-metric-top"><span>SUBJECTS</span><span class="bn-metric-icon" aria-hidden="true">◈</span></div><strong id="dash-count-subjects">0</strong><p>In this classroom</p></article>
-      <article class="bn-metric"><div class="bn-metric-top"><span>OPEN ASSIGNMENTS</span><span class="bn-metric-icon" aria-hidden="true">☷</span></div><strong id="dash-count-open">0</strong><p>Visible classwork</p></article>
-      <article class="bn-metric"><div class="bn-metric-top"><span>DUE IN 7 DAYS</span><span class="bn-metric-icon" aria-hidden="true">◷</span></div><strong id="dash-count-soon">0</strong><p>Upcoming deadlines</p></article>
-    </section>
-    <div class="bn-content-grid">
-      <section class="bn-dashboard-card bn-upcoming" aria-labelledby="dash-upcoming-title">
-        <div class="bn-panel-head"><div><span class="bn-panel-overline">TO-DO &amp; DEADLINES</span><h2 id="dash-upcoming-title">Upcoming classwork</h2></div>
-          <a href="classwork.html">View all ↗</a></div>
-        <div id="dash-upcoming" class="bn-upcoming-list"><p class="bn-empty">Loading assignments…</p></div>
-      </section>
-      <div class="bn-dashboard-rail">
-        <section class="bn-dashboard-card" aria-labelledby="dash-subject-title">
-          <div class="bn-panel-head"><div><span class="bn-panel-overline">CURRICULUM</span><h2 id="dash-subject-title">Your subjects</h2></div></div>
-          <div id="dash-subjects" class="bn-subject-list"><p class="bn-empty">Loading subjects…</p></div>
-        </section>
-        <section class="bn-next-phase">
-          <div class="bn-next-icon" aria-hidden="true">⬡</div>
-          <h2>Submission workspace</h2>
-          <p>Private file uploads and version history are available through each assignment in Classwork. Final Storage browser acceptance is still pending.</p>
-          <span>IMPLEMENTED · ACCEPTANCE PENDING</span>
-        </section>
-      </div>
-    </div>
-    <footer class="bn-dashboard-footer">Blue Noelle · Class-scoped data · All dates shown in Asia/Manila</footer>
-  </main>
-</div></div>
+ <aside class="bn-workspace-sidebar" id="dash-sidebar" aria-label="Workspace navigation" data-open="false">
+   <a class="bn-workspace-brand" href="dashboard.html"><span class="bn-brand-glyph" aria-hidden="true">✦</span><span class="bn-brand-name">Blue Noelle<small>CLASSROOM WORKSPACE</small></span></a>
+   <p class="bn-side-caption">YOUR WORKSPACE</p>
+   <nav class="bn-side-links" aria-label="Classroom">
+     <a href="dashboard.html" class="bn-side-link selected" aria-current="page"><span aria-hidden="true">▦</span> Overview</a>
+     <a href="classwork.html" class="bn-side-link"><span aria-hidden="true">▤</span> Subjects &amp; classwork</a>
+     <a id="dash-admin-link" href="admin-classwork.html" class="bn-side-link" hidden><span aria-hidden="true">✎</span> Manage classwork</a>
+     <a id="dash-staff-link" href="phase1-class-staff.html" class="bn-side-link" hidden><span aria-hidden="true">◎</span> Member requests</a>
+     <a id="dash-operations-link" href="class-operations.html" class="bn-side-link" hidden><span aria-hidden="true">▦</span> Schedule &amp; members</a>
+   </nav>
+   <p class="bn-side-caption bn-side-secondary">ACCOUNT</p>
+   <nav class="bn-side-links" aria-label="Account"><a href="account.html" class="bn-side-link"><span aria-hidden="true">♙</span> Account &amp; memberships</a></nav>
+   <div class="bn-side-spacer"></div>
+   <div class="bn-sidebar-footer"><span class="bn-side-info-dot" aria-hidden="true"></span><div><strong>Private classroom</strong><small>Access is checked for every class</small></div></div>
+ </aside>
+ <div class="bn-workspace-main">
+   <header class="bn-topbar">
+     <div class="bn-topbar-left">
+       <button type="button" id="dash-menu" class="bn-menu-toggle" aria-controls="dash-sidebar" aria-expanded="false" aria-label="Toggle workspace navigation">☰</button>
+       <div class="bn-breadcrumb">WORKSPACE <span>/</span> <strong>OVERVIEW</strong></div>
+     </div>
+     <div class="bn-top-actions">
+       <time id="dash-current-date" class="bn-top-date"></time>
+       <div class="bn-user-identity"><span id="dash-user-name">Your account</span><small id="dash-user-role">Member</small></div>
+       <a class="bn-top-account" href="account.html" aria-label="Open account and memberships"><span id="dash-avatar">BN</span></a>
+       <button type="button" class="bn-signout" id="dash-signout">Sign out</button>
+     </div>
+   </header>
+   <main class="bn-dashboard-body">
+     <div class="bn-dashboard-intro">
+       <section class="bn-hero" aria-labelledby="dash-greeting">
+         <div class="bn-hero-content"><span class="bn-overline" id="dash-eyebrow">YOUR CLASSROOM, IN FOCUS</span>
+           <h1 id="dash-greeting">Welcome back.</h1>
+           <p id="dash-subtitle">Checking your classroom memberships…</p>
+           <a id="dash-hero-link" href="classwork.html" class="bn-hero-link">Explore classwork <span aria-hidden="true">↗</span></a>
+         </div>
+         <div class="bn-hero-art" aria-hidden="true"><span class="bn-orbit bn-orbit-a"></span><span class="bn-orbit bn-orbit-b"></span><span class="bn-hero-star">✧</span></div>
+       </section>
+       <section class="bn-spotlight" aria-labelledby="dash-highlight-title">
+         <span class="bn-spotlight-kicker" id="dash-highlight-label">YOUR NEXT STEP</span>
+         <h2 id="dash-highlight-title">Make room for what matters.</h2>
+         <p id="dash-highlight-body">Your daily classroom overview appears here.</p>
+         <a id="dash-highlight-link" href="classwork.html">Open classwork <span aria-hidden="true">↗</span></a>
+       </section>
+     </div>
+     <p id="dash-alert" class="bn-dashboard-notice" role="status" aria-live="polite">Verifying your account and classroom access…</p>
+     <section class="bn-dashboard-classpicker" aria-label="Current classroom">
+       <div class="bn-class-select"><label for="dash-class">CURRENT CLASSROOM</label><select id="dash-class" disabled><option value="">Loading approved classes…</option></select></div>
+       <div class="bn-class-role"><span>YOUR ROLE</span><strong id="dash-role">Checking…</strong></div>
+       <a class="bn-primary-link" id="dash-primary-link" href="classwork.html">Browse classwork <span aria-hidden="true">↗</span></a>
+     </section>
+     <section class="bn-metric-grid" aria-label="Classroom summary">
+       <article class="bn-metric"><div class="bn-metric-top"><span>ACTIVE CLASSES</span><span class="bn-metric-icon">◫</span></div><strong id="dash-count-classes">0</strong><p>Your approved memberships</p></article>
+       <article class="bn-metric"><div class="bn-metric-top"><span>SUBJECTS</span><span class="bn-metric-icon">◇</span></div><strong id="dash-count-subjects">0</strong><p>In this classroom</p></article>
+       <article class="bn-metric"><div class="bn-metric-top"><span>OPEN CLASSWORK</span><span class="bn-metric-icon">▤</span></div><strong id="dash-count-open">0</strong><p>Assignments accepting work</p></article>
+       <article class="bn-metric"><div class="bn-metric-top"><span>DUE WITHIN 7 DAYS</span><span class="bn-metric-icon">◷</span></div><strong id="dash-count-soon">0</strong><p>Upcoming open deadlines</p></article>
+     </section>
+     <div id="dash-student-panel" class="bn-content-grid" hidden>
+       <section class="bn-dashboard-card" id="dash-upcoming-section" aria-labelledby="dash-upcoming-title">
+         <div class="bn-panel-head"><div><span class="bn-panel-overline">YOUR PRIORITIES</span><h2 id="dash-upcoming-title">Assignments to work on</h2></div><a href="classwork.html">All classwork ↗</a></div>
+         <div id="dash-upcoming" class="bn-upcoming-list"><p class="bn-empty">Loading assignments…</p></div>
+       </section>
+       <div class="bn-dashboard-rail">
+         <section class="bn-dashboard-card" aria-labelledby="dash-subject-title">
+           <div class="bn-panel-head"><div><span class="bn-panel-overline">YOUR COURSES</span><h2 id="dash-subject-title">Subjects</h2></div></div>
+           <div id="dash-subjects" class="bn-subject-list"></div>
+         </section>
+         <section class="bn-accent-panel"><span id="dash-student-accent-label" class="bn-panel-overline">YOUR WORK IS PRIVATE</span><h2 id="dash-student-accent-title">Submit, then keep the history.</h2><p id="dash-student-accent-body">Open an assignment to upload files, confirm a submission, and revisit previous versions.</p><a id="dash-student-accent-link" href="classwork.html">Find an assignment ↗</a></section>
+       </div>
+     </div>
+     <div id="dash-admin-panel" class="bn-admin-dashboard" hidden>
+       <div class="bn-admin-section-head"><div><span class="bn-panel-overline">CLASS OPERATIONS</span><h2>Run your classroom</h2><p>Manage live academic records and approved membership requests.</p></div><a href="admin-classwork.html" class="bn-primary-link">Manage classwork ↗</a></div>
+       <div class="bn-admin-shortcuts">
+         <a href="admin-classwork.html#subject-title" class="bn-shortcut"><span class="bn-shortcut-icon">＋</span><span><strong>Create a subject</strong><small>Organize the curriculum</small></span><b aria-hidden="true">↗</b></a>
+         <a href="admin-classwork.html#assignment-title" class="bn-shortcut"><span class="bn-shortcut-icon">✎</span><span><strong>Publish classwork</strong><small>Assignments and deadlines</small></span><b aria-hidden="true">↗</b></a>
+         <a href="phase1-class-staff.html" class="bn-shortcut"><span class="bn-shortcut-icon">◎</span><span><strong>Review members</strong><small id="dash-pending-count">Check pending requests</small></span><b aria-hidden="true">↗</b></a>
+       </div>
+       <div class="bn-content-grid bn-admin-content">
+         <section class="bn-dashboard-card" aria-labelledby="dash-admin-recent-title"><div class="bn-panel-head"><div><span class="bn-panel-overline">CLASSWORK MANAGEMENT</span><h2 id="dash-admin-recent-title">Recent assignments</h2></div><a href="admin-classwork.html">View all ↗</a></div><div id="dash-admin-assignments" class="bn-upcoming-list"></div></section>
+         <div class="bn-dashboard-rail">
+           <section class="bn-dashboard-card" aria-labelledby="dash-admin-roster-title"><div class="bn-panel-head"><div><span class="bn-panel-overline">CLASSROOM MEMBERS</span><h2 id="dash-admin-roster-title">Student roster</h2></div><a href="class-operations.html">Manage ↗</a></div><div class="bn-roster-count"><strong id="dash-admin-students">—</strong><span>active students</span></div><div id="dash-admin-members" class="bn-subject-list"></div></section>
+           <section class="bn-accent-panel bn-admin-accent"><span class="bn-panel-overline">CLASS SETTINGS</span><h2>Everything stays class-scoped.</h2><p>Use Class Operations to manage members and weekly schedules. Administrative changes follow server-side permissions.</p><a href="class-operations.html">Open class operations ↗</a></section>
+         </div>
+       </div>
+     </div>
+     <footer class="bn-dashboard-footer">Blue Noelle · Your class, your space · Dates shown in Asia/Manila</footer>
+   </main>
+ </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
-<script src="../js/supabase-config.js"></script>
-<script src="../js/supabase-adapter.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
 <script src="../js/dashboard-live.js"></script>
 </body></html>

@@ -1,0 +1,56 @@
+/* Blue Noelle post-login academic pages.
+ * This stylesheet never loads on Phase 1 sign-in, signup, OTP or Account.
+ */
+body.bn-postlogin{background:#f3f7fb;color:#142b4b;font-family:"DM Sans",Inter,system-ui,sans-serif;line-height:1.6}
+.bn-postlogin h1,.bn-postlogin h2,.bn-postlogin h3,.bn-postlogin strong,.bn-postlogin .bn-logo{font-family:Manrope,"DM Sans",system-ui,sans-serif}
+.bn-postlogin .bn-app{min-height:100vh}
+.bn-postlogin .bn-header{background:white;color:#172c4d;box-shadow:none;border-bottom:1px solid #e0eaf4;padding:18px clamp(20px,4vw,60px);gap:20px}
+.bn-postlogin .bn-logo{font-size:1.08rem;font-weight:850;color:#152e50}
+.bn-postlogin .bn-logo-mark{background:linear-gradient(135deg,#31c4b8,#3e76df);border-radius:11px;width:39px;height:39px;font-size:.81rem;color:white;box-shadow:0 6px 15px #327ec229}
+.bn-postlogin .bn-nav{gap:5px;flex-wrap:wrap}
+.bn-postlogin .bn-nav a{color:#687c99;font-weight:750;padding:9px 12px;font-size:.79rem;border-radius:10px}
+.bn-postlogin .bn-nav a:hover{background:#edf4fc;color:#214f97}
+.bn-postlogin .bn-nav a.active{background:#e9f2ff;color:#2362bb}
+.bn-postlogin .bn-main{padding:34px clamp(20px,4vw,60px) 70px;max-width:1480px}
+.bn-postlogin .bn-classwork-heading{align-items:flex-end;margin:0 0 25px;gap:20px}
+.bn-postlogin .bn-classwork-heading h1{font-weight:850;letter-spacing:-.048em;font-size:clamp(1.65rem,2.6vw,2.4rem);color:#142d51;line-height:1.25}
+.bn-postlogin .bn-classwork-eyebrow{font-size:.66rem;letter-spacing:.17em;color:#3670c3;font-weight:900;margin:0 0 9px}
+.bn-postlogin .bn-muted{color:#74869e}
+.bn-postlogin .bn-classwork-heading .bn-muted{font-size:.88rem;max-width:740px}
+.bn-postlogin .bn-card{border:1px solid #e2eaf4;border-radius:16px;box-shadow:0 10px 34px rgba(24,52,91,.035);padding:24px}
+.bn-postlogin .bn-classwork-selector{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bn-postlogin .bn-classwork-selector label{font-weight:850;color:#244369}
+.bn-postlogin .bn-classwork-selector select{flex:1;min-width:min(100%,260px);max-width:550px;background:#f4f8ff;border:1px solid #dbe7f3;border-radius:9px;padding:11px 13px;color:#21466f;font-weight:700}
+.bn-postlogin .bn-classwork-selector p{flex-basis:100%;margin:0}
+.bn-postlogin .bn-classwork-status{margin:16px 0;padding:13px 17px;border-radius:12px;background:#edf5ff;color:#2d5681;box-shadow:none;font-size:.82rem}
+.bn-postlogin .bn-classwork-status[data-state=success]{background:#e9f9f3;border-color:#d2ece1;color:#236b56}
+.bn-postlogin .bn-classwork-status[data-state=error]{background:#fff1f3;border-color:#ffd6dc;color:#ae2747}
+.bn-postlogin .bn-btn{border-radius:10px;font-family:"DM Sans",sans-serif;font-weight:800;padding:11px 16px;box-shadow:none}
+.bn-postlogin .bn-btn-primary{background:#255fc9;border-color:#255fc9;color:white}
+.bn-postlogin .bn-btn-primary:hover{background:#194dad}
+.bn-postlogin .bn-btn-secondary{color:#315d8c;border:1px solid #d7e4f2;background:#f7faff}
+.bn-postlogin .bn-btn-secondary:hover{background:#eaf3ff}
+.bn-postlogin .bn-classwork-subject,.bn-postlogin .bn-admin-panel,.bn-postlogin .bn-sub-panel{padding:26px}
+.bn-postlogin .bn-classwork-subtitle{letter-spacing:-.025em}
+.bn-postlogin .bn-classwork-item{border-radius:12px;border-color:#e7eef5;background:#fcfdff}
+.bn-postlogin .bn-classwork-item h4{font-size:.94rem;color:#143b63}
+.bn-postlogin .bn-classwork-badge{border-radius:22px;font-weight:800}
+.bn-postlogin .bn-admin-panel-heading h2{font-weight:850;letter-spacing:-.028em}
+.bn-postlogin input:not([type=checkbox]),.bn-postlogin textarea,.bn-postlogin select{accent-color:#2764cf}
+.bn-postlogin input:not([type=checkbox]):focus-visible,.bn-postlogin textarea:focus-visible,.bn-postlogin select:focus-visible{outline:3px solid #a6cffd;outline-offset:2px}
+.bn-postlogin .bn-admin-form,.bn-postlogin .bn-admin-inline-form{background:#fbfdff}
+.bn-postlogin .bn-sub-version{border-radius:12px}
+.bn-postlogin .bn-sub-secure{border-radius:99px}
+.bn-postlogin .bn-classwork-notice{border-left:4px solid #73b9da}
+.bn-postlogin [hidden]{display:none!important}
+@media(max-width:850px){
+ .bn-postlogin .bn-header{align-items:flex-start;flex-direction:column;padding:15px 20px}
+ .bn-postlogin .bn-nav{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+ .bn-postlogin .bn-nav a{white-space:nowrap}
+ .bn-postlogin .bn-main{padding:24px 16px 55px}
+ .bn-postlogin .bn-classwork-heading{align-items:flex-start;flex-direction:column}
+ .bn-postlogin .bn-card{padding:18px}
+}
+@media(prefers-reduced-motion:reduce){.bn-postlogin *{transition:none!important}}
+
+.bn-postlogin .bn-nav .bn-submission-nav-current{display:inline-flex;align-items:center;background:#e9f2ff;color:#2362bb;border-radius:10px;font-weight:850;padding:9px 12px;font-size:.79rem;white-space:nowrap}

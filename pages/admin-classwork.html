@@ -3,18 +3,18 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Manage Classwork | Blue Noelle</title>
 <link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/classwork.css">
-<link rel="stylesheet" href="../css/classwork-admin.css"></head>
-<body>
+<link rel="stylesheet" href="../css/classwork-admin.css"><link rel="stylesheet" href="../css/workspace-pages.css"></head>
+<body class="bn-postlogin">
 <div class="bn-app">
 <header class="bn-header">
- <a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+ <a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
  <nav class="bn-nav" aria-label="Main navigation">
   <a href="dashboard.html">Dashboard</a><a href="classwork.html">Classwork</a>
   <a class="active" href="admin-classwork.html" aria-current="page">Manage</a><a href="account.html">Account</a>
  </nav>
 </header>
 <main class="bn-main bn-classwork bn-admin-workspace">
- <div class="bn-classwork-heading"><div><p class="bn-classwork-eyebrow">Admin workspace · Live Supabase</p>
+ <div class="bn-classwork-heading"><div><p class="bn-classwork-eyebrow">ADMIN WORKSPACE · CLASSWORK</p>
  <h1>Manage subjects &amp; assignments</h1>
  <p class="bn-muted">Every change is permission-checked and recorded in your classroom's audit trail.</p></div>
  <a href="dashboard.html" class="bn-btn bn-btn-secondary">← Dashboard</a></div>
@@ -44,7 +44,7 @@
     <label>Assignment title <input id="assignment-name" required maxlength="180" placeholder="e.g. Stack Operations Worksheet"></label>
     <label class="bn-admin-wide">Description <textarea id="assignment-description" maxlength="20000" rows="3" placeholder="What should students learn?"></textarea></label>
     <label class="bn-admin-wide">Instructions <textarea id="assignment-instructions" maxlength="20000" rows="4" placeholder="Steps, requirements, and grading notes"></textarea></label>
-    <label>Deadline (device-local time) <input type="datetime-local" id="assignment-deadline"></label>
+    <label>Deadline (Asia/Manila time) <input type="datetime-local" id="assignment-deadline"></label>
     <label>Assignment type <select id="assignment-type"><option value="individual">Individual</option><option value="group">Group</option></select></label>
     <label>Required MIME types (comma separated) <input id="assignment-file-types" placeholder="application/pdf, image/png" aria-describedby="mime-hint"><small id="mime-hint">Separate permitted MIME types with commas. Leave blank to accept supported file types.</small></label>
     <label>Maximum file size (MiB, optional; 40 MiB maximum on Free) <input id="assignment-max-mib" type="number" min="1" max="40" step="1" placeholder="e.g. 10"></label>
