@@ -58,12 +58,13 @@
 <button type="submit" class="bn-primary-action">Request Student membership</button></form>
 <div class="bn-entry-secondary"><a href="account.html">View membership status</a></div>
 </section>
-<dialog id="signup-confirmation" class="bn-signup-dialog" aria-labelledby="signup-confirm-title" aria-describedby="signup-confirm-description">
+<dialog id="signup-confirmation" class="bn-signup-dialog" aria-labelledby="signup-confirm-title" aria-describedby="signup-confirm-description" aria-modal="true">
   <div class="bn-signup-dialog-icon" aria-hidden="true">✉</div>
+  <p class="bn-signup-dialog-kicker">ONE MORE STEP</p>
   <h2 id="signup-confirm-title">Check your email</h2>
-  <p id="signup-confirm-description">Check your inbox for an account confirmation link. Once you've verified your email, sign in to continue.</p>
-  <p class="bn-entry-note">Can't find it? Check your spam folder. Use the email address you registered with.</p>
-  <form method="dialog"><button class="bn-primary-action" type="submit">Continue to Sign In</button></form>
+  <p id="signup-confirm-description" class="bn-signup-dialog-description">We've sent a confirmation link to your inbox. Verify your email to activate your Blue Noelle account.</p>
+  <a id="signup-confirm-continue" class="bn-signup-dialog-link" href="login.html?signup=check-email">Continue to Sign-In <span aria-hidden="true">→</span></a>
+  <p class="bn-signup-dialog-footnote">Didn't receive it? Check your spam folder.</p>
 </dialog>
 <div class="bn-entry-divider">ALREADY HAVE AN ACCOUNT?</div><p style="text-align:center"><a href="login.html">Return to sign in</a></p>
 </div></main></div>
