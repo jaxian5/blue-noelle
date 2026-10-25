@@ -63,7 +63,7 @@ function fixture({withPending=false,fail=false}={}){
   const map=new Map();
   const elem=id=>{
     if(!map.has(id))map.set(id,{
-      value:"",hidden:false,disabled:false,textContent:"",dataset:{},listeners:{},
+      value:"",hidden:id==="otp-complete",disabled:false,textContent:"",dataset:{},listeners:{},
       addEventListener(event,callback){this.listeners[event]=callback},
       focus(){this.focused=true}
     });
@@ -123,6 +123,6 @@ test("expired code remains on screen and cannot produce false success",async()=>
   for(let i=0;i<4;i++)await new Promise(done=>setImmediate(done));
   assert.equal(x.calls.verifyCalls,1);
   assert.equal(x.calls.signOutCalls,0);
-  assert.equal(x.elem("otp-complete").hidden,false===true);
+  assert.equal(x.elem("otp-complete").hidden,true);
   assert.match(x.elem("auth-status").textContent,/expired/);
 });
