@@ -41,6 +41,15 @@
     <button class="bn-primary-action" type="submit">Save new password</button></form>
    <div class="bn-entry-secondary"><a href="login.html">Back to sign in</a></div>
   </section>
+  <dialog id="login-unverified-alert" class="bn-signup-dialog" aria-labelledby="login-unverified-title" aria-describedby="login-unverified-description" aria-modal="true">
+    <div class="bn-signup-dialog-icon" aria-hidden="true">✉</div>
+    <p class="bn-signup-dialog-kicker">ACCOUNT VERIFICATION</p>
+    <h2 id="login-unverified-title">Email not verified</h2>
+    <p class="bn-signup-dialog-description" id="login-unverified-description">This account needs email verification before you can sign in. Enter a code you received, or request another from the verification page.</p>
+    <a href="verify-email.html" class="bn-signup-dialog-link">Enter verification code <span aria-hidden="true">→</span></a>
+    <p class="bn-signup-dialog-footnote">If you already verified your email, check that you're using the correct account.</p>
+    <form method="dialog" class="bn-signup-dialog-alternative"><button class="bn-inline-button" type="submit">Back to Sign-In</button></form>
+  </dialog>
   <div class="bn-entry-divider">NEW TO BLUE NOELLE?</div>
   <p class="bn-entry-note">Class enrollment requires an invitation and approval from a Moderator or Admin. Creating an account alone does not unlock classwork.</p>
   <a href="register.html" class="bn-btn bn-btn-secondary" style="display:block;text-align:center;margin-top:1rem">Start registration</a>
