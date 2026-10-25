@@ -8,10 +8,10 @@ Reference: Working Framework §13, §20, §21
 | Path | Purpose |
 |------|---------|
 | `/index.html` | Landing · philosophy · entry |
-| `/pages/login.html` | Sign in (test: roles.json → future API) |
-| `/pages/register.html` | Invite-code registration → PENDING |
+| `/pages/login.html` | Canonical Supabase Auth sign-in and password recovery |
+| `/pages/register.html` | Account signup → email confirmation → invite redemption → PENDING |
 
-## Student (MVP core)
+| `/pages/account.html` | Authenticated membership status, sign out, officer navigation |\n\n## Student (MVP core)
 
 | Path | Purpose |
 |------|---------|
@@ -25,9 +25,9 @@ Reference: Working Framework §13, §20, §21
 
 | Path | Purpose |
 |------|---------|
-| `/pages/moderator.html` | Directory · verification queue · chat reports · monitoring |
+| `/pages/moderator.html` | Legacy prototype only, not integrated with Supabase yet |
 
-## Admin (Phase 8)
+**Live Phase 1 officer verification:** `/pages/phase1-class-staff.html` uses real Moderator/Admin authorization.\n\n## Admin (Phase 8)
 
 | Path | Purpose |
 |------|---------|
