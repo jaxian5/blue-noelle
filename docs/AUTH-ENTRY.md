@@ -1,4 +1,7 @@
 # Blue Noelle: Single Auth Entry Architecture (Phase 1)
+
+> **UPDATE 2026-10-25:** Registration now offers Student or Admin. After confirmation, a Student redeems an invite; an Admin creates one owned class. See [Multi-Class Phase 1](MULTICLASS-PHASE1.md); the Student-only flow described below is historical context.
+
 **As of 2026-10-25 · PR replacing the legacy login and register forms**
 
 ## Canonical navigation

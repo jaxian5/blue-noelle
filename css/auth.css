@@ -63,5 +63,13 @@
 .bn-entry-row .bn-primary-action{width:auto;margin:0;padding:.7rem 1rem}
 .bn-inline-button{border:0;background:none;color:var(--bn-primary);font-weight:650;padding:0;cursor:pointer;font-size:.9rem}
 .bn-entry-content [hidden]{display:none!important}
+.bn-role-choice{border:0;padding:0;margin:1rem 0 0;min-width:0}
+.bn-role-choice legend{font-size:.9rem;font-weight:750;margin-bottom:.6rem}
+.bn-entry-content label.bn-role-option{display:flex;align-items:flex-start;gap:.8rem;padding:1rem;cursor:pointer;border:1px solid var(--bn-border-strong);border-radius:10px;margin:.6rem 0;background:var(--bn-surface);font-weight:400}
+.bn-entry-content label.bn-role-option:has(input:checked){border-color:var(--bn-primary);box-shadow:0 0 0 2px rgba(59,130,246,.18)}
+.bn-entry-content .bn-role-option input[type=radio]{width:18px;height:18px;margin:.18rem 0 0;accent-color:var(--bn-primary);flex:none}
+.bn-role-option span{display:grid;gap:.3rem}
+.bn-role-option strong{font-size:.92rem;color:var(--bn-text)}
+.bn-role-option small{font-size:.8rem;color:var(--bn-text-muted);line-height:1.5}
 @media(max-width:850px){.bn-entry{grid-template-columns:1fr}.bn-entry-aside{min-height:0;padding:1.5rem 1.3rem;gap:.9rem}.bn-entry-aside h2{font-size:1.7rem;margin:0;max-width:none}.bn-entry-aside p,.bn-entry-aside footer,.bn-entry-kicker{display:none}.bn-entry-main{min-height:auto;padding:2rem 1.2rem 3rem;align-items:flex-start}.bn-entry-content{max-width:580px}}
 @media(prefers-reduced-motion:reduce){.bn-entry{scroll-behavior:auto}}

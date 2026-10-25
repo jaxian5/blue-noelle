@@ -105,25 +105,40 @@
    const signupInfo = $("signup-info");
    async function refresh() {
      const user = await currentUser();
-     $("join-section").hidden = !user;
+     const profile = user ? await api().profile() : null;
+     const isAdmin = profile?.account_type === "Admin";
+     const list = user ? await memberships() : [];
+     const alreadyOwns = isAdmin && list.some(m => m.role === "Admin" && m.status === "ACTIVE");
+     $("join-section").hidden = !user || isAdmin;
+     $("create-section").hidden = !user || !isAdmin || alreadyOwns;
+     $("already-owned-section").hidden = !alreadyOwns;
      signupInfo.hidden = Boolean(user);
      $("signed-as").textContent = user ? "Signed in: " + (user.email || "Verified account") : "";
-     if (user) {
-       const list = await memberships();
-       if (list.some(m => m.status === "ACTIVE" || m.status === "PENDING" || m.status === "REJECTED")) {
-         $("join-hint").textContent = "You already have a membership record. Check My Account before requesting another class.";
-       }
+     if (!isAdmin && list.length) {
+       $("join-hint").textContent = "You already have a membership record. You may join another class using a different invitation.";
      }
+     return {user, isAdmin, alreadyOwns};
    }
    form.addEventListener("submit", event => {
      event.preventDefault();
      task(form, async () => {
        if ($("signup-password").value !== $("signup-confirm").value) throw Error("Passwords do not match.");
-       const result = await api().signUp($("signup-email").value,$("signup-password").value,$("signup-name").value);
+       const registrationType = document.querySelector('input[name="registration-type"]:checked')?.value || "Student";
+       const result = await api().signUp($("signup-email").value,$("signup-password").value,$("signup-name").value,registrationType);
        $("signup-password").value = ""; $("signup-confirm").value = "";
        if (!result?.session) status("Check your email and confirm your account. Then sign in and enter your class invitation below.", "success");
        else status("Account created. Continue with your class invitation.", "success");
        await refresh();
+     });
+   });
+   const create = $("create-form");
+   create.addEventListener("submit", event => {
+     event.preventDefault();
+     task(create, async () => {
+       const result = await api().createClass($("create-name").value,$("create-section-name").value);
+       if (!result?.ok) throw Error("Class creation could not be completed.");
+       status("Your class has been created. You are its ACTIVE Admin.", "success");
+       go("account.html");
      });
    });
    const join = $("join-form");
@@ -140,13 +155,19 @@
        go("account.html");
      });
    });
-   await refresh();
-   status($("join-section").hidden ? "Start by creating your account. You'll redeem your invite after confirming your email and signing in." : "You're signed in. Enter the private invite provided by your class administrator.", "info");
+   const state = await refresh();
+   status(!state.user ? "Choose Student or Admin, create an account, confirm your email and sign in." :
+     state.isAdmin && state.alreadyOwns ? "Your Admin class already exists. Open My Account to manage it." :
+     state.isAdmin ? "Your Admin account is ready. Create your one classroom below." :
+     "You're signed in as Student. Enter an invitation from a class administrator.", "info");
  }
  async function account() {
    const user = await currentUser();
    if (!user) return go("login.html");
    $("account-email").textContent = user.email || "Signed-in account";
+   const profile = await api().profile();
+   const isAdminAccount = profile?.account_type === "Admin";
+   $("account-type").textContent = isAdminAccount ? "Admin account · One owned class" : "Student account · Join classes by invitation";
    const box = $("memberships");
    const list = await memberships();
    const activeIds = [...new Set(list.filter(m => m.status === "ACTIVE").map(m => m.class_id))];
@@ -159,13 +180,16 @@
    }
    box.replaceChildren();
    $("member-count").textContent = list.length === 1 ? "1 class membership" : list.length + " class memberships";
-   $("join-action").hidden = false;
-   $("join-action").textContent = list.length ? "Join another class" : "Redeem an invitation";
+   const hasOwnedClass = isAdminAccount && list.some(m => m.role === "Admin" && m.status === "ACTIVE");
+   $("join-action").hidden = hasOwnedClass;
+   $("join-action").textContent = isAdminAccount ? "Create my one class" :
+     (list.length ? "Join another class" : "Redeem an invitation");
    if (!list.length) {
      const note = document.createElement("p");
-     note.textContent = "No classroom membership yet. Redeem the private class invitation you received from your class administrator.";
+     note.textContent = isAdminAccount
+       ? "Your account is registered as Admin. Create your one class to activate its Admin membership."
+       : "No classroom membership yet. Redeem the private class invitation you received from a class administrator.";
      box.appendChild(note);
-     $("join-action").hidden = false;
    }
    let hasStaff = false, hasActive = false;
    for (const m of list) {
@@ -192,7 +216,8 @@
    }));
    $("refresh-account").addEventListener("click", () => w.location.reload());
    status(hasActive ? "Class membership verified. You are signed in." :
-     "Your account is authenticated, but access to class content requires an approved membership.", "info");
+     isAdminAccount ? "Your Admin account is authenticated. Create your one class to continue." :
+     "Your Student account is authenticated. Class access requires an approved invitation.", "info");
  }
  document.addEventListener("DOMContentLoaded", async () => {
    clearDemoSession();
