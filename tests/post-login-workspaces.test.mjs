@@ -165,3 +165,24 @@ test("Moderator sees staff tools without treating other Students' files as own",
  assert.match(p.$("dash-student-accent-title").textContent,/Review without rewriting/);
  assert.equal(backend.calls.filter(c=>c.rpc==="bn_p3_details").length,0);
 });
+
+test("dashboard redirects signed-out visitors to Phase 1 sign-in",async()=>{
+ const p=mockDOM("dashboard"),redirects=[];
+ const w={BNBackend:{configured:true,client:{
+   auth:{getUser:async()=>({data:{user:null},error:null})}
+ }},location:{replace:target=>redirects.push(target)}};
+ new Script(dashboard).runInNewContext({window:w,document:p.document,Intl,Date,Number,Map,Set,Promise});
+ await p.ready();
+ assert.equal(redirects[0],"login.html");
+});
+test("dashboard sign-out ends the Supabase session and returns to sign-in",async()=>{
+ const p=mockDOM("dashboard"),backend=classroomBackend(),redirects=[];
+ let signOuts=0;
+ backend.db.auth.signOut=async()=>{signOuts++;return {error:null}};
+ const w={BNBackend:{configured:true,client:backend.db},location:{replace:target=>redirects.push(target)}};
+ new Script(dashboard).runInNewContext({window:w,document:p.document,Intl,Date,Number,Map,Set,Promise});
+ await p.ready();
+ await p.$("dash-signout").listeners.click();
+ assert.equal(signOuts,1);
+ assert.equal(redirects[0],"login.html");
+});
