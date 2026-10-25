@@ -65,7 +65,7 @@ test("selection restores predefined and legacy MIME types, clears and counts acc
     "application/pdf","image/jpeg","text/plain"
  ].map(value=>({value,checked:false,name:"assignment-file-format"}));
  function element(tag="div"){
-  return {tagName:tag,children:[],value:"",checked:false,hidden:false,open:false,
+  return {tagName:tag,children:[],dataset:{},value:"",checked:false,hidden:false,open:false,
    append(...items){this.children.push(...items)},
    replaceChildren(...items){this.children=[...items]}};
  }
@@ -90,6 +90,12 @@ test("selection restores predefined and legacy MIME types, clears and counts acc
  assert.equal($("assignment-legacy-formats").hidden,false);
  assert.equal(legacy.children.length,1);
  assert.equal($("assignment-format-picker").open,false);
+ // Editing the same legacy assignment twice must never lose its MIME restriction.
+ window.__formats.restoreFormatSelection(["application/pdf","application/x-special-class-file"]);
+ assert.deepEqual([...window.__formats.formatSelection()],
+   ["application/pdf","application/x-special-class-file"]);
+ assert.equal(legacy.children.length,1);
+
  window.__formats.restoreFormatSelection([]);
  assert.deepEqual([...window.__formats.formatSelection()],[]);
  assert.equal($("assignment-format-count").textContent,"All supported formats");
