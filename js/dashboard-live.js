@@ -174,14 +174,14 @@
    if(document.body)document.body.dataset.workspace=admin?"admin":"student";
    text("dash-role",active.role);
    text("dash-user-role",active.role+" · ACTIVE");
-   text("dash-eyebrow",admin?"ADMIN COMMAND CENTER":"YOUR STUDENT WORKSPACE");
+   text("dash-eyebrow",admin?"ADMIN COMMAND CENTER":staff?"MODERATOR WORKSPACE":"YOUR STUDENT WORKSPACE");
    $("dash-admin-link").hidden=!admin;
    $("dash-staff-link").hidden=!staff;
    $("dash-operations-link").hidden=!staff;
    $("dash-student-panel").hidden=admin;
    $("dash-admin-panel").hidden=!admin;
    const className=room.name+(room.section?" · "+room.section:"");
-   text("dash-subtitle",admin?"Manage "+className+" with clarity and confidence.":className+" · Keep your coursework within reach.");
+   text("dash-subtitle",admin?"Manage "+className+" with clarity and confidence.":staff?className+" · Review academic activity and membership requests.":className+" · Keep your coursework within reach.");
    const primary=$("dash-primary-link");
    primary.href=admin?"admin-classwork.html":"classwork.html";
    primary.textContent=admin?"Manage classwork ↗":"Browse classwork ↗";
@@ -192,11 +192,23 @@
      label:"ADMIN PRIORITIES",title:"Make the next class easier.",
      body:"Create assignments, review submissions and handle membership requests from one workspace.",
      href:"admin-classwork.html",action:"Manage classwork"
+   }:staff?{
+     label:"CLASS OFFICER",title:"Every membership matters.",
+     body:"Review pending members and see classroom assignments without changing Admin-owned work.",
+     href:"phase1-class-staff.html",action:"Review requests"
    }:{
      label:"YOUR NEXT STEP",title:"A clearer way to keep up.",
      body:"Open an assignment to upload, submit, and keep track of every version of your work.",
      href:"classwork.html",action:"Open assignments"
    });
+   text("dash-upcoming-title",staff&&!admin?"Classwork overview":"Assignments to work on");
+   if(!admin){
+     text("dash-student-accent-label",staff?"STAFF REVIEW":"YOUR WORK IS PRIVATE");
+     text("dash-student-accent-title",staff?"Review without rewriting.":"Submit, then keep the history.");
+     text("dash-student-accent-body",staff?"Class officer permissions let you review submissions and membership requests in your assigned class.":"Open an assignment to upload files, confirm a submission, and revisit previous versions.");
+     $("dash-student-accent-link").href=staff?"phase1-class-staff.html":"classwork.html";
+     text("dash-student-accent-link",staff?"Review member requests ↗":"Find an assignment ↗");
+   }
    say("Loading "+(admin?"class management":"assignments and submission status")+"…");
    try{
      const subjects=await query(db().from("Subject")
@@ -233,7 +245,10 @@
        const tasks=[...open].sort(orderDeadlines).slice(0,6);
        // Render immediately, then enrich with submission states when RPCs resolve.
        renderTasks(tasks,byId,new Map());
-       const states=await getMyStatuses(tasks);
+       // Staff detail RPCs can return other Students' work. Never label that
+       // result as this Moderator's personal submission state.
+       const states=active.role==="Student" ? await getMyStatuses(tasks) :
+         new Map(tasks.map(task=>[task.id,"review only"]));
        if(token!==generation)return;
        renderTasks(tasks,byId,states);
      }
