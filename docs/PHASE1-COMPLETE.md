@@ -29,7 +29,7 @@ The test evidence is sufficient for the *owner's development milestone approval*
 
 ## New OTP verification follow-up (requires deployment checklist)
 
-After the original Phase 1 acceptance, registration is being upgraded to six-digit confirmation codes sent by Brevo's external SMTP. The signup alert will open `pages/verify-email.html`, Supabase Auth will verify the code, and the user will then sign in with their password. The approved Student/Admin membership and class permissions do not change.
+After the original Phase 1 acceptance, registration is being upgraded to eight-digit confirmation codes sent by Brevo's external SMTP. The signup alert will open `pages/verify-email.html`, Supabase Auth will verify the code, and the user will then sign in with their password. The approved Student/Admin membership and class permissions do not change.
 
 **This is not yet a production-certified change:** the Supabase Confirm signup email template must use `{{ .Token }}` before the OTP UI is deployed, and a real new-account email delivery and verification test remains necessary. See [Brevo OTP setup](EMAIL-OTP-BREVO-SETUP.md).
 

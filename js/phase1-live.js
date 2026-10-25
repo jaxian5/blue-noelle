@@ -20,10 +20,10 @@
      const {data,error}=await client().auth.signUp({email:email.trim(),password,options:{emailRedirectTo,data:{full_name:fullName.trim(),registration_type:registrationType}}});
      if(error)throw error;return data;
    },
-   // Confirm-signup uses the six-digit {{ .Token }} emitted by Supabase Auth.
+   // Confirm-signup uses the eight-digit {{ .Token }} emitted by Supabase Auth.
    async verifySignupCode(email,token){
      const sanitized=String(token||"").trim();
-     if(!/^\d{6}$/.test(sanitized))throw Error("Enter a valid six-digit verification code.");
+     if(!/^\d{8}$/.test(sanitized))throw Error("Enter a valid eight-digit verification code.");
      const {data,error}=await client().auth.verifyOtp({
        email:email.trim(),token:sanitized,type:"email"
      });

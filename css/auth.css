@@ -177,7 +177,7 @@
 }
 .bn-otp-fieldset{border:0;min-width:0;padding:0;margin:1.75rem 0 0}
 .bn-otp-fieldset legend{font-size:.94rem;font-weight:750;margin-bottom:.9rem;color:var(--bn-text)}
-.bn-otp-digits{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.35rem,2vw,.8rem);max-width:470px}
+.bn-otp-digits{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(.25rem,1.5vw,.65rem);max-width:570px}
 .bn-entry-content .bn-otp-digit{
  box-sizing:border-box;
  width:100%;height:clamp(50px,10vw,66px);min-width:0;
@@ -206,5 +206,5 @@
 .bn-otp-content #otp-complete .bn-btn{margin-top:1rem}
 @media(max-width:420px){
  .bn-entry-content .bn-otp-digit{border-radius:8px;font-size:1.35rem;height:48px}
- .bn-otp-digits{gap:.3rem}
+ .bn-otp-digits{gap:.2rem}
 }

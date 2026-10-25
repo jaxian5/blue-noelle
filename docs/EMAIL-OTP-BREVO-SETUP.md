@@ -1,4 +1,4 @@
-# Blue Noelle · Six-digit email verification with Brevo
+# Blue Noelle · Eight-digit email verification with Brevo
 
 **Status:** Feature implemented in the OTP verification PR; **production activation requires one manual Supabase email-template change and a real new-account test**. Do not claim it is deployed or successfully delivering codes before these checks.
 
@@ -21,12 +21,12 @@
 6. Save the template. The change is made **inside the Supabase dashboard**, not by pushing a GitHub HTML file. That repository HTML is the source-of-truth template to copy. The connected Supabase plugin currently has no supported Auth email-template configuration action.
 7. Review Authentication → Rate Limits. Use reasonable limits that fit Brevo's plan and protect against repeated resend requests. Do **not** disable verification or raise limits arbitrarily.
 
-**Important deployment order:** Save the OTP email template **before merging/deploying** the registration-interface PR, otherwise new users could receive only a confirmation link while the UI asks for a six-digit code.
+**Important deployment order:** Save the OTP email template **before merging/deploying** the registration-interface PR, otherwise new users could receive only a confirmation link while the UI asks for a eight-digit code.
 
 ## User journey
 
 1. At `pages/register.html`, choose **Student** or **Admin**, enter full name, email and password, and submit.
-2. Supabase accepts signup (and Brevo delivers a six-digit confirmation code). The alert offers **Enter verification code** and opens `pages/verify-email.html`.
+2. Supabase accepts signup (and Brevo delivers a eight-digit confirmation code). The alert offers **Enter verification code** and opens `pages/verify-email.html`.
 3. On the verification page, enter the code into six accessible boxes. Typing, pasting and mobile numeric keyboards are supported.
 4. Blue Noelle sends **email + OTP** to Supabase Auth with `type:'email'`. Supabase validates it. The app signs out the verification-created session so the approved next step remains **Sign In**.
 5. The user signs in normally. **Admin** creates one owned class; **Student** redeems an invitation and awaits approval.
@@ -39,7 +39,7 @@
 
 - [ ] Confirm Brevo SMTP is saved, sending domain/sender approved, and the exact template body is live.
 - [ ] Create one **new** test Admin or Student identity from the deployed registration page.
-- [ ] Confirm email arrives with a **six-digit code**, not just a clickable verification link. Verify code and expiry against dashboard settings.
+- [ ] Confirm email arrives with a **eight-digit code**, not just a clickable verification link. Verify code and expiry against dashboard settings.
 - [ ] Check the code-entry screen using typing, paste, backspace, mobile viewport, and keyboard.
 - [ ] Attempt incorrect code: remains unverified. Enter correct code: successful verification and sign-in redirect.
 - [ ] Verify Admin/Student account type is unchanged by verification and old active accounts are unaffected.
@@ -68,3 +68,11 @@ The browser instead offers contextual recovery routes:
 **Observed (privacy-preserving) diagnostics:** An October 25 Supabase Auth log inspection identified HTTP 200 events for a new confirmation request, a repeated signup, a resend request, and a password-recovery request. These confirm requests reached Supabase; only Brevo's delivery logs and the user's inbox can establish delivery. The live auth platform already contains verified and unverified accounts. Do not infer the status of a particular email from these aggregates.
 
 **Email template prerequisite:** The Supabase *Confirm signup* template must contain `{{ .Token }}` instead of solely `{{ .ConfirmationURL }}`; otherwise the interface will ask for a code that is not present in the email. The template source lives in `docs/EMAIL-OTP-TEMPLATE.html`. Modifying the repository file alone does not update Supabase's live email template.
+
+## OTP length synchronization
+
+**October 25, 2026:** The project owner observed an **eight-digit** code from the configured Supabase/Brevo email flow. The website's prior six-box frontend would reject it before calling Supabase. The current verification UI, adapter validation and regression tests now expect **exactly eight numeric digits**.
+
+Supabase's documented default email OTP length is **6** and the Auth platform supports configured lengths from **6 to 10** (see [Supabase CLI email OTP settings](https://supabase.com/docs/guides/local-development/cli/config#authemailotp_length)). This frontend must match the configured backend length. If the Supabase OTP length is later changed, update the interface, the API check, copy and tests in the same pull request. **The email template's `{{ .Token }}` placeholder remains unchanged**: it supplies the actual generated token; its HTML does not set the token length.
+
+Do not paste real verification codes into GitHub issues, this repository, or support screenshots. Use a real inbox that you control for subsequent end-to-end tests, not a deliberately nonexistent address, because rejected emails can create hard bounces and affect sender reputation.
