@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="color-scheme" content="light">
+ <title>Classwork | Blue Noelle</title>
+ <link rel="stylesheet" href="../css/main.css">
+ <link rel="stylesheet" href="../css/classwork.css">
+</head>
+<body>
+ <div class="bn-app">
+  <header class="bn-header">
+   <a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+   <nav class="bn-nav" aria-label="Account navigation">
+    <a href="account.html">My Account</a>
+    <a href="classwork.html" aria-current="page" class="active">Classwork</a>
+   </nav>
+  </header>
+  <main class="bn-main bn-classwork">
+   <div class="bn-classwork-heading">
+    <div><p class="bn-classwork-eyebrow">Live classroom · Phase 2</p><h1>Subjects &amp; Assignments</h1>
+     <p class="bn-muted">Your classroom's actual Supabase data. No browser-local demo assignments.</p></div>
+    <a class="bn-btn bn-btn-secondary" href="account.html">Back to My Account</a>
+   </div>
+   <section class="bn-card bn-classwork-selector" aria-label="Choose classroom">
+     <label for="classwork-class">Active classroom</label>
+     <select id="classwork-class" disabled aria-describedby="classwork-note"><option value="">Loading your classes…</option></select>
+     <p id="classwork-note" class="bn-muted bn-text-sm">Only approved memberships can view classroom content.</p>
+   </section>
+   <div id="classwork-status" class="bn-card bn-classwork-status" role="status" aria-live="polite">Checking your Supabase session…</div>
+   <section id="classwork-content" aria-label="Class assignments" hidden>
+    <div class="bn-flex-between bn-mb-1"><h2 class="bn-classwork-subtitle">Classwork</h2><span id="classwork-role" class="bn-badge">Membership active</span></div>
+    <div id="classwork-subjects" class="bn-classwork-subjects"></div>
+   </section>
+   <section class="bn-card bn-classwork-notice" aria-label="Phase 2 current scope">
+    <strong>Phase 2 is being activated in stages.</strong>
+    <p>Subjects and assignments displayed here are read directly from Supabase. Creation, audited edits, statuses, and deadlines are being moved off the old demo system. File submissions follow in Phase 3.</p>
+   </section>
+  </main>
+ </div>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+ <script src="../js/supabase-config.js"></script>
+ <script src="../js/supabase-adapter.js"></script>
+ <script src="../js/phase2-classwork.js"></script>
+</body>
+</html>

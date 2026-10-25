@@ -1,4 +1,4 @@
-# Phase 2 — Assignments (started)
+> **Historical note:** The implementation described below was a localStorage-based prototype. The live Phase 2 Supabase kickoff begins with [PHASE2-LIVE-KICKOFF-2026-10-25.md](PHASE2-LIVE-KICKOFF-2026-10-25.md) and `pages/classwork.html`. Do not use this document as evidence of production-ready assignment creation or submission.\n\n# Phase 2 — Assignments (started)
 
 **Reference:** PROJECT_ Blue Noelle.docx §5 + Phase 2 roadmap  
 
