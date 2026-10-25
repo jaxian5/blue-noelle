@@ -279,7 +279,7 @@ test("signup and verification pages offer safe existing-account recovery without
   const login = read("pages/login.html");
   const controller = read("js/auth-ui.js");
   assert.match(register, /Already have a Blue Noelle account\?/);
-  assert.match(register, /sign in to an existing account/);
+  assert.match(register, /Already registered\? Sign In/);
   assert.match(register, /Forgot password/);
   assert.match(verify, /already confirmed, a new signup code may not be sent/);
   assert.match(verify, /Try signing in/);
