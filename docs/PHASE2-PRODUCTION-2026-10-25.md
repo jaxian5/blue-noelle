@@ -1,6 +1,6 @@
 # Phase 2 Production Implementation · October 25, 2026
 
-**Status:** Production code prepared on feature branch. The database migration has been applied and transactionally tested on the live Supabase project. GitHub merge and owner browser acceptance are separate release gates.
+**Status (updated October 25, 2026):** Phase 2 frontend and audited database implementation are merged into `main` through PRs #20, #21 and #24, with green CI and rolled-back database authorization tests. **Live owner Admin/Student browser acceptance remains outstanding**, so formal production sign-off is not yet recorded.
 
 ## Scope and decisions
 
@@ -12,12 +12,12 @@ Phase 2 is now based on **real Supabase Auth + PostgreSQL**, never browser-local
 
 | Route | Purpose |
 |---|---|
-| `pages/dashboard.html` | **New** responsive multiclasse dashboard: personal verified profile, active class picker, role badge, subjects, open work and seven-day deadlines, real data. |
+| `pages/dashboard.html` | **New** responsive multi-class dashboard: personal verified profile, active class picker, role badge, subjects, open work and seven-day deadlines, real data. |
 | `pages/classwork.html` | Authenticated view of Subjects and Assignments, class-scoped via RLS, including archived/closed status display. |
 | `pages/admin-classwork.html` | **New** ACTIVE Admin-only management UI: Subject creation and renaming, Assignment creation and editing, status transitions `OPEN` / `CLOSED` / `ARCHIVED`, required MIME types, maximum file sizes and deadlines. |
 | `pages/account.html` | Existing approved membership center, now links to dashboard and role-gated Admin classwork. |
 | `pages/assignments.html`, `pages/admin-assignments.html` | Redirect into the live classwork pages. |
-| `pages/submission.html` | Former fake submission UI removed; signed-in Phase 3 notice. **No actual file upload is enabled yet.** |
+| `pages/submission.html` | Former fake submission UI removed; signed-in Phase 3 notice. **The Phase 3 private submission interface is now merged (PR #23); real upload/download acceptance remains outstanding.** |
 | Legacy Admin/Moderator/Developer directory routes | Redirect to live staff/account destinations rather than presenting fictitious identities. |
 
 ### Database enforcement
@@ -44,25 +44,18 @@ As an actual authenticated-role impersonation using transaction-local JWT subjec
 
 ### Acceptance before marking Phase 2 COMPLETED
 
-1. CI tests green for current PR and no merge conflicts.
+1. **Verified:** PRs #20, #21 and #24 merged into `main` with successful CI. Record subsequent live browser results separately.
 2. Owner signs into live GitHub Pages using the existing **verified Admin** account, creates a subject and individual/group assignment, edits a deadline, and changes status; refresh and confirm persistence.
 3. Owner signs into live GitHub Pages using the existing **verified Student** account: see only their ACTIVE classroom's classwork, no Admin write UI. Verify unauthorized cross-class reads/writes denied.
 4. Verify audit record counts and role at time, confirm no fabricated data or legacy `localStorage` routes are still active.
 5. Confirm layout works on narrow viewport and assignment dates display accurately in Asia/Manila.
 6. Confirm the Phase 1 email-delivery issue remains separately tracked, not bypassed.
 
-## Phase 3 next: real private file submissions
+## Phase 3 implementation update
 
-Phase 3 requires separate security/acceptance work before enabling upload:
+The private Storage bucket, guarded Submission/SubmissionVersion/File lifecycle, RLS policies, group management, and frontend were merged with [PR #23](https://github.com/jaxian5/blue-noelle/pull/23). The Phase 3 database migrations were applied. **This is implementation status, not full production approval:** a confirmed Student must still upload actual file bytes, finalize, submit, refresh and download them; staff and cross-class access denials require live verification. See [Phase 3 security and acceptance](PHASE3-PRODUCTION-2026-10-25.md).
 
-- A private Supabase Storage bucket, class-scoped object-key naming and path/RLS policy.
-- Server-side authenticated submission creation and immutable `submitted_at` plus snapshot `deadline_at_submission`.
-- `Submission` must have exactly one owner: Student XOR Group (existing DB check), and version history must remain consistent.
-- `SubmissionVersion` / `File` metadata only after successful authorized upload; never trust browser MIME/name/size alone.
-- Enforce `DRAFT`, `SUBMITTED`, `DELETED` rules, upload sizes/allowed types, atomic submit and audit trail, and permissioned download/signing.
-- Validate object cleanup, file replacement, and private access under Student, Moderator and Admin roles.
-
-**Do not re-enable the old file-upload demo while this is unfinished.**
+Do not switch any submission route back to legacy localStorage. New public enrollment and password recovery remain separately gated by unresolved Brevo deliverability.
 
 ## Free-plan file size alignment
 
