@@ -3,18 +3,18 @@
 <title>My Account | Blue Noelle</title><link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/auth.css"></head>
 <body data-auth-page="account"><div class="bn-entry">
 <aside class="bn-entry-aside"><a href="../index.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<div><div class="bn-entry-kicker">Your class access</div><h2>One account. Every class, in its place.</h2>
-<p>Your account identity comes from Supabase Auth. Classroom roles and access come from approved class memberships, never a demo account.</p></div>
+<div><div class="bn-entry-kicker">A platform for many classes</div><h2>Your classroom, your role.</h2>
+<p>Admins manage one class they create. Students can join classes through invitations. Every class keeps its own members, roles and work.</p></div>
 <footer>BLUE NOELLE · ACCOUNT CENTER</footer></aside>
 <main class="bn-entry-main"><div class="bn-entry-content">
 <p class="bn-eyebrow">Authenticated account</p><h1>My Account</h1>
 <p class="bn-entry-lead">Check your enrollment status and manage your classroom access.</p>
 <div id="auth-status" class="bn-auth-notice" role="status" aria-live="polite">Verifying session…</div>
-<div class="bn-entry-card"><h2>Signed-in identity</h2><p id="account-email">Loading…</p></div>
+<div class="bn-entry-card"><h2>Signed-in identity</h2><p id="account-email">Loading…</p><p id="account-type">Checking your account type…</p></div>
 <section class="bn-entry-card" aria-label="Your memberships">
 <h2>Classroom memberships</h2><p id="member-count">Checking…</p>
 <div id="memberships" class="bn-account-list" aria-live="polite"></div>
-<a id="join-action" href="register.html" class="bn-btn bn-btn-primary" hidden>Redeem an invitation</a>
+<a id="join-action" href="register.html" class="bn-btn bn-btn-primary" hidden>Continue enrollment</a>
 </section>
 <section id="staff-actions" class="bn-entry-card" hidden>
 <h2>Class officer tools</h2><p>Available only to ACTIVE Moderators and Admins in their assigned class.</p>
@@ -28,7 +28,7 @@
 <button type="button" id="refresh-account" class="bn-btn bn-btn-secondary">Refresh status</button>
 <button type="button" id="signout" class="bn-btn bn-btn-secondary">Sign out</button>
 </form>
-<p class="bn-entry-note">If a pending registration was just approved, refresh to see your ACTIVE membership. If you cannot find your class, ask its Admin for a valid invitation.</p>
+<p class="bn-entry-note">If a pending registration was just approved, refresh to see your ACTIVE membership. If you registered as Admin, use Create my one class. Students can request access through class invitations.</p>
 </div></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
