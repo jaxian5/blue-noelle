@@ -21,6 +21,24 @@
 .bn-entry-secondary{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:1rem;font-size:.9rem}
 .bn-entry-content a{color:var(--bn-primary);font-weight:650;text-decoration:none}
 .bn-entry-content a:hover{text-decoration:underline}
+/* Styled links are buttons. The general entry link rule above must not
+   override the contrast colors of primary and secondary call-to-action links. */
+.bn-entry-content a.bn-btn-primary,
+.bn-entry-content a.bn-btn-primary:visited,
+.bn-entry-content a.bn-btn-primary:hover,
+.bn-entry-content a.bn-btn-primary:focus-visible{
+  background:var(--bn-primary);
+  color:#fff;
+  text-decoration:none;
+}
+.bn-entry-content a.bn-btn-primary:hover{background:var(--bn-primary-hover)}
+.bn-entry-content a.bn-btn-secondary,
+.bn-entry-content a.bn-btn-secondary:visited,
+.bn-entry-content a.bn-btn-secondary:hover,
+.bn-entry-content a.bn-btn-secondary:focus-visible{
+  color:var(--bn-text);
+  text-decoration:none;
+}
 .bn-auth-notice{border-radius:9px;border:1px solid var(--bn-border);padding:.9rem 1rem;margin:1.15rem 0;background:var(--bn-bg);font-size:.89rem;white-space:pre-wrap;line-height:1.55}
 .bn-auth-notice[data-state=error]{background:#fef2f2;color:#991b1b;border-color:#fecaca}
 .bn-auth-notice[data-state=success]{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
