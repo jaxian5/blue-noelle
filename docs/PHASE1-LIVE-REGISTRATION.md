@@ -67,3 +67,23 @@ This is an intentional first-time trust bootstrap, not an ongoing administrative
 - [ ] Cross-device, mobile, empty states, network failure and accessibility checks.
 
 **Do not invite real students or replace `pages/login.html`/`pages/register.html` as the default until these tests pass.** Password visibility/editing through localStorage is legacy-demo-only and must be removed during cutover.
+
+
+## Verified developer tests (2026-10-25)
+
+| Test | Result |
+| --- | --- |
+| Migration applied to connected Supabase project | PASS: `20261025032100_phase1_invited_registration_and_review` |
+| Public registration RPCs allow `authenticated` | PASS |
+| Public registration RPCs deny `anon` | PASS (verified `has_function_privilege`) |
+| Private invite-attempt table inaccessible to browser roles | PASS |
+| Unauthorized/no-session invite redemption and issue | PASS (negative tests) |
+| Unauthorized/no-session pending queue lookup | PASS (negative test) |
+| SHA-256 and CSPRNG available | PASS (`extensions.digest`, `extensions.gen_random_bytes`) |
+| Existing public application tables retain RLS | PASS: 19/19 |
+| Page scripts parse / frontend adapter smoke | PASS (static syntax and mocked RPC arguments) |
+| Real student, Moderator, Admin lifecycle | PENDING real confirmed accounts |
+| Email redirect and Auth deliverability | PENDING deployment/configuration |
+| Supabase Security Advisor | Existing 3 authenticated-executable SECURITY DEFINER warnings on old public helper RPCs, plus INFO for deny-by-default tables. These are tracked technical debt, not an indication of zero warnings. |
+
+For details, see [Supabase's production checklist](https://supabase.com/docs/guides/deployment/going-into-prod) and [database security linter](https://supabase.com/docs/guides/database/database-linter).
