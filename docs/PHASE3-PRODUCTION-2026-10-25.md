@@ -1,5 +1,5 @@
 # Phase 3: Private Submissions and Versioned File Storage
-**Started:** October 25, 2026. **Status:** implemented on a review branch, awaiting CI and live browser/storage acceptance.
+**Started:** October 25, 2026. **Status (updated October 25):** merged into `main` by [PR #23](https://github.com/jaxian5/blue-noelle/pull/23); CI and SQL-only lifecycle/security checks passed. **Real browser file-byte upload/download and cross-account Storage acceptance remain outstanding, so final Phase 3 production approval is not claimed.**
 
 ## Architecture and safety
 
@@ -28,7 +28,7 @@
 4. `20261025133017_phase3_pending_cleanup_roster.sql`: safe pending upload cleanup and Admin group roster.
 5. `20261025133401_phase3_file_finalize_alias_correction.sql`: fixes matching alias ambiguity in finalize.
 
-All migrations were applied in Supabase (the frontend remains branch-only until merge).
+All migrations listed here were applied in Supabase; the Phase 3 frontend is now merged into the production branch. An additional Free Plan safeguard migration, `20261025134536_phase3_free_storage_budget_and_assignment_guard.sql`, is recorded below.
 
 ## Acceptance gates before production sign-off
 
