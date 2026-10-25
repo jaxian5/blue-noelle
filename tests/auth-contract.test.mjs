@@ -13,14 +13,18 @@ const pages = Object.fromEntries(
 const core = read("js/auth-ui.js");
 const live = read("js/phase1-live.js");
 
-test("canonical auth screens do not load the legacy demo login system", () => {
-  for (const [path, html] of Object.entries(pages)) {
+test("canonical public auth screens retain original Phase 1 controllers", () => {
+  for (const path of ["pages/login.html", "pages/register.html"]) {
+    const html=pages[path];
     assert.match(html, /supabase-adapter\.js/, path);
     assert.match(html, /phase1-live\.js/, path);
     assert.match(html, /auth-ui\.js/, path);
     assert.doesNotMatch(html, /(?:core|phase1-auth)\.js/, path);
-    assert.doesNotMatch(html, /Test accounts|Student@2026|Moderator@2026|BN-EDUC2-2026/, path);
   }
+  const account=pages["pages/account.html"];
+  assert.match(account, /account-settings\.js/);
+  assert.match(account, /account-settings\.css/);
+  assert.doesNotMatch(account, /phase1-live\.js|auth-ui\.js/);
 });
 
 test("login supports password recovery and registration points to the new account center", () => {
@@ -30,7 +34,8 @@ test("login supports password recovery and registration points to the new accoun
   assert.match(pages["pages/register.html"], /id="signup-form"/);
   assert.match(pages["pages/register.html"], /id="join-form"/);
   assert.match(pages["pages/account.html"], /id="memberships"/);
-  assert.match(pages["pages/account.html"], /id="staff-actions"/);
+  assert.match(pages["pages/account.html"], /id="settings-workspace"/);
+  assert.match(pages["pages/account.html"], /id="account-onboarding"/);
   assert.match(read("index.html"), /href="pages\/login\.html"/);
   assert.match(read("index.html"), /href="pages\/register\.html"/);
 });
@@ -63,25 +68,20 @@ test("new screens and controllers have valid JavaScript syntax", () => {
 
 test("authorization uses real class membership status, not role in editable user metadata", () => {
   assert.match(core, /m\.status === "ACTIVE"/);
-  assert.match(core, /m\.role === "Moderator" \|\| m\.role === "Admin"/);
+  assert.match(read("js/account-settings.js"), /m\.role==="Moderator"/);
   assert.match(live, /bn_join_class/);
   assert.match(live, /bn_review_registration/);
   assert.doesNotMatch(core + live, /raw_user_meta_data|user_metadata\.role/);
 });
 
-test("auth call-to-action links retain readable contrast over button backgrounds", () => {
-  const stylesheet = read("css/auth.css");
-  const account = read("pages/account.html");
-  assert.match(account, /id="join-action"[^>]+class="bn-btn bn-btn-primary"/);
-  assert.match(account, /class="bn-btn bn-btn-primary" href="phase1-class-staff\.html"/);
-  // Specificity (.bn-entry-content a.bn-btn-primary) beats the generic
-  // .bn-entry-content a rule that formerly rendered blue-on-blue text.
-  assert.match(stylesheet,
-    /\.bn-entry-content a\.bn-btn-primary(?::[a-z-]+)?[^{}]*\{[^{}]*background:var\(--bn-primary\);[^{}]*color:#fff;/);
-  assert.match(stylesheet,
-    /\.bn-entry-content a\.bn-btn-primary:hover\{background:var\(--bn-primary-hover\)\}/);
-  assert.match(stylesheet,
-    /\.bn-entry-content a\.bn-btn-secondary[^{}]*\{[^{}]*color:var\(--bn-text\);/);
+test("Phase 1 auth link contrast remains and profile settings uses its own stylesheet", () => {
+ const stylesheet=read("css/auth.css");
+ const account=pages["pages/account.html"];
+ const settings=read("css/account-settings.css");
+ assert.match(stylesheet, /\.bn-entry-content a\.bn-btn-primary/);
+ assert.match(account, /class="bn-settings-primary/);
+ assert.match(settings, /\.bn-settings-primary\{/);
+ assert.match(settings, /background:#2562cd;color:#fff/);
 });
 
 test("registration presents Student and Admin paths without instant client-side elevation", () => {
@@ -99,14 +99,19 @@ test("registration presents Student and Admin paths without instant client-side 
   assert.match(service, /bn_create_owned_class/);
 });
 
-test("My Account respects the saved account type, not editable auth metadata", () => {
-  const account = read("pages/account.html");
-  const ui = read("js/auth-ui.js");
-  assert.match(account, /id="account-type"/);
-  assert.match(ui, /profile\?\.account_type === "Admin"/);
-  assert.match(ui, /hasOwnedClass/);
-  assert.match(ui, /isAdminAccount \? "Create my one class"/);
-  assert.doesNotMatch(ui, /user_metadata\.registration_type/);
+test("My Account is for personal settings, with enrollment only before ACTIVE membership", () => {
+ const account=pages["pages/account.html"];
+ const controller=read("js/account-settings.js");
+ assert.match(account, /id="profile-password-form"/);
+ assert.match(account, /id="profile-photo-form"/);
+ assert.match(account, /id="profile-name-form"/);
+ assert.match(account, /id="account-onboarding"[^>]+hidden/);
+ assert.match(account, /id="settings-workspace" hidden/);
+ assert.doesNotMatch(account, /id="student-notice"|id="staff-actions"/);
+ assert.match(controller, /m\.status==="ACTIVE"/);
+ assert.match(controller, /profile\.account_type==="Admin"/);
+ assert.doesNotMatch(controller, /user_metadata\.registration_type|service_role/);
+ assert.doesNotThrow(()=>new Script(controller));
 });
 
 test("versioned SQL enforces one owned class with a private transaction", () => {

@@ -276,65 +276,6 @@
      state.isAdmin ? "Your Admin account is ready. Create your one classroom below." :
      "You're signed in as Student. Enter an invitation from a class administrator.", "info");
  }
- async function account() {
-   const user = await currentUser();
-   if (!user) return go("login.html");
-   $("account-email").textContent = user.email || "Signed-in account";
-   const profile = await api().profile();
-   const isAdminAccount = profile?.account_type === "Admin";
-   $("account-type").textContent = isAdminAccount ? "Admin account · One owned class" : "Student account · Join classes by invitation";
-   const box = $("memberships");
-   const list = await memberships();
-   const activeIds = [...new Set(list.filter(m => m.status === "ACTIVE").map(m => m.class_id))];
-   const classNames = new Map();
-   if (activeIds.length) {
-     try {
-       const {data, error} = await db().from("Class").select("id,name").in("id",activeIds);
-       if (!error) for (const item of data || []) classNames.set(item.id, item.name);
-     } catch (_) { /* still show verified membership without optional display name */ }
-   }
-   box.replaceChildren();
-   $("member-count").textContent = list.length === 1 ? "1 class membership" : list.length + " class memberships";
-   const hasOwnedClass = isAdminAccount && list.some(m => m.role === "Admin" && m.status === "ACTIVE");
-   $("join-action").hidden = hasOwnedClass;
-   $("join-action").textContent = isAdminAccount ? "Create my one class" :
-     (list.length ? "Join another class" : "Redeem an invitation");
-   if (!list.length) {
-     const note = document.createElement("p");
-     note.textContent = isAdminAccount
-       ? "Your account is registered as Admin. Create your one class to activate its Admin membership."
-       : "No classroom membership yet. Redeem the private class invitation you received from a class administrator.";
-     box.appendChild(note);
-   }
-   let hasStaff = false, hasActive = false;
-   for (const m of list) {
-     const card = document.createElement("div"); card.className = "bn-membership";
-     const title = document.createElement("strong");
-     title.textContent = m.role + " · " + m.status;
-     const detail = document.createElement("small"); detail.textContent = (classNames.get(m.class_id) || "Class") + " · " + m.class_id;
-     const explanation = document.createElement("small");
-     explanation.textContent = m.status === "PENDING" ? "Waiting for Moderator/Admin approval. Classroom data remains restricted." :
-       m.status === "REJECTED" ? "Request declined. Contact a class officer if this is unexpected." :
-       m.status === "ACTIVE" ? "Membership approved. Access is scoped to this classroom." :
-       "Membership inactive.";
-     card.append(title, detail, explanation); box.appendChild(card);
-     if (m.status === "ACTIVE") {
-       hasActive = true;
-       if (m.role === "Moderator" || m.role === "Admin") hasStaff = true;
-     }
-   }
-   $("staff-actions").hidden = !hasStaff;
-   $("admin-classwork-link").hidden = !list.some(m => m.status === "ACTIVE" && m.role === "Admin");
-   $("student-notice").hidden = !hasActive;
-   const logout = $("signout");
-   logout.addEventListener("click", () => task($("account-controls"), async () => {
-     await api().signOut(); status("Signed out.", "success");go("login.html");
-   }));
-   $("refresh-account").addEventListener("click", () => w.location.reload());
-   status(hasActive ? "Class membership verified. You are signed in." :
-     isAdminAccount ? "Your Admin account is authenticated. Create your one class to continue." :
-     "Your Student account is authenticated. Class access requires an approved invitation.", "info");
- }
  document.addEventListener("DOMContentLoaded", async () => {
    clearDemoSession();
    if (!api()?.ready() || !db()) {
@@ -345,7 +286,6 @@
      const page = document.body.dataset.authPage;
      if (page === "login") await login();
      if (page === "register") await register();
-     if (page === "account") await account();
    } catch (e) {
      status(e?.message || "Authentication service failed. Please try again.", "error");
    }

@@ -12,6 +12,19 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 
 ## Signed-in workspaces
 
+The public homepage presents **Sign in** and **Create an account** only.
+A successful login opens `pages/dashboard.html` directly, while
+`pages/account.html` provides **Profile & Security** settings for users with
+ACTIVE classroom membership. Here they can update their display name,
+change their password after confirming the current password, and manage a
+private 2 MiB JPG/PNG/WebP avatar. Accounts awaiting class access instead
+see enrollment/approval guidance. The email address and membership roles
+remain read-only. This work uses migration
+`20261025232001_account_settings_private_avatars.sql` and is tracked in
+[Account settings acceptance](docs/ACCOUNT-SETTINGS-ACCEPTANCE-2026-10-26.md).
+
+
+
 Successful sign-in now opens [Dashboard](pages/dashboard.html), not the
 Phase 1 [My Account](pages/account.html) enrollment center. The same
 authenticated dashboard renders a **Student study overview** or an
