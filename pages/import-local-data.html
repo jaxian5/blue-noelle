@@ -10,7 +10,7 @@
 </style>
 </head><body>
 <div class="bn-app"><header class="bn-header"><a class="bn-logo" href="class-operations.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<nav class="bn-nav"><a href="class-operations.html">Class Operations</a><a href="import-local-data.html" class="active">Import</a></nav></header>
+<nav class="bn-nav"><a href="account.html">My Account</a><a href="class-operations.html">Class Operations</a><a href="import-local-data.html" class="active">Import</a></nav></header>
 <main class="bn-main bn-migrate">
 <h1>Import old classwork</h1>
 <p class="bn-muted">Move subjects and assignments saved in this browser to your Supabase class. For a different device, choose a JSON export of the old <code>bn_phase2_assignments</code> store. Accounts, demo passwords and public demonstration invite codes are never imported.</p>
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if(!window.BNBackend?.configured){state("Supabase client is not configured.");return;}
   try {
     const {data,error}=await BNBackend.client.auth.getUser();
-    if(error||!data.user)throw Error("Sign in on Class Operations with Supabase Auth first.");
+    if(error||!data.user)throw Error("Sign in through login.html first, then return to this page.");
     const memberships=await BNBackend.listMyClasses();
     for(const m of memberships.filter(m=>m.role==="Admin"&&m.status==="ACTIVE")){
       const option=document.createElement("option");option.value=m.class_id;option.textContent=m.class_id+" (Admin)";
