@@ -149,6 +149,14 @@
    $("account-email").textContent = user.email || "Signed-in account";
    const box = $("memberships");
    const list = await memberships();
+   const activeIds = [...new Set(list.filter(m => m.status === "ACTIVE").map(m => m.class_id))];
+   const classNames = new Map();
+   if (activeIds.length) {
+     try {
+       const {data, error} = await db().from("Class").select("id,name").in("id",activeIds);
+       if (!error) for (const item of data || []) classNames.set(item.id, item.name);
+     } catch (_) { /* still show verified membership without optional display name */ }
+   }
    box.replaceChildren();
    $("member-count").textContent = list.length === 1 ? "1 class membership" : list.length + " class memberships";
    if (!list.length) {
@@ -162,7 +170,7 @@
      const card = document.createElement("div"); card.className = "bn-membership";
      const title = document.createElement("strong");
      title.textContent = m.role + " · " + m.status;
-     const detail = document.createElement("small"); detail.textContent = "Class ID: " + m.class_id;
+     const detail = document.createElement("small"); detail.textContent = (classNames.get(m.class_id) || "Class") + " · " + m.class_id;
      const explanation = document.createElement("small");
      explanation.textContent = m.status === "PENDING" ? "Waiting for Moderator/Admin approval. Classroom data remains restricted." :
        m.status === "REJECTED" ? "Request declined. Contact a class officer if this is unexpected." :
