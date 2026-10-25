@@ -267,7 +267,7 @@ test("email sending quota errors explain retry without showing signup confirmati
   el("signup-confirm").value = "LongPassword2026";
   el("signup-form").listeners.submit({ preventDefault() {} });
   for (let i = 0; i < 4; i++) await new Promise(resolve => setImmediate(resolve));
-  assert.match(el("auth-status").textContent, /Supabase is temporarily limiting email delivery/);
+  assert.match(el("auth-status").textContent, /Email delivery is temporarily limited/);
   assert.equal(el("signup-confirmation").opened, false);
   assert.deepEqual(redirects, []);
 });
