@@ -139,3 +139,12 @@ test("reject oversized or unsupported photos and preserve private bucket rules",
  assert.match(sql,/UPDATE\(full_name\)/);
  assert.doesNotMatch(sql,/GRANT UPDATE\(account_type\)|GRANT UPDATE ON public\."User"/);
 });
+
+test("dashboard uses private user-specific photo and falls back to initials",()=>{
+ const html=read("pages/dashboard.html");
+ const js=read("js/dashboard-live.js");
+ assert.match(html,/id="dash-avatar-img"/);
+ assert.match(html,/id="dash-avatar"/);
+ assert.ok(js.includes('storage.from("bn-avatars").download(uid+"/avatar")'));
+ assert.doesNotMatch(js,/getPublicUrl|service_role/);
+});
