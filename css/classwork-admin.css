@@ -1,0 +1,32 @@
+.bn-admin-workspace{max-width:1120px}
+.bn-admin-panel{padding:1.4rem;margin-bottom:1.5rem}
+.bn-admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.2rem}
+.bn-admin-panel-heading h2{font-size:1.4rem;margin:.2rem 0}
+.bn-admin-count{padding:.35rem .8rem;border-radius:30px;background:#eff6ff;color:#1d4ed8;font-size:.8rem;font-weight:750}
+.bn-admin-inline-form{margin-bottom:1.2rem}
+.bn-admin-inline-form label,.bn-admin-form label,.bn-admin-dialog label{display:block;font-size:.85rem;font-weight:700;color:#334155;margin-bottom:.4rem}
+.bn-admin-form-row{display:flex;gap:.7rem;flex-wrap:wrap}
+.bn-admin-form-row input{flex:1;min-width:180px}
+.bn-admin-panel input,.bn-admin-panel textarea,.bn-admin-panel select,.bn-admin-dialog input{font:inherit;width:100%;padding:.7rem;border:1px solid #94a3b8;border-radius:8px;background:#fff;color:#0f172a}
+.bn-admin-panel input:focus-visible,.bn-admin-panel textarea:focus-visible,.bn-admin-panel select:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.bn-admin-form-row button{width:auto;white-space:nowrap}
+.bn-admin-subject-list,.bn-admin-assignment-list{display:grid;gap:.55rem}
+.bn-admin-record{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}
+.bn-admin-record h3{font-size:1rem;overflow-wrap:anywhere}
+.bn-admin-record p{font-size:.82rem;color:#64748b;margin-top:.2rem;overflow-wrap:anywhere}
+.bn-admin-record button{white-space:nowrap}
+.bn-admin-form{padding:1.1rem;border-radius:12px;background:#eef4ff;border:1px solid #bfdbfe;margin-bottom:1.25rem}
+.bn-admin-form h3{font-size:1.1rem;margin-bottom:1rem}
+.bn-admin-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+.bn-admin-fields .bn-admin-wide{grid-column:1/-1}
+.bn-admin-fields label{margin:0}
+.bn-admin-fields input,.bn-admin-fields textarea,.bn-admin-fields select{margin-top:.4rem}
+.bn-admin-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.1rem}
+.bn-admin-record-actions{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.bn-admin-record-actions select{min-width:115px;width:auto;font-size:.83rem}
+.bn-admin-dialog{border:0;border-radius:16px;padding:1.7rem;width:min(450px,calc(100vw - 2rem));box-shadow:0 15px 70px #0f172a50}
+.bn-admin-dialog::backdrop{background:#0b163480;backdrop-filter:blur(3px)}
+.bn-admin-dialog h2{font-size:1.3rem;margin-bottom:1rem}
+.bn-admin-dialog input{margin:.3rem 0 1rem}
+.bn-admin-empty{padding:1.2rem;border-radius:10px;background:#f8fafc;color:#64748b}
+@media(max-width:700px){.bn-admin-fields{grid-template-columns:1fr}.bn-admin-record{align-items:flex-start;flex-direction:column}.bn-admin-record-actions{width:100%}}
