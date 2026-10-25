@@ -159,6 +159,8 @@
    }
    box.replaceChildren();
    $("member-count").textContent = list.length === 1 ? "1 class membership" : list.length + " class memberships";
+   $("join-action").hidden = false;
+   $("join-action").textContent = list.length ? "Join another class" : "Redeem an invitation";
    if (!list.length) {
      const note = document.createElement("p");
      note.textContent = "No classroom membership yet. Redeem the private class invitation you received from your class administrator.";
