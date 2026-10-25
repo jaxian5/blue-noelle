@@ -1,6 +1,6 @@
 # Phase 2 final polish and acceptance
 
-**October 25, 2026.** The audited classwork backend and redesigned dashboard have been merged through PR #21. This polish updates the landing-page links and classroom form guidance to point to the live academic workspace instead of advertising legacy demo behavior.
+**October 25, 2026.** The audited classwork backend and redesigned dashboard have been merged through PR #21, and final Admin-form validation through PR #24. This polish updates the landing-page links and classroom form guidance to point to the live academic workspace instead of advertising legacy demo behavior.
 
 **Phase 2 technical completion:** Live Supabase-backed dashboard, active-class selector, subject/assignment reads, Admin subject/assignment CRUD, deadlines and status transitions, and atomic audit records. Cross-class and Student write denials verified in rolled-back database integration tests. No demo classwork is seeded. Free Plan file limit capped at 40 MiB.
 
@@ -8,4 +8,4 @@
 
 **Phase 1 operational hold:** Email delivery remains under investigation. Do not disable verification or claim self-service enrollment ready.
 
-**Phase 3 starts separately:** Secure private files and versioned submissions must be implemented with RLS/storage policies and transactional lifecycle, not the old demo screens.
+**Phase 3 has now been merged as PR #23:** Private files, versioned submission lifecycle, class/group access policies and role-scoped staff review are implemented. **End-to-end live Storage upload/download checks remain outstanding** before Phase 3 acceptance. See [Phase 3 production gate](PHASE3-PRODUCTION-2026-10-25.md).
