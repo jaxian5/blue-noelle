@@ -182,5 +182,5 @@
    });
    w.addEventListener?.("beforeunload",()=>{if(avatarUrl)URL.revokeObjectURL(avatarUrl)});
  }
- document.addEventListener("DOMContentLoaded",()=>{install();boot()});
+ document.addEventListener("DOMContentLoaded",()=>{install();return boot()});
 })(window);
