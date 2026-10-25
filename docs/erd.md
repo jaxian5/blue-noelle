@@ -7,6 +7,7 @@ All entities correspond to 19 live tables in the Supabase `public` schema. Supab
 erDiagram
     AUTH_USERS ||--o| User : provisions
     User ||--o{ ClassMembership : joins
+    User o|--o| Class : creates_one_owned_class
     Class ||--o{ ClassMembership : contains
     Class ||--o{ Subject : teaches
     Subject ||--o{ Assignment : owns
