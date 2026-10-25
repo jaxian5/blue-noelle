@@ -46,7 +46,38 @@
     <label class="bn-admin-wide">Instructions <textarea id="assignment-instructions" maxlength="20000" rows="4" placeholder="Steps, requirements, and grading notes"></textarea></label>
     <label>Deadline (Asia/Manila time) <input type="datetime-local" id="assignment-deadline"></label>
     <label>Assignment type <select id="assignment-type"><option value="individual">Individual</option><option value="group">Group</option></select></label>
-    <label>Required MIME types (comma separated) <input id="assignment-file-types" placeholder="application/pdf, image/png" aria-describedby="mime-hint"><small id="mime-hint">Separate permitted MIME types with commas. Leave blank to accept supported file types.</small></label>
+    <fieldset class="bn-admin-wide bn-format-fieldset" aria-describedby="mime-hint">
+     <legend>Allowed attachment formats</legend>
+     <details id="assignment-format-picker" class="bn-format-picker">
+       <summary><span class="bn-format-picker-title">Choose accepted file formats <span class="bn-format-caret" aria-hidden="true">⌄</span></span><span id="assignment-format-count" class="bn-format-count" aria-live="polite">All supported formats</span></summary>
+       <div class="bn-format-body">
+         <p id="mime-hint" class="bn-format-help">Select only the formats students may upload. Leave every option unchecked to accept all supported formats.</p>
+         <div id="assignment-file-types" class="bn-format-groups" role="group" aria-label="Accepted attachment types">
+           <div class="bn-format-group"><h4>Documents</h4><div class="bn-format-grid">
+             <label><input type="checkbox" name="assignment-file-format" value="application/pdf"><span>PDF <small>.pdf</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"><span>Word <small>.docx</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="application/vnd.openxmlformats-officedocument.presentationml.presentation"><span>PowerPoint <small>.pptx</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"><span>Excel <small>.xlsx</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="text/plain"><span>Text <small>.txt</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="text/csv"><span>CSV <small>.csv</small></span></label>
+           </div></div>
+           <div class="bn-format-group"><h4>Images</h4><div class="bn-format-grid">
+             <label><input type="checkbox" name="assignment-file-format" value="image/png"><span>PNG <small>.png</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="image/jpeg"><span>JPEG <small>.jpg</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="image/webp"><span>WebP <small>.webp</small></span></label>
+           </div></div>
+           <div class="bn-format-group"><h4>Other formats</h4><div class="bn-format-grid">
+             <label><input type="checkbox" name="assignment-file-format" value="application/zip"><span>ZIP <small>.zip</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="application/json"><span>JSON <small>.json</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="video/mp4"><span>MP4 <small>.mp4</small></span></label>
+             <label><input type="checkbox" name="assignment-file-format" value="audio/mpeg"><span>MP3 <small>.mp3</small></span></label>
+           </div></div>
+           <div id="assignment-legacy-formats" class="bn-format-group" hidden><h4>Previously configured formats</h4><div id="assignment-legacy-options" class="bn-format-grid"></div></div>
+         </div>
+         <div class="bn-format-footer"><button type="button" id="assignment-formats-clear" class="bn-format-clear">Clear selections</button><span>Maximum 12 allowed types</span></div>
+       </div>
+     </details>
+    </fieldset>
     <label>Maximum file size (MiB, optional; 40 MiB maximum on Free) <input id="assignment-max-mib" type="number" min="1" max="40" step="1" placeholder="e.g. 10"></label>
    </div>
    <div class="bn-admin-actions"><button type="submit" id="assignment-submit" class="bn-btn bn-btn-primary">Create assignment</button>
