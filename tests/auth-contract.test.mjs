@@ -271,3 +271,70 @@ test("email sending quota errors explain retry without showing signup confirmati
   assert.equal(el("signup-confirmation").opened, false);
   assert.deepEqual(redirects, []);
 });
+
+
+test("signup and verification pages offer safe existing-account recovery without an email existence lookup", () => {
+  const register = read("pages/register.html");
+  const verify = read("pages/verify-email.html");
+  const login = read("pages/login.html");
+  const controller = read("js/auth-ui.js");
+  assert.match(register, /Already have a Blue Noelle account\?/);
+  assert.match(register, /sign in to an existing account/);
+  assert.match(register, /Forgot password/);
+  assert.match(verify, /already confirmed, a new signup code may not be sent/);
+  assert.match(verify, /Try signing in/);
+  assert.match(login, /Verify Email or request another code/);
+  assert.match(controller, /An account may already exist for this email/);
+  assert.match(controller, /A successful signup response does not always mean a new email was sent/);
+  assert.doesNotMatch(controller, /from\(["']User["']\).*eq\(["']email["']/);
+});
+
+test("repeated signup response is not described as a guaranteed email delivery", async () => {
+  const elements = new Map();
+  const fakeElement = id => {
+    if (!elements.has(id)) elements.set(id, {
+      value:"",textContent:"",hidden:false,dataset:{},listeners:{},open:false,
+      addEventListener(event,listener){this.listeners[event]=listener},
+      querySelectorAll(){return []},
+      reset(){},
+      showModal(){this.open=true},
+      close(){this.open=false;this.listeners.close?.()}
+    });
+    return elements.get(id);
+  };
+  let ready;
+  const document = {
+    body:{dataset:{authPage:"register"}},
+    addEventListener(event,callback){if(event==="DOMContentLoaded")ready=callback},
+    getElementById:fakeElement,
+    querySelector(){return {value:"Student"}}
+  };
+  const redirects=[];
+  const window = {
+    BNLivePhase1:{ready:()=>true,signUp:async()=>({user:{identities:[]},session:null})},
+    BNBackend:{client:{auth:{getUser:async()=>({data:{user:null},error:null})}}},
+    location:{href:"https://example.test/pages/register.html",replace:p=>redirects.push(p)}
+  };
+  new Script(core).runInNewContext({window,document,localStorage:{removeItem(){}}});
+  await ready();
+  fakeElement("signup-password").value="SomeUniquePassword1!";
+  fakeElement("signup-confirm").value="SomeUniquePassword1!";
+  fakeElement("signup-email").value="existing@example.test";
+  fakeElement("signup-name").value="Existing Account";
+  fakeElement("signup-form").listeners.submit({preventDefault(){}});
+  for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(fakeElement("signup-confirmation").open,true);
+  assert.match(fakeElement("signup-confirm-description").textContent,/Already registered\?/);
+  assert.match(fakeElement("auth-status").textContent,/If this is a new account/);
+  assert.doesNotMatch(fakeElement("signup-confirm-description").textContent,/We sent a six-digit/);
+  assert.equal(redirects.length,0);
+});
+
+test("explicit duplicate and unverified errors present recovery paths", () => {
+  const controller=read("js/auth-ui.js");
+  const verify=read("js/verify-email.js");
+  assert.match(controller, /user_already_exists/);
+  assert.match(controller, /email_not_confirmed/);
+  assert.match(verify, /Request accepted\. If this email is awaiting verification/);
+  assert.doesNotMatch(verify, /A new verification code was requested\./);
+});
