@@ -174,3 +174,26 @@ test("Admin role loads audited group management list and Student roster",async()
  assert.equal(x.$("group-management").hidden,false);
  assert.ok(x.calls.find(c=>c.name==="bn_p3_groups"&&c.args.p_action==="roster"));
 });
+
+test("Two submitted versions retain their independent historical timestamps",async()=>{
+  const x=fixture();
+  await x.ready();
+  x.details=[{
+    id:"submission1",student_id:"member1",status:"SUBMITTED",
+    submitted_at:"2026-11-02T10:00:00Z",
+    versions:[
+      {id:"v2",number:2,state:"READY",created_at:"2026-11-02T09:00:00Z",
+        submitted_at:"2026-11-02T10:00:00Z",deadline_at_submission:"2026-11-02T11:00:00Z",files:[]},
+      {id:"v1",number:1,state:"READY",created_at:"2026-10-29T09:00:00Z",
+        submitted_at:"2026-10-29T10:00:00Z",deadline_at_submission:"2026-10-29T09:00:00Z",files:[]}
+    ]
+  }];
+  x.$("sub-refresh").listeners.click();
+  await flush();
+  const versions=x.$("sub-history").children.filter(n=>n.className==="bn-sub-version");
+  assert.equal(versions.length,2);
+  assert.match(versions[0].children.map(n=>n.textContent).join(" "),/Submitted Nov 2, 2026/);
+  assert.match(versions[1].children.map(n=>n.textContent).join(" "),/Submitted Oct 29, 2026/);
+  assert.ok(versions[1].children.some(n=>/LATE/.test(n.textContent)));
+  assert.ok(!versions[0].children.some(n=>/LATE/.test(n.textContent)));
+});

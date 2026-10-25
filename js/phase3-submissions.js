@@ -83,6 +83,10 @@
   line.append(make("span",v.state,"bn-sub-mini"));
   wrap.append(line);
   wrap.append(make("p","Created "+dateWord(v.created_at)));
+  if(v.submitted_at){
+    const late=v.deadline_at_submission&&new Date(v.submitted_at)>new Date(v.deadline_at_submission);
+    wrap.append(make("p","Submitted "+dateWord(v.submitted_at)+(late?" · LATE":""),"bn-sub-hint"));
+  }
   const files=v.files||[];
   if(!files.length)wrap.append(make("p","No uploaded files yet."));
   for(const f of files)wrap.append(fileItem(f,allowCancel));

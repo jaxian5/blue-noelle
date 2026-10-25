@@ -158,3 +158,16 @@ test("dashboard renders real member/class/subject/assignment summaries",async()=
  assert.equal(p.elem("dash-upcoming").children.length,1);
  assert.equal(b.calls.some(c=>c.table==="Subject"&&c.constraints.some(x=>x[1]==="class_id"&&x[2]==="class-1")),true);
 });
+
+test("Admin deadline input uses Asia/Manila even when host browser timezone differs",()=>{
+ const p=fakePage();
+ const w={BNBackend:{configured:false,client:null}};
+ const instrumented=admin.replace(' document.addEventListener("DOMContentLoaded",init);',
+  ' w.__testTime={dateLocal,parseManilaDatetime}; document.addEventListener("DOMContentLoaded",init);');
+ new Script(instrumented).runInNewContext({window:w,document:p.document,Intl,Date,Number,Error,Object});
+ assert.ok(w.__testTime);
+ assert.equal(w.__testTime.dateLocal("2026-11-04T14:00:00Z"),"2026-11-04T22:00");
+ assert.equal(w.__testTime.parseManilaDatetime("2026-11-04T22:00").toISOString(),"2026-11-04T14:00:00.000Z");
+ assert.throws(()=>w.__testTime.parseManilaDatetime("2026-02-30T22:00"),/Invalid Asia\/Manila/);
+ assert.match(admin,/parseManilaDatetime\(raw\)/);
+});
