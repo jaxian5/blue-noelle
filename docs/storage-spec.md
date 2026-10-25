@@ -1,4 +1,4 @@
-# Blue Noelle — File Storage Specification
+> **Phase 0 storage decision clarification (2026-10-25):** This document records the framework's initial *local-disk-first abstraction design*. Our deployed hosting choice is Supabase; [ADR-0001](ADR-0001-supabase-architecture.md) specifies **private Supabase Storage behind an opaque storage-key abstraction** for Phase 3. This is a specification, not evidence that uploads are implemented.\n\n# Blue Noelle — File Storage Specification
 
 **Phase 0 deliverable · Version 0.1**  
 Reference: Working Framework §7
