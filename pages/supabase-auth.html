@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supabase Auth Test · Blue Noelle</title><link rel="stylesheet" href="../css/main.css">
+<style>.auth-test{max-width:580px;margin:2rem auto}.auth-test label{display:block;margin:.75rem 0}.auth-test input{display:block;width:100%;padding:.65rem;border:1px solid var(--bn-border-strong);border-radius:6px;background:var(--bn-bg);color:var(--bn-text)}
+.auth-test .bn-flex{gap:.5rem;flex-wrap:wrap}.auth-test p{line-height:1.5}</style>
+</head><body><div class="bn-app"><header class="bn-header"><a href="../index.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="class-operations.html">Class Operations</a><a href="supabase-auth.html" class="active">Supabase Auth</a></nav></header>
+<main class="bn-main auth-test">
+<h1>Supabase account testing</h1><p class="bn-muted">This is the new backend authentication flow, separate from Blue Noelle's older localStorage demonstration. New users receive no classroom permissions until a trusted administrator assigns their class membership. Invite-code onboarding is not connected yet.</p>
+<div class="bn-card">
+<form id="live-auth-form" class="bn-form">
+<label>Full name (new signup only)<input id="live-name" type="text" maxlength="120" autocomplete="name"></label>
+<label>Email<input id="live-email" type="email" required autocomplete="email"></label>
+<label>Password<input id="live-password" type="password" minlength="8" required autocomplete="current-password"></label>
+<div class="bn-flex"><button type="button" class="bn-btn bn-btn-primary" id="live-signin">Sign in</button><button type="button" class="bn-btn bn-btn-secondary" id="live-signup">Create test account</button><button type="button" class="bn-btn bn-btn-secondary" id="live-logout">Sign out</button></div>
+</form><p id="live-message" role="status" aria-live="polite"></p>
+<div id="live-session" class="bn-text-sm"></div>
+</div>
+<p class="bn-muted bn-text-sm">If email confirmations are enabled, check your inbox after signup. Configure your project's Site URL and permitted redirect URLs before using confirmation links on GitHub Pages. Do not reuse the old demo passwords.</p>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-adapter.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+ const $=id=>document.getElementById(id);const message=t=>$("live-message").textContent=t;
+ const client=window.BNBackend?.client;
+ if(!client){message("Supabase is not configured.");return;}
+ const refresh=async()=>{
+   const {data,error}=await client.auth.getUser();
+   const box=$("live-session");box.replaceChildren();
+   if(error||!data.user){box.textContent="No authenticated session.";return;}
+   const info=document.createElement("p");info.textContent="Signed in: "+(data.user.email||data.user.id);
+   box.append(info);
+   const {data:members,error:memberError}=await client.from("ClassMembership")
+     .select("class_id,role,status");
+   const details=document.createElement("p");
+   details.textContent=memberError ? "Membership lookup unavailable: "+memberError.message :
+    (members?.length ? "Memberships: "+members.map(m=>m.role+" "+m.status+" ("+m.class_id+")").join(", ") :
+      "No class memberships yet. An administrator must provision or verify your membership.");
+   box.append(details);
+   if(members?.some(m=>m.role==="Admin"&&m.status==="ACTIVE")){
+      const link=document.createElement("a");link.href="class-operations.html";link.textContent="Open Class Operations";
+      box.append(link);
+   }
+ };
+ async function run(fn){
+  message("Contacting Supabase…");
+  try{await fn();$("live-password").value="";await refresh();}
+  catch(e){message(e.message||"Authentication failed.");$("live-password").value="";}
+ }
+ $("live-signin").addEventListener("click",()=>run(async()=>{
+   const {error}=await client.auth.signInWithPassword({email:$("live-email").value.trim(),password:$("live-password").value});
+   if(error)throw error;message("Signed in.");
+ }));
+ $("live-signup").addEventListener("click",()=>run(async()=>{
+   const email=$("live-email").value.trim(),password=$("live-password").value,name=$("live-name").value.trim();
+   if(!email||!password||!name)throw Error("Full name, email and password are required for signup.");
+   const {data,error}=await client.auth.signUp({email,password,options:{data:{full_name:name}}});
+   if(error)throw error;
+   message(data.session ? "Account created and signed in. Await an administrator class membership." :
+     "Signup accepted. Check your email for a confirmation link before signing in.");
+ }));
+ $("live-logout").addEventListener("click",()=>run(async()=>{
+   const {error}=await client.auth.signOut();if(error)throw error;message("Signed out.");
+ }));
+ await refresh();
+});
+</script></body></html>
