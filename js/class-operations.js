@@ -6,7 +6,7 @@
  async function query(run) {
    const db=backend(); if (!db) throw Error('Connect Supabase in order to use class management.');
    const {data:{user},error:authError}=await db.auth.getUser();
-   if(authError||!user) throw Error('Sign in with Supabase Auth first. Demo login is not a backend session.');
+   if(authError||!user) throw Error('Sign in through Blue Noelle's login page before using class management.');
    const {data,error}=await run(db); if(error) throw error; return data;
  }
  w.BNClassOps=Object.freeze({
