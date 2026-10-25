@@ -1,4 +1,4 @@
-> **OTP verification upgrade (pending deployment):** Blue Noelle's new six-digit email confirmation page is in review. Before merging it, update the Supabase Confirm signup template to use `{{ .Token }}` and verify Brevo SMTP delivery. See [Brevo email OTP guide](docs/EMAIL-OTP-BREVO-SETUP.md). The existing approved class-scoped authorization model is unchanged.
+> **OTP verification upgrade (pending deployment):** Blue Noelle's new eight-digit email confirmation page is in review. Before merging it, update the Supabase Confirm signup template to use `{{ .Token }}` and verify Brevo SMTP delivery. See [Brevo email OTP guide](docs/EMAIL-OTP-BREVO-SETUP.md). The existing approved class-scoped authorization model is unchanged.
 
 > **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Phase 1 was approved by the project owner after live multi-account testing; the final confirmation-dialog polish is pending merge.
 
