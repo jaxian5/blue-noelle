@@ -166,7 +166,7 @@
            "We sent a six-digit verification code. Open the verification page and enter the code to confirm your account.";
        }
        $("signup-confirm-continue").href = confirmationDestination;
-       $("signup-confirm-continue").firstChild.textContent =
+       $("signup-continue-label").textContent =
          result?.session ? "Continue to Sign-In " : "Enter verification code ";
        status("Registration received. Continue to Sign In after reviewing the next step.", "success");
        if (typeof confirmation.showModal === "function") {
