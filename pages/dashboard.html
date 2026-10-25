@@ -145,7 +145,8 @@
       if (!window.Phase2) return;
       const user = BN.getCurrentUser();
       if (!user) return;
-      const classId = user.class_memberships?.[0]?.class_id || "class-educ2-a";
+      const classId = user.class_memberships?.find(m => m.status === "ACTIVE")?.class_id;
+      if (!classId) return;
       const groups = await Phase2.groupedBySubject(classId);
       const open = groups.flatMap(g => g.assignments.filter(a => a.status === "OPEN"));
       const el = document.getElementById("dash-upcoming");
@@ -154,14 +155,16 @@
       if (!el) return;
       if (!open.length) return;
       el.className = "bn-grid-2";
+      const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g,
+        ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch]);
       el.innerHTML = open.slice(0, 4).map(a => {
         const urgency = a.deadline ? BN.getUrgency(a.deadline) : "ok";
         const cd = a.deadline ? BN.countdown(a.deadline) : "";
         return `<div class="bn-card bn-assign-card urgency-${urgency}" style="padding:1rem;">
-          <div class="bn-flex-between"><strong>${a.name}</strong><span class="bn-badge bn-badge-open">OPEN</span></div>
+          <div class="bn-flex-between"><strong>${escapeHTML(a.name)}</strong><span class="bn-badge bn-badge-open">OPEN</span></div>
           <p class="bn-muted bn-text-sm bn-mt-1">${a.is_group ? "Group" : "Individual"}</p>
           <div class="bn-assign-meta"><span>${cd || (a.deadline ? BN.formatDateTime(a.deadline) : "No deadline")}</span></div>
-          <a href="submission.html?assignment=${a.id}" class="bn-btn bn-btn-primary bn-mt-2" style="width:100%;font-size:0.85rem;">Open</a>
+          <a href="submission.html?assignment=${encodeURIComponent(a.id)}" class="bn-btn bn-btn-primary bn-mt-2" style="width:100%;font-size:0.85rem;">Open</a>
         </div>`;
       }).join("");
     });
