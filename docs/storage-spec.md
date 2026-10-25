@@ -3,6 +3,8 @@
 **Phase 0 deliverable · Version 0.1**  
 Reference: Working Framework §7
 
+> **Implementation update · October 25, 2026.** The “local storage first” section below is the original Phase 0 design, **not the production storage backend**. [ADR-0001](ADR-0001-supabase-architecture.md) supersedes that deployment choice for the GitHub Pages application. Phase 3 has implemented a **private** Supabase Storage bucket `bn-submissions` and guarded, server-issued `storage_key` paths (PR #23). The browser must use authenticated uploads/downloads governed by Storage RLS; no public URLs and no service-role keys. **Live file-byte acceptance remains outstanding.** The logical CLASS → Assignment → Submission → Version → File hierarchy, metadata separation and soft-delete goals below still apply.
+
 ## Decision
 
 Application-managed **local storage first**, behind a **storage abstraction**.  

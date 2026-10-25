@@ -1,8 +1,10 @@
-> **Progress update:** The read-only viewer described below was merged as PR #20. The next branch adds an audited production Admin editor and fully redesigned live dashboard. See [Phase 2 production status](PHASE2-PRODUCTION-2026-10-25.md).\n\n# Phase 2 live kickoff: Subjects & Assignments
+> **Historical kickoff snapshot, not current release status.** Phase 2's live viewer merged in PR #20, its Admin/dashboard implementation in PR #21 and validation polish in PR #24. Phase 3 implementation also merged in PR #23. See [current Phase 2 production status](PHASE2-PRODUCTION-2026-10-25.md) and [Phase 3 runbook](PHASE3-PRODUCTION-2026-10-25.md). Live owner browser acceptance is still required for final phase approval.
+
+# Phase 2 live kickoff: Subjects & Assignments
 
 **Date:** October 25, 2026  
 **Phase 0:** Accepted. **Phase 1:** Approved by project owner.  
-**Phase 2:** NOW STARTED, first real-Supabase reading slice in this PR.
+**Phase 2 at the time of this document:** initial live read-only viewer in PR #20. This document captures the kickoff and is superseded by the production runbook.
 
 ## Decision: Email delivery is a parallel operational incident
 
