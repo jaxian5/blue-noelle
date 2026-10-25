@@ -33,7 +33,7 @@ function fixture({session=true,role="Student",group=false,assignmentStatus="OPEN
  let ready,redirect;
  const map=new Map();
  const elem=(tag="div")=>({
-  tag,textContent:"",value:"",disabled:false,hidden:false,dataset:{},files:[],children:[],listeners:{},
+  tag,textContent:"",value:"",disabled:false,hidden:false,dataset:{},style:{},files:[],children:[],listeners:{},
   append(...nodes){this.children.push(...nodes)},
   appendChild(n){this.children.push(n)},
   replaceChildren(...nodes){this.children=[...nodes]},
