@@ -136,7 +136,7 @@
  }
  function restoreFormatSelection(saved=[]){
    const selected=Array.isArray(saved)?saved.filter(x=>typeof x==="string"):[];
-   const known=new Set(formatInputs().map(input=>input.value));
+   const known=new Set(formatInputs().filter(input=>input.dataset?.legacy!=="true").map(input=>input.value));
    const legacy=$("assignment-legacy-options");
    legacy.replaceChildren();
    // Maintain any existing specialized MIME values on edit. The Admin can
@@ -145,7 +145,7 @@
      const label=node("label");
      const input=node("input");
      input.type="checkbox";input.name="assignment-file-format";
-     input.value=mime;input.checked=true;
+     input.value=mime;input.checked=true;input.dataset.legacy="true";
      const text=node("span",mime);
      label.append(input,text);legacy.append(label);
    }
