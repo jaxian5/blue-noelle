@@ -11,17 +11,17 @@ const page=read("pages/verify-email.html");
 const ui=read("js/verify-email.js");
 const adapter=read("js/phase1-live.js");
 
-test("dedicated OTP screen provides six usable code inputs",()=>{
+test("dedicated OTP screen provides eight usable code inputs",()=>{
   assert.match(page,/data-auth-page="verify-email"/);
   assert.match(page,/id="otp-email"/);
   assert.match(page,/id="otp-form"/);
   assert.match(page,/id="otp-resend-timer"/);
   assert.match(page,/id="otp-complete"/);
   assert.match(page,/verify-email\.js/);
-  assert.equal((page.match(/class="bn-otp-digit"/g)||[]).length,6);
+  assert.equal((page.match(/class="bn-otp-digit"/g)||[]).length,8);
   assert.match(page,/autocomplete="one-time-code"/);
   assert.doesNotMatch(page,/phase1-auth\.js|core\.js/);
-  assert.match(read("css/auth.css"),/grid-template-columns:repeat\(6,/);
+  assert.match(read("css/auth.css"),/grid-template-columns:repeat\(8,/);
   assert.doesNotThrow(()=>new Script(ui));
   assert.doesNotThrow(()=>new Script(adapter));
 });
@@ -47,12 +47,13 @@ test("live signup OTP adapter checks code length, type and resend call",async()=
   }};
   const w={BNBackend:{configured:true,client},location:{href:"https://example.test/pages/verify-email.html"}};
   new Script(adapter).runInNewContext({window:w,URL});
-  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","12345"),/six-digit/);
-  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","ABCDEF"),/six-digit/);
-  const result=await w.BNLivePhase1.verifySignupCode("user@example.com","123456");
+  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","1234567"),/eight-digit/);
+  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","ABCDEFGH"),/eight-digit/);
+  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","123456789"),/eight-digit/);
+  const result=await w.BNLivePhase1.verifySignupCode("user@example.com","12345678");
   assert.equal(result.user.id,"test");
   assert.equal(verified.type,"email");
-  assert.equal(verified.token,"123456");
+  assert.equal(verified.token,"12345678");
   assert.equal(verified.email,"user@example.com");
   await w.BNLivePhase1.resendSignupCode("user@example.com");
   assert.equal(resent.type,"signup");
@@ -69,7 +70,7 @@ function fixture({withPending=false,fail=false}={}){
     });
     return map.get(id);
   };
-  const slots=Array.from({length:6},(_,i)=>elem("digit"+i));
+  const slots=Array.from({length:8},(_,i)=>elem("digit"+i));
   let ready,verifyCalls=0,signOutCalls=0,resendCalls=0;
   const now=Date.now();
   let stored=withPending?JSON.stringify({email:"student@example.test",at:now,nextResendAt:now+60000}):null;
@@ -83,7 +84,7 @@ function fixture({withPending=false,fail=false}={}){
     async verifySignupCode(email,token){
       verifyCalls++;
       assert.equal(email,"student@example.test");
-      assert.equal(token,"123456");
+      assert.equal(token,"12345678");
       if(fail)throw Object.assign(Error("Token has expired"),{code:"otp_expired"});
       return {user:{id:"verified"},session:{access_token:"test-session"}};
     },
@@ -105,7 +106,7 @@ test("successful verification clears temporary hint and returns to password sign
   const x=fixture({withPending:true});
   await x.ready();
   assert.equal(x.elem("otp-email").value,"student@example.test");
-  [..."123456"].forEach((ch,i)=>x.slots[i].value=ch);
+  [..."12345678"].forEach((ch,i)=>x.slots[i].value=ch);
   x.elem("otp-form").listeners.submit({preventDefault(){}});
   for(let i=0;i<4;i++)await new Promise(done=>setImmediate(done));
   assert.equal(x.calls.verifyCalls,1);
@@ -118,7 +119,7 @@ test("successful verification clears temporary hint and returns to password sign
 test("expired code remains on screen and cannot produce false success",async()=>{
   const x=fixture({withPending:true,fail:true});
   await x.ready();
-  [..."123456"].forEach((ch,i)=>x.slots[i].value=ch);
+  [..."12345678"].forEach((ch,i)=>x.slots[i].value=ch);
   x.elem("otp-form").listeners.submit({preventDefault(){}});
   for(let i=0;i<4;i++)await new Promise(done=>setImmediate(done));
   assert.equal(x.calls.verifyCalls,1);
