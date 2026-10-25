@@ -101,3 +101,76 @@ test("selection restores predefined and legacy MIME types, clears and counts acc
  assert.equal($("assignment-format-count").textContent,"All supported formats");
  assert.equal($("assignment-legacy-formats").hidden,true);
 });
+
+test("shared sidebar actually mounts and Admin/Student permissions follow authenticated memberships",async()=>{
+ function makeElement(tag){
+   const el={tagName:tag.toLowerCase(),parentNode:null,children:[],listeners:{},
+    className:"",dataset:{},hidden:false,attributes:{},
+    classList:{add(name){el.className+=" "+name}},
+    setAttribute(k,v){el.attributes[k]=String(v)},
+    append(...nodes){for(const n of nodes){n.parentNode=el;el.children.push(n)}},
+    prepend(...nodes){for(const n of nodes){n.parentNode=el}el.children.unshift(...nodes)},
+    remove(){
+      if(el.parentNode){const i=el.parentNode.children.indexOf(el);if(i>=0)el.parentNode.children.splice(i,1)}
+      el.parentNode=null;
+    },
+    replaceWith(newNode){
+      if(el.parentNode){const i=el.parentNode.children.indexOf(el);
+        if(i>=0){el.parentNode.children[i]=newNode;newNode.parentNode=el.parentNode}}
+      el.parentNode=null;
+    },
+    querySelector(sel){
+      const match=n=>sel==="main"?n.tagName==="main":sel===".bn-header"?n.className==="bn-header":false;
+      const stack=[...el.children];
+      while(stack.length){const n=stack.shift();if(match(n))return n;stack.unshift(...(n.children||[]))}
+      return null;
+    },
+    addEventListener(k,v){el.listeners[k]=v}
+   };return el;
+ }
+ const app=makeElement("div");app.className="bn-app";
+ const header=makeElement("header");header.className="bn-header";
+ const main=makeElement("main");main.className="bn-main";
+ app.append(header,main);
+ let onReady;
+ const all=(root)=>[root,...root.children.flatMap(all)];
+ const get=id=>all(app).find(n=>n.id===id);
+ const document={
+   createElement:makeElement,
+   createTextNode:txt=>({tagName:"#text",textContent:txt,children:[]}),
+   querySelector:sel=>sel===".bn-app"?app:null,
+   querySelectorAll:sel=>sel===".bn-unified-sidebar [data-role]"
+     ?all(app).filter(n=>n.dataset?.role):[],
+   getElementById:get,
+   addEventListener(event,fn){if(event==="DOMContentLoaded")onReady=fn}
+ };
+ function check(role){
+   const rows=[{role,status:"ACTIVE",class_id:"class-1"}];
+   const db={
+     auth:{getUser:async()=>({data:{user:{id:"person-1",email:"person@example.test"}},error:null}),
+       signOut:async()=>({error:null})},
+     from(table){
+       const result=table==="User"?[{full_name:"Sample Person"}]:rows;
+       const request={select(){return request},eq(){return request},limit(){return request},
+         then(ok,fail){return Promise.resolve({data:result,error:null}).then(ok,fail)}};
+       return request;
+     }
+   };
+   return db;
+ }
+ const window={location:{pathname:"/pages/classwork.html",replace(){}},
+   BNBackend:{configured:true,client:check("Admin")},addEventListener(){}};
+ new Script(shell).runInNewContext({window,document,Intl,Date,Promise,URL:undefined});
+ onReady();
+ for(let n=0;n<8;n++)await new Promise(ok=>setImmediate(ok));
+ assert.match(app.children[0].className,/bn-workspace-sidebar/);
+ assert.match(app.children[1].className,/bn-workspace-main/);
+ assert.equal(app.children[1].children[1],main);
+ assert.equal(header.parentNode,null);
+ assert.equal(get("classwork-admin-link").hidden,false);
+ const nav=all(app).find(n=>n.href==="classwork.html"&&n.tagName==="a");
+ assert.equal(nav.attributes["aria-current"],"page");
+ get("shell-menu").listeners.click();
+ assert.equal(get("shell-sidebar").dataset.open,"true");
+ assert.equal(get("shell-menu").attributes["aria-expanded"],"true");
+});
