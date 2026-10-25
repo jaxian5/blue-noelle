@@ -74,6 +74,16 @@ BEGIN
   IF jsonb_array_length(r)<>1 OR jsonb_array_length(r->0->'versions')<>2
      OR (r->0->'versions'->0->>'submitted_at') IS NULL
   THEN RAISE EXCEPTION 'Version history was not returned'; END IF;
+  -- Exercise Storage RLS using the authenticated PostgreSQL role.
+  PERFORM set_config('request.jwt.claim.sub',v_student::text,true);
+  PERFORM set_config('role','authenticated',true);
+  IF NOT EXISTS(SELECT 1 FROM storage.objects WHERE bucket_id='bn-submissions' AND name=v_path)
+  THEN RAISE EXCEPTION 'Authenticated owner cannot SELECT READY Storage metadata'; END IF;
+  PERFORM set_config('request.jwt.claim.sub',gen_random_uuid()::text,true);
+  IF EXISTS(SELECT 1 FROM storage.objects WHERE bucket_id='bn-submissions' AND name=v_path)
+  THEN RAISE EXCEPTION 'Storage RLS exposed READY object to outsider'; END IF;
+  PERFORM set_config('role','postgres',true);
+  PERFORM set_config('request.jwt.claim.sub',v_student::text,true);
   -- Regression: a previously READY version's timestamp cannot be overwritten.
   BEGIN
     UPDATE public."SubmissionVersion" SET submitted_at=now()+interval '1 day' WHERE id=v_v1;
