@@ -19,15 +19,17 @@
 <body>
 <div class="bn-app">
 <header class="bn-header">
-<a href="admin.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<nav class="bn-nav"><a href="admin.html">Admin</a><a href="moderator.html">Moderator</a><a href="class-operations.html" class="active">Class Operations</a><a href="import-local-data.html">Import local data</a><a href="phase1-class-staff.html">Registration queue</a></nav>
+<a href="account.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+<nav class="bn-nav"><a href="account.html">My Account</a><a href="class-operations.html" class="active">Class Operations</a><a href="import-local-data.html">Import local data</a><a href="phase1-class-staff.html">Registration queue</a></nav>
 </header>
 <main class="bn-main">
 <h1>Class Operations</h1>
 <p class="bn-muted">Supabase preview · Class-scoped users and weekly schedules. Changes are saved directly to PostgreSQL once signed in through Supabase Auth.</p>
 <div id="ops-message" class="ops-message" role="status" aria-live="polite">Checking backend availability…</div>
-<section class="bn-card"><h2 class="bn-card-title">Supabase sign-in</h2><p class="bn-muted bn-text-sm">Use your Supabase Auth account. Demo login is separate. <a href="phase1-onboarding.html">Create or verify an account</a>.</p>
-<form id="supabase-login-form" class="ops-form"><label>Email<input id="supabase-email" type="email" autocomplete="username" required></label><label>Password<input id="supabase-password" type="password" autocomplete="current-password" required></label><button class="bn-btn bn-btn-primary" type="submit">Sign in</button><button class="bn-btn bn-btn-secondary" type="button" id="supabase-logout">Sign out</button></form></section>
+<section class="bn-card"><h2 class="bn-card-title">Account session</h2>
+<p class="bn-muted bn-text-sm">Blue Noelle now uses one sign-in page. Sign in first, then return to Class Operations. Only approved class officers can open these tools.</p>
+<div class="bn-flex" style="flex-wrap:wrap"><a href="login.html" class="bn-btn bn-btn-secondary">Sign in</a><a href="account.html" class="bn-btn bn-btn-secondary">My Account</a></div>
+</section>
 <div class="bn-card">
 <label for="class-choice">Active class</label>
 <select id="class-choice" class="bn-btn bn-btn-secondary"></select>
@@ -89,19 +91,11 @@ if(admin)addButton(tr,'Delete',()=>{if(confirm('Delete this exception?'))call(as
 });
 for(const id of ['slot-form','exception-form']) $(id).querySelector('button[type=submit]').disabled=!admin;
 }
-if(!window.BNClassOps?.ready()){status('Supabase is not configured. Create js/supabase-config.js locally and connect Supabase Auth first.');return;}
-$('supabase-login-form').addEventListener('submit',async e=>{
-e.preventDefault();
-try{
-const {error}=await BNBackend.client.auth.signInWithPassword({email:$('supabase-email').value,password:$('supabase-password').value});
-if(error)throw error;$('supabase-password').value='';location.reload();
-}catch(error){status('Sign-in failed: '+error.message);}
-});
-$('supabase-logout').addEventListener('click',async()=>{await BNBackend.client.auth.signOut();location.reload();});
+if(!window.BNClassOps?.ready()){status('Supabase is unavailable. Check your network connection and the public browser configuration.');return;}
 try {
 const memberships=await BNClassOps.memberships();
 memberships.filter(m=>['Admin','Moderator'].includes(m.role)).forEach(m=>{roles.set(m.class_id,m.role);const o=node('option',m.class_id+' ('+m.role+')');o.value=m.class_id;choice.appendChild(o);});
-if(!choice.options.length){status('No active Admin or Moderator class membership found for the signed-in user.');return;}
+if(!choice.options.length){status('Sign in with Blue Noelle and obtain an ACTIVE Moderator/Admin membership before using these tools. Go to My Account for details.');return;}
 $('ops-panel').hidden=false;choice.onchange=()=>call(refresh);await refresh();status('Connected to Supabase. Schedule timezone: Asia/Manila.');
 }catch(e){status('Connection failed: '+e.message);}
 $('slot-form').addEventListener('submit',e=>{e.preventDefault();call(async()=>{const f=new FormData(e.target);
