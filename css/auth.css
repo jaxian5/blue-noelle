@@ -208,3 +208,30 @@
  .bn-entry-content .bn-otp-digit{border-radius:8px;font-size:1.35rem;height:48px}
  .bn-otp-digits{gap:.2rem}
 }
+
+
+/* Secondary recovery action inside account-status confirmation alerts. */
+.bn-signup-dialog .bn-signup-dialog-alternative{
+  margin:.85rem auto 0;
+  line-height:1.5;
+  text-align:center;
+}
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-alternative a,
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-alternative button{
+  display:inline-block;
+  font-size:.88rem;
+  font-weight:650;
+  padding:.25rem .4rem;
+  border:0;
+  background:transparent;
+  color:#475569;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+}
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-alternative a:focus-visible,
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-alternative button:focus-visible{
+  outline:3px solid #2563eb;
+  outline-offset:3px;
+  border-radius:3px;
+}
