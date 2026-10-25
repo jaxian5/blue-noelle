@@ -1,114 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register — Blue Noelle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/main.css" />
-</head>
-<body>
-  <div class="bn-auth-page">
-    <div class="bn-auth-card" style="max-width:460px;">
-      <div class="bn-logo" style="margin-bottom:1.25rem;">
-        <div class="bn-logo-mark">BN</div>
-        <span style="color:var(--bn-text);">Blue Noelle</span>
-      </div>
-
-      <h1>Create account</h1>
-      <p class="subtitle">
-        Registration requires a valid class invite code. A Moderator will review your request.
-      </p>
-
-      <!--
-        Registration Flow (Phase 0 / 1):
-        1. Student registers with class invite code
-        2. Status → PENDING
-        3. Moderator reviews (approve / reject)
-        4. Approved → ACTIVE membership, student can access platform
-
-        Invite codes are class-scoped:
-        code, class_id, created_by, created_at, expires_at, revoked_at, max_uses
-      -->
-      <form class="bn-form" id="register-form" action="#" method="post">
-        <div class="bn-field">
-          <label for="invite">Class Invite Code <span class="bn-muted">*</span></label>
-          <input type="text" id="invite" name="invite_code" required placeholder="e.g. BN-EDUC2-2026" autocomplete="off" />
-        </div>
-
-        <div class="bn-field">
-          <label for="fullname">Full Name <span class="bn-muted">*</span></label>
-          <input type="text" id="fullname" name="full_name" required autocomplete="name" />
-        </div>
-
-        <div class="bn-field">
-          <label for="student_id">Student ID</label>
-          <input type="text" id="student_id" name="student_id" placeholder="Optional but recommended" />
-        </div>
-
-        <div class="bn-field">
-          <label for="email">Email <span class="bn-muted">*</span></label>
-          <input type="email" id="email" name="email" required autocomplete="email" />
-        </div>
-
-        <div class="bn-field">
-          <label for="username">Username <span class="bn-muted">*</span></label>
-          <input type="text" id="username" name="username" required autocomplete="username" />
-        </div>
-
-        <div class="bn-field">
-          <label for="password">Password <span class="bn-muted">*</span></label>
-          <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" />
-        </div>
-
-        <p id="register-error" class="bn-text-sm" style="color:var(--bn-danger); display:none;"></p>
-
-        <button type="submit" class="bn-btn bn-btn-primary" style="width:100%; margin-top:0.25rem;">
-          Submit registration
-        </button>
-      </form>
-
-      <div class="bn-auth-footer">
-        Already registered? <a href="login.html">Sign in</a>
-      </div>
-    </div>
-  </div>
-
-  <script src="../js/core.js"></script>
-  <script src="../js/phase1-auth.js"></script>
-  <script>
-    // Framework §4 Registration Flow:
-    // 1. Student registers with class invite code
-    // 2. Status → PENDING
-    // 3. Moderator reviews
-    // 4. Approved → ACTIVE membership
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const errEl = document.getElementById("register-error");
-      errEl.style.display = "none";
-      const form = {
-        invite_code: document.getElementById("invite").value,
-        full_name: document.getElementById("fullname").value,
-        student_id: document.getElementById("student_id").value,
-        email: document.getElementById("email").value,
-        username: document.getElementById("username").value,
-        password: document.getElementById("password").value
-      };
-      const result = await Phase1.register(form);
-      if (!result.ok) {
-        errEl.textContent = result.error || "Registration failed";
-        errEl.style.display = "block";
-        return;
-      }
-      alert(
-        "Registration submitted.\n\nStatus: PENDING\n" +
-          "A Moderator will review your request shortly.\n" +
-          "You will be able to sign in once approved."
-      );
-      window.location.href = "login.html";
-    });
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create Account | Blue Noelle</title><link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/auth.css"></head>
+<body data-auth-page="register">
+<div class="bn-entry"><aside class="bn-entry-aside" aria-label="Blue Noelle">
+<a href="../index.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+<div><div class="bn-entry-kicker">Enrollment, made clear</div><h2>A place in your classroom begins here.</h2>
+<p>Verify your email, request Student membership with a private class invitation, then await approval from your class officer.</p>
+<ul class="bn-phase-list" aria-label="Registration steps">
+<li><span class="bn-step">1</span> Create your account</li><li><span class="bn-step">2</span> Confirm your email</li>
+<li><span class="bn-step">3</span> Redeem your class invite</li><li><span class="bn-step">4</span> Await officer approval</li>
+</ul></div><footer>BLUE NOELLE · VERIFIED CLASS MEMBERSHIP</footer></aside>
+<main class="bn-entry-main"><div class="bn-entry-content">
+<p class="bn-eyebrow">Student registration</p><h1>Join Blue Noelle</h1>
+<p class="bn-entry-lead">You need a genuine account and a class invitation. A valid invite creates a pending request, not instant access.</p>
+<div id="auth-status" class="bn-auth-notice" role="status" aria-live="polite">Checking account…</div>
+<section id="signup-info" aria-label="Create your account"><h2 style="font-size:1.05rem">Step 1 · Create your account</h2>
+<form id="signup-form">
+<label for="signup-name">Full name</label><input type="text" id="signup-name" autocomplete="name" minlength="2" maxlength="120" required>
+<label for="signup-email">Email address</label><input type="email" id="signup-email" autocomplete="email" required>
+<label for="signup-password">Password (at least 8 characters)</label><input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
+<label for="signup-confirm">Confirm password</label><input type="password" id="signup-confirm" autocomplete="new-password" minlength="8" required>
+<button type="submit" class="bn-primary-action">Create account</button></form>
+<div class="bn-entry-secondary"><span>Already confirmed your email?</span><a href="login.html">Sign in</a></div>
+<p class="bn-entry-note">After signup, use the email confirmation link to verify your identity. Passwords are handled by Supabase Auth, never by public demo files.</p></section>
+<section id="join-section" hidden aria-label="Request class membership">
+<h2 style="font-size:1.05rem">Step 3 · Enter class invitation</h2>
+<p id="signed-as" class="bn-entry-note" style="margin-bottom:1rem"></p>
+<p id="join-hint" class="bn-entry-note">This request will have Student status PENDING until an authorized class officer approves it.</p>
+<form id="join-form">
+<label for="join-code">Private class invite code</label><input id="join-code" type="text" autocomplete="off" maxlength="120" placeholder="BN-…" required>
+<label for="join-username">Username</label><input id="join-username" type="text" pattern="[A-Za-z][A-Za-z0-9_]{2,29}" maxlength="30" autocomplete="username" required>
+<label for="join-student-id">Student ID (optional)</label><input id="join-student-id" type="text" maxlength="60">
+<button type="submit" class="bn-primary-action">Request Student membership</button></form>
+<div class="bn-entry-secondary"><a href="account.html">View membership status</a></div>
+</section>
+<div class="bn-entry-divider">ALREADY HAVE AN ACCOUNT?</div><p style="text-align:center"><a href="login.html">Return to sign in</a></p>
+</div></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/phase1-live.js"></script><script src="../js/auth-ui.js"></script></body></html>

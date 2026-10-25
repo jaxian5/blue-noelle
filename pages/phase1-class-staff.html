@@ -4,8 +4,8 @@
 .staff-wrap label{display:block;margin:.8rem 0}.staff-wrap table{width:100%;border-collapse:collapse}.staff-wrap th,.staff-wrap td{padding:.7rem .4rem;border-bottom:1px solid var(--bn-border-strong);text-align:left;font-size:.85rem}
 .staff-wrap .status{padding:.7rem;margin:.8rem 0;border:1px solid var(--bn-border-strong);border-radius:5px}
 .staff-wrap #issued-code{white-space:pre-wrap;overflow-wrap:anywhere}
-</style></head><body><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="phase1-onboarding.html">Registration</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
-<main class="bn-main staff-wrap"><h1>Class member verification</h1><p class="bn-muted">Real Supabase approval queue. Only ACTIVE Moderators and Admins may review student requests for their class. Only ACTIVE Admins may issue new Student invitations.</p>
+</style></head><body><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="account.html">My Account</a><a href="login.html">Sign in</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
+<main class="bn-main staff-wrap"><h1>Class member verification</h1><p class="bn-muted">Real Supabase approval queue. Sign in once through the central login page. Only ACTIVE Moderators and Admins may review student requests in their own class, while only ACTIVE Admins may issue new Student invitations.</p>
 <p class="status" id="staff-message" role="status" aria-live="polite">Checking permissions…</p>
 <div class="bn-card"><label>Class <select id="staff-class" aria-label="Active staff class"></select></label><button class="bn-btn bn-btn-secondary" id="reload" type="button">Refresh pending requests</button></div>
 <section class="bn-card bn-mt-2"><h2 class="bn-card-title">Registration queue</h2><div class="bn-table-wrap">
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
   }
  }
  async function load(){
-  const user=await api.user();if(!user)throw Error("Please sign in on the registration page first.");
+  const user=await api.user();if(!user)throw Error("Sign in through Blue Noelle's login page first.");
   const memberships=await api.memberships();
   for(const m of memberships.filter(m=>m.status==="ACTIVE"&&["Admin","Moderator"].includes(m.role))){
     roles.set(m.class_id,m.role);
