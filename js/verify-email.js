@@ -5,6 +5,7 @@
  "use strict";
  const KEY="bn_pending_confirmation_email";
  const COOLDOWN_MS=60000;
+ const OTP_LENGTH=8; // Must match the active Supabase email OTP length.
  const $=id=>document.getElementById(id);
  const api=()=>w.BNLivePhase1;
  const cleanEmail=s=>String(s||"").trim().toLowerCase();
@@ -65,11 +66,11 @@
  }
  function clearDigits(){digits().forEach(input=>input.value="")}
  function fillDigits(source,start=0){
-   const values=String(source||"").replace(/\D/g,"").slice(0,6-start).split("");
+   const values=String(source||"").replace(/\D/g,"").slice(0,OTP_LENGTH-start).split("");
    const inputs=digits();
    if(!values.length)return;
    values.forEach((ch,i)=>inputs[start+i].value=ch);
-   inputs[Math.min(5,start+values.length)].focus();
+   inputs[Math.min(OTP_LENGTH-1,start+values.length)].focus();
  }
  function setupDigits(){
    digits().forEach((input,index)=>{
@@ -78,7 +79,7 @@
        if(value.length>1){input.value="";fillDigits(value,index)}
        else{
          input.value=value;
-         if(value&&index<5)digits()[index+1].focus();
+         if(value&&index<OTP_LENGTH-1)digits()[index+1].focus();
        }
      });
      input.addEventListener("keydown",event=>{
@@ -86,7 +87,7 @@
          digits()[index-1].focus();digits()[index-1].value="";
        }
        if(event.key==="ArrowLeft"&&index>0){event.preventDefault();digits()[index-1].focus()}
-       if(event.key==="ArrowRight"&&index<5){event.preventDefault();digits()[index+1].focus()}
+       if(event.key==="ArrowRight"&&index<OTP_LENGTH-1){event.preventDefault();digits()[index+1].focus()}
      });
      input.addEventListener("paste",event=>{
        const value=event.clipboardData?.getData("text")||"";
@@ -107,7 +108,7 @@
      const token=digits().map(input=>input.value).join("");
      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
        throw Error("Enter the email address used at registration.");
-     if(!/^\d{6}$/.test(token))throw Error("Enter all six digits of the verification code.");
+     if(!new RegExp("^\\d{"+OTP_LENGTH+"}$").test(token))throw Error("Enter all "+OTP_LENGTH+" digits of the verification code.");
      const response=await api().verifySignupCode(email,token);
      if(!response?.user&&!response?.session)throw Error("Could not confirm your email. Please try again.");
      if(response?.session){
@@ -150,7 +151,7 @@
    $("otp-form").addEventListener("submit",verify);
    $("resend-otp").addEventListener("click",resend);
    note(previous?"A code was requested for your registered email. Enter it below.":
-        "Enter your registered email and the six-digit code from your message.","info");
+        "Enter your registered email and the eight-digit code from your message.","info");
  }
  document.addEventListener("DOMContentLoaded",init);
 })(window);
