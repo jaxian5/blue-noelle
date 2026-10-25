@@ -19,9 +19,26 @@
  function dateLocal(iso){
    if(!iso)return "";
    const d=new Date(iso);
-   return Number.isFinite(d.getTime())
-     ? new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)
-     : "";
+   if(!Number.isFinite(d.getTime()))return "";
+   const parts=new Intl.DateTimeFormat("en-US",{
+     timeZone:"Asia/Manila",year:"numeric",month:"2-digit",day:"2-digit",
+     hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+   }).formatToParts(d);
+   const p=Object.fromEntries(parts.filter(x=>x.type!=="literal").map(x=>[x.type,x.value]));
+   return p.year+"-"+p.month+"-"+p.day+"T"+p.hour+":"+p.minute;
+ }
+ function parseManilaDatetime(value){
+   if(!value)return null;
+   if(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$/.test(value)){
+     throw Error("Invalid deadline format.");
+   }
+   // The class uses Philippine Standard Time year-round (UTC+08:00);
+   // datetime-local has no timezone, so never parse it as browser-local time.
+   const date=new Date(value+":00+08:00");
+   if(!Number.isFinite(date.getTime())||dateLocal(date.toISOString())!==value){
+     throw Error("Invalid Asia/Manila deadline.");
+   }
+   return date;
  }
  function deadlineLabel(iso){
    if(!iso)return "No deadline";
@@ -216,8 +233,7 @@
        event.preventDefault();
        guard(async()=>{
          const raw=$("assignment-deadline").value;
-         const deadline=raw?new Date(raw):null;
-         if(deadline&&!Number.isFinite(deadline.getTime()))throw Error("Invalid deadline.");
+         const deadline=parseManilaDatetime(raw);
          const types=$("assignment-file-types").value.split(",").map(s=>s.trim()).filter(Boolean);
          const max=$("assignment-max-mib").value;
          const payload={
