@@ -1,4 +1,7 @@
 # Blue Noelle: Phase 1 Live Registration Implementation
+
+> **MULTI-CLASS UPDATE (2026-10-25):** The original manual "first administrator bootstrap" guidance further below is **superseded**. Admin signup now creates a new Admin account type, and the confirmed Admin creates their own class using `bn_create_owned_class`. Students continue joining by invitation. Consult [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the current authoritative flow. Do not run the old bootstrap SQL.
+
 **Source:** `PROJECT_ Blue Noelle.docx`, September 18, 2026, §§3–4, 14–15, 19–20.
 
 **Status 2026-10-25:** core PostgreSQL/RPC workflow implemented; canonical login and registration UI added for controlled testing. **Not production certified until the sign-up/confirm/approve/active path passes real multi-account tests.** The canonical login and registration pages now use Supabase Auth, not the old localStorage demo. Historical academic dashboards remain unintegrated.
