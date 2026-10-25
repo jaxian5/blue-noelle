@@ -1,108 +1,58 @@
-> **Phase 3 private submissions (in review):** The existing DRAFT/SUBMITTED schema is now backed by guarded private Storage, versioned upload/finalize/submit RPCs, group management and a real submission interface. Database migrations are deployed, but the frontend requires PR review and end-to-end live Storage acceptance. See [Phase 3 production and security gate](docs/PHASE3-PRODUCTION-2026-10-25.md).\n\n> **PHASE 2 PRODUCTION UPGRADE (October 25, 2026):** Audited Admin Subject/Assignment creation, editing, status changes and a full live classroom dashboard are in development. The database RPC migration is already applied and verified; the frontend requires PR merge and live Admin/Student acceptance before Phase 2 sign-off. The old demo academic routes redirect to real pages. See [Phase 2 production checklist](docs/PHASE2-PRODUCTION-2026-10-25.md). Phase 3 private file submissions follow after the Phase 2 gate.\n\n> **Phase 2 live kickoff (October 25, 2026):** The first real-Supabase classwork page is under review. It is **read-only** and restricted to ACTIVE classroom memberships, not the legacy localStorage demo. See [Phase 2 rollout and acceptance](docs/PHASE2-LIVE-KICKOFF-2026-10-25.md).\n\n> **OTP verification upgrade (pending deployment):** Blue Noelle's new eight-digit email confirmation page is in review. Before merging it, update the Supabase Confirm signup template to use `{{ .Token }}` and verify Brevo SMTP delivery. See [Brevo email OTP guide](docs/EMAIL-OTP-BREVO-SETUP.md). The existing approved class-scoped authorization model is unchanged.
-
-> **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Phase 1 was approved by the project owner after live multi-account testing; the final confirmation-dialog polish is pending merge.
-
-> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The legacy academic dashboard and simulated submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), [real registration](pages/register.html), [membership status](pages/account.html), and [classwork import](pages/import-local-data.html).
-
 # PROJECT: Blue Noelle
 
-**Architecture: Phase 0 formally accepted (October 25, 2026).**  
-**Live implementation:** Phase 1 approved (Admin/Student self-service signup, invite redemption, class-scoped review, real Auth). Email verification UX is deployed, but delivery reliability remains unresolved. Phase 2 production data access is being implemented separately from the old localStorage demo.
+A private, multi-class classroom platform hosted on **GitHub Pages**, using **Supabase Auth, PostgreSQL, guarded RPCs, and private Supabase Storage**. The initial deployment stays on free services.
 
-Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`, `docs/ADR-0001-supabase-architecture.md`, and `docs/PHASE1-LIVE-REGISTRATION.md`. [Phase 1 completion](docs/PHASE1-COMPLETE.md) records the owner's live-system acceptance and remaining non-blocking work.
+> **Release snapshot · October 25, 2026**
+>
+> - **Phase 0:** architecture accepted; the executable database schema lives under `supabase/migrations/`.
+> - **Phase 1:** class-scoped Auth, Admin-owned classrooms and invitation/approval flows implemented and previously accepted. **Email deliverability is on operational hold**: Gmail rejected some Brevo messages (`550 5.7.1`) and one Outlook message was not visible despite a “Delivered” event. **New public self-service signup and password recovery are not release-ready.** Existing confirmed sessions can use later phases. Do not disable confirmation or use privileged keys in the browser.
+> - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. **Owner live Admin/Student browser acceptance is still required** before final sign-off.
+> - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. **Live file-byte upload/download and cross-account Storage acceptance are outstanding.** A merged PR is not itself proof of production readiness.
+> - **Later phases:** chat, announcements, notifications and compilation remain **deny-by-default schema placeholders** until separately implemented and tested.
+
+## Canonical production routes
+
+| Workflow | Entry |
+| --- | --- |
+| Sign in / register / OTP | [Sign in](pages/login.html) · [Register](pages/register.html) · [Verify email](pages/verify-email.html) |
+| Account and memberships | [My Account](pages/account.html) |
+| Classroom overview | [Live dashboard](pages/dashboard.html) |
+| Read subjects and assignments | [Classwork](pages/classwork.html) |
+| Admin subject/assignment management | [Manage classwork](pages/admin-classwork.html) |
+| Student submissions / authorized staff review | [Private submissions](pages/submission.html) (requires `?assignment=<uuid>` from a real assignment link) |
+| Staff registration review | [Class staff](pages/phase1-class-staff.html) |
+| Class scheduling and operations | [Class operations](pages/class-operations.html) |
+
+Production pages use **Supabase Auth + class membership RLS**. The browser may use only public Supabase URL and publishable key; never database passwords, `sb_secret_*`, or the service-role key.
+
+## Architectural rules
 
 > The database enforces invariants. The backend enforces business rules. The frontend enforces usability.
 
----
+- **Identity:** Supabase Auth owns credentials/sessions. `ClassMembership` determines ACTIVE Student/Moderator/Admin authorization. `User.account_type` is not a substitute for class-scoped membership.
+- **Business rules:** guarded functions in private `bn_private` validate `auth.uid()`, role and class on every privileged operation. Public wrappers are narrow. **No direct browser writes** to `Subject`, `Assignment`, `Submission`, `SubmissionVersion` or `File`.
+- **Storage:** the `bn-submissions` bucket is **private**. Upload keys originate from guarded RPCs and Storage RLS authorizes uploads/downloads. No public file URLs, no reliance on opaque paths alone for protection. Each submitted version is independent; submitted timestamps and deadline snapshots are server-written. Live Storage acceptance remains open.
+- **Invariants:** submission owner is Student XOR Group; audit retains `actor_role_at_time`; deadlines are stored as UTC timestamps and displayed in Asia/Manila; compilation is distinct from a submission version.
+- **Later phases:** a table alone is not an enabled feature. Group/announcement/chat/notification/compilation capability needs its own authorized APIs, UI and acceptance gate. Phase 3 assignment groups are an implemented exception; chat, announcements, notifications and compilation remain inactive.
 
-**Canonical authentication:** `pages/login.html` → `pages/account.html`; register via `pages/register.html`; approved officers use `pages/phase1-class-staff.html`. See [AUTH-ENTRY](docs/AUTH-ENTRY.md). The old demo dashboard/assignments are not linked as authenticated academic destinations.\n\n## Project layout
+## Historical prototype isolation
 
-```
-blue-noelle/
-├── index.html
-├── css/main.css
-├── js/core.js
-├── data/roles.json              # TEMP test accounts only
-├── docs/
-│   ├── PHASE0-COMPLETE.md       # Checklist + locked invariants
-│   ├── schema.sql               # PostgreSQL draft
-│   ├── permission-matrix.md
-│   ├── storage-spec.md
-│   ├── threat-model.md
-│   └── sitemap.md
-└── pages/
-    ├── login.html · register.html
-    ├── dashboard.html · assignments.html · submission.html
-    ├── moderator.html · admin.html · developer.html
-```
+`data/roles.json`, `data/assignments.json`, `data/invite-codes.json`, `js/core.js`, `js/phase1-auth.js` and `js/phase2-assignments.js` are **historical development artifacts**. Their sample credentials/invites are not real users. **Never import, activate or copy them into Supabase.** The canonical production pages do not load these scripts. The former local-data import screen has been retired because its direct table inserts are incompatible with mandatory audited RPCs.
 
-## Historical prototype data
+The old `docs/schema.sql` and local-disk storage concept describe early planning, **not** the executable production backend. [ADR-0001](docs/ADR-0001-supabase-architecture.md) records the move to Supabase; [storage specification](docs/storage-spec.md) preserves the original intent with a current implementation note.
 
-Demo accounts and intentionally public sample credentials remain in `data/roles.json` exclusively for the isolated legacy frontend. **Never use them as real accounts or import their passwords into Supabase.**
+## Developer workflow
 
-## Philosophy
+1. Implement schema/security changes as ordered migrations under `supabase/migrations/`, with RLS, least privilege, RPC authorization and auditable mutations. Never let a frontend client bypass the backend.
+2. Update the relevant permission matrix and documentation when introducing a feature, and add positive and negative authorization tests.
+3. Test CI and rolled-back database invariants. For Storage or other external effects, complete real-browser end-to-end acceptance, not just mocked tests.
+4. Merge a reviewed PR, verify GitHub Pages deployment, then record the actual release/acceptance decision separately.
 
-**Upload → Organize → Submit/Share → Compile → Download → Track**
+## Release and implementation references
 
----
+- [Architecture decision](docs/ADR-0001-supabase-architecture.md) · [Phase 0 acceptance](docs/PHASE0-COMPLETE.md)
+- [Phase 1 completion and email hold](docs/PHASE1-COMPLETE.md) · [Email/Brevo runbook](docs/EMAIL-OTP-BREVO-SETUP.md)
+- [Phase 2 production](docs/PHASE2-PRODUCTION-2026-10-25.md) · [Phase 2 browser acceptance](docs/PHASE2-FINAL-ACCEPTANCE.md)
+- [Phase 3 implementation and security gate](docs/PHASE3-PRODUCTION-2026-10-25.md)
 
-## Guidelines: create / expand / fix
-
-Always check the Blue Noelle documentation (Working Framework) before changing behaviour.
-
-### Create
-
-1. **New page** — Copy header + Class Clock (student-facing) + load `core.js`. Gate by role using `BN.getCurrentUser()`.
-2. **New permission** — Add to `docs/permission-matrix.md` and `BN.can()` in the same change.
-3. **New entity** — Create a versioned Supabase migration under `supabase/migrations/`; update the ER diagram and acceptance tests. The old `docs/schema.sql` is a non-executable historical draft.
-4. **New file upload path** — Follow `docs/storage-spec.md` (`storage_key` opaque, hierarchy under class/assignment/submission/version).
-
-### Expand
-
-| Goal | Where to start |
-|------|----------------|
-| Real auth | Phase 1 · Supabase Auth + trusted invite redemption and moderator review. Start with `pages/login.html`, `pages/register.html` and `pages/account.html`; staff review lives in `pages/phase1-class-staff.html`. |
-| Real submissions | Phase 3 · true MVP boundary |
-| Groups + PDF compile | Phase 5 · compilation is a separate artifact |
-| Class chat | Phase 6 · controlled scope, not Discord 2.0 |
-| Admin operations | Phase 8 · class-scoped only |
-| System ops | Phase 9 · Developer · every action audited |
-
-### Fix
-
-| Symptom | Check |
-|---------|--------|
-| Sidebar missing version/feedback | `ensureSidebarMarkup()` footer in `js/core.js` |
-| Dark mode lost | `localStorage.bn_theme` + `BN.setTheme` on boot |
-| Wrong role redirect | Exact strings: `Student` \| `Moderator` \| `Admin` \| `Developer` |
-| Late flag wrong | Must use `BN.computeLateness`; never store permanent `is_late` |
-| Ownership invalid | DB CHECK: student_id XOR group_id |
-| Feedback chat does nothing | Expected until Phase 6 — use Email developer |
-
-### Sidebar footer (required)
-
-- Text: **Blue Noelle (Version 0.1: Phase 0)**
-- Link: **Found bugs or have feedback? Click here** → modal with:
-  - Class chat (Phase 6 placeholder)
-  - Email developer (`dev@bluenoelle.local`)
-
----
-
-## Phase 0 locked invariants (do not reopen casually)
-
-1. Submission owner = Student XOR Group  
-2. Late is computed from immutable timestamps  
-3. Versions append-only  
-4. Compilation ≠ SubmissionVersion  
-5. Soft-delete academic records  
-6. Class-scoped roles; Developer platform-level  
-7. UTC storage · Asia/Manila display  
-8. Storage abstraction (`storage_key`)  
-9. Security continuous per phase  
-10. Audit includes `actor_role_at_time`  
-
-See `docs/PHASE0-COMPLETE.md` for the full checklist.
-
-## Next
-
-**Phase 1 real-account acceptance testing**. Bootstrap the first Admin through a trusted operator after Supabase signup, verify invite issuance, PENDING review, ACTIVE membership and cross-class RLS. Only then retire the old demo login and continue Phase 2.
+**Long-term philosophy:** Upload → Organize → Submit/Share → Compile → Download → Track. Each step must become a real authorized feature before it is advertised as available.
