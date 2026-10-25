@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
   }
  }
  async function load(){
-  const user=await api.user();if(!user)throw Error("Please sign in on the registration page first.");
+  const user=await api.user();if(!user)throw Error("Sign in through Blue Noelle's login page first.");
   const memberships=await api.memberships();
   for(const m of memberships.filter(m=>m.status==="ACTIVE"&&["Admin","Moderator"].includes(m.role))){
     roles.set(m.class_id,m.role);
