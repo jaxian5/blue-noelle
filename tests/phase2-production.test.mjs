@@ -80,7 +80,7 @@ function queryBackend({role="Admin",active=true}={}){
  const calls=[],rows={
   ClassMembership:active?[{class_id:"class-1",role,status:"ACTIVE"}]:[],
   Class:[{id:"class-1",name:"Live Classroom",section:"IT-1"}],
-  User:[{full_name:"Avery Sample",account_type:role}],
+  User:[{id:"admin-1",full_name:"Avery Sample",account_type:role}],
   Subject:[{id:"subject-1",class_id:"class-1",name:"Data Structures",created_at:"2026-10-01"}],
   Assignment:[{id:"assignment-1",subject_id:"subject-1",name:"Stack Exercise",description:"Review stacks",
     deadline:"2026-10-30T11:00:00Z",is_group:false,status:"OPEN"}]
