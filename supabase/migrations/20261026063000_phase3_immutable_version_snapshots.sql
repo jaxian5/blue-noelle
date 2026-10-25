@@ -107,7 +107,7 @@ BEGIN
    jsonb_build_object('version',ver.version_number,'files',n,'late',a.deadline IS NOT NULL AND now()>a.deadline));
  RETURN jsonb_build_object('id',sub.id,'status','SUBMITTED','version_id',ver.id,
    'version',ver.version_number,'submitted_at',now(),'late',a.deadline IS NOT NULL AND now()>a.deadline);
-END $function$
+END $function$;
 
 CREATE OR REPLACE FUNCTION bn_private.bn_p3_details_impl(p_assignment uuid)
  RETURNS jsonb
