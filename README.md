@@ -1,3 +1,5 @@
+> **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Live multi-account testing is still required before approving Phase 1.
+
 > **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), [real registration](pages/register.html), [membership status](pages/account.html), and [classwork import](pages/import-local-data.html).
 
 # PROJECT: Blue Noelle
