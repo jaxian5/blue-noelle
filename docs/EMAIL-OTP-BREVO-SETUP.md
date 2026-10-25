@@ -76,3 +76,22 @@ The browser instead offers contextual recovery routes:
 Supabase's documented default email OTP length is **6** and the Auth platform supports configured lengths from **6 to 10** (see [Supabase CLI email OTP settings](https://supabase.com/docs/guides/local-development/cli/config#authemailotp_length)). This frontend must match the configured backend length. If the Supabase OTP length is later changed, update the interface, the API check, copy and tests in the same pull request. **The email template's `{{ .Token }}` placeholder remains unchanged**: it supplies the actual generated token; its HTML does not set the token length.
 
 Do not paste real verification codes into GitHub issues, this repository, or support screenshots. Use a real inbox that you control for subsequent end-to-end tests, not a deliberately nonexistent address, because rejected emails can create hard bounces and affect sender reputation.
+
+
+## Account-status popups and anti-enumeration behavior (2026-10-25)
+
+Blue Noelle now reuses its centered signup confirmation dialog for **two distinct states only when Supabase explicitly reports them**:
+- `user_already_exists` (or equivalent explicit duplicate error) → **Email already registered**, with **Continue to Sign-In** and **Not verified? Enter a code** actions.
+- `email_not_confirmed` (or equivalent explicit unverified error) → **Email not verified**, with the **Enter verification code** action.
+- On the **Sign In** page, a password login attempt that receives Supabase `email_not_confirmed` displays a separate large **Email not verified** dialog and prompts code entry.
+- On successful-but-ambiguous signup responses, the dialogue must NOT claim an address exists or is confirmed. Supabase can return a synthetic successful result for an already-registered email to prevent public email enumeration. The neutral alert offers **Enter verification code** and **Already have an account? Sign In**.
+
+We intentionally **do not expose an unauthenticated endpoint that checks arbitrary email-address existence**. Even a private SQL helper called through a public RPC would turn the registration form into a directory of students' emails. No prior auth identities are modified by this UX change.
+
+## Brevo: Gmail unsolicited-message rejection
+
+A real October 25 password-reset test returned **Gmail SMTP `550 5.7.1`** with a diagnostic indicating likely unsolicited email. Brevo recorded it as a **soft bounce**, even though SMTP 550 is a permanent rejection code. **Sent** means Brevo attempted transmission, not inbox delivery. This is distinct from the intentionally nonexistent inbox's `550 5.1.1` hard bounce.
+
+Before requesting more emails, review Brevo's authenticated domain and sender status for `bluenoelle.work.gd`. Ensure **DKIM**, **SPF**, and **DMARC** authentication and From-address alignment satisfy Gmail sender guidelines. A Brevo authentication badge alone does not guarantee Gmail will accept messages; a new free subdomain and shared sender-IP reputation may also be relevant, but are not proven causes without further diagnostics. If Gmail continues rejecting genuine confirmation and recovery emails, send the **exact redacted** SMTP response (without recipient addresses, account data or OTPs) to Brevo Support. Avoid repeated sends to nonexistent recipients.
+
+References: https://help.brevo.com/hc/en-us/articles/36039161138706-Troubleshooting-Deliverability-issues-with-Gmail and https://support.google.com/mail/answer/81126

@@ -70,7 +70,22 @@
      event.preventDefault();
      task(form, async () => {
        const email = $("signin-email").value.trim(), password = $("signin-password").value;
-       await api().signIn(email, password);
+       try {
+         await api().signIn(email, password);
+       } catch (error) {
+         // Supabase only provides this status when it explicitly rejects the
+         // submitted login attempt. Never perform public account-existence lookups.
+         if (error?.code === "email_not_confirmed" ||
+             /email not confirmed/i.test(error?.message || "")) {
+           $("signin-password").value = "";
+           const modal = $("login-unverified-alert");
+           if (typeof modal?.showModal === "function") modal.showModal();
+           else w.alert("Email not verified. Open Verify Email to enter or request a code.");
+           status("Email verification is required. Continue on the verification page.", "info");
+           return;
+         }
+         throw error;
+       }
        $("signin-password").value = "";
        status("Signed in. Opening your account…", "success");
        go("account.html");
@@ -126,6 +141,23 @@
    confirmation.addEventListener("close", () => {
      if (signupComplete) go(confirmationDestination);
    });
+   function openSignupAlert({title, description, destination, label, secondaryLabel,
+                            secondaryDestination, footnote}) {
+     signupComplete = true;
+     confirmationDestination = destination;
+     $("signup-confirm-title").textContent = title;
+     $("signup-confirm-description").textContent = description;
+     $("signup-confirm-continue").href = destination;
+     $("signup-continue-label").textContent = label;
+     $("signup-confirm-secondary").href = secondaryDestination;
+     $("signup-confirm-secondary").textContent = secondaryLabel;
+     $("signup-confirm-footnote").textContent = footnote;
+     if (typeof confirmation.showModal === "function") confirmation.showModal();
+     else {
+       w.alert(title + "\\n\\n" + description);
+       go(destination);
+     }
+   }
    async function refresh() {
      const user = await currentUser();
      const profile = user ? await api().profile() : null;
@@ -148,44 +180,69 @@
        if ($("signup-password").value !== $("signup-confirm").value) throw Error("Passwords do not match.");
        const registrationType = document.querySelector('input[name="registration-type"]:checked')?.value || "Student";
        const email = $("signup-email").value.trim();
-       const result = await api().signUp(email,$("signup-password").value,$("signup-name").value,registrationType);
+       let result;
+       try {
+         result = await api().signUp(email,$("signup-password").value,$("signup-name").value,registrationType);
+       } catch (error) {
+         const duplicate = error?.code === "user_already_exists" ||
+           /user already registered|user already exists/i.test(error?.message || "");
+         const unverified = error?.code === "email_not_confirmed" ||
+           /email not confirmed/i.test(error?.message || "");
+         if (!duplicate && !unverified) throw error;
+         $("signup-password").value = "";
+         $("signup-confirm").value = "";
+         // These messages are only displayed when Supabase explicitly returns
+         // the matching error. Its generic successful signup response does NOT
+         // reliably reveal whether an address is already registered.
+         if (unverified) {
+           openSignupAlert({
+             title:"Email not verified",
+             description:"This email still needs verification. Enter the code from your inbox, or request another on the verification page.",
+             destination:"verify-email.html",label:"Enter verification code",
+             secondaryDestination:"login.html",secondaryLabel:"Return to Sign-In",
+             footnote:"Do not create another account. Complete verification of the existing registration."
+           });
+         } else {
+           openSignupAlert({
+             title:"Email already registered",
+             description:"Supabase reports an existing account for this address. Sign in with your original password, or use Forgot password.",
+             destination:"login.html",label:"Continue to Sign-In",
+             secondaryDestination:"verify-email.html",secondaryLabel:"Not verified? Enter a code",
+             footnote:"Creating another account will not reset the existing password or automatically send another verification email."
+           });
+         }
+         status("Use the account recovery action in the alert.", "info");
+         return;
+       }
        $("signup-password").value = ""; $("signup-confirm").value = "";
        // When email confirmation is disabled, signUp may immediately create a
        // session. End it so the requested journey consistently begins at Sign In.
        if (result?.session) await api().signOut();
-       signupComplete = true;
        form.reset();
        if (result?.session) {
-         confirmationDestination = "login.html";
-         $("signup-confirm-title").textContent = "Account created";
-         $("signup-confirm-description").textContent =
-           "Your account is ready. Continue to Sign-In to access Blue Noelle.";
+         openSignupAlert({
+           title:"Account created",
+           description:"Your account is ready. Continue to Sign-In to access Blue Noelle.",
+           destination:"login.html",label:"Continue to Sign-In",
+           secondaryDestination:"verify-email.html",secondaryLabel:"Need to verify a different account?",
+           footnote:"Your Blue Noelle account is ready for password sign-in."
+         });
+         status("Account ready. Continue to sign in.", "success");
        } else {
-         confirmationDestination = "verify-email.html";
-         // Store only a short-lived email hint and resend cooldown. Never the
-         // account password, OTP token, or a trusted role.
+         // Keep only a transient email hint, never a password or token.
          try {
            const at = Date.now();
            sessionStorage.setItem("bn_pending_confirmation_email",
              JSON.stringify({email,at,nextResendAt:at+60000}));
-         } catch (_) { /* Verification page also accepts manually typed email. */ }
-         $("signup-confirm-title").textContent = "Check your email";
-         $("signup-confirm-description").textContent =
-           "If this is a new account, check your inbox for a eight-digit verification code. Already registered? Sign in instead. A successful signup response does not always mean a new email was sent.";
-       }
-       $("signup-confirm-continue").href = confirmationDestination;
-       $("signup-continue-label").textContent =
-         result?.session ? "Continue to Sign-In " : "Enter verification code ";
-       status(result?.session
-         ? "Account ready. Continue to sign in."
-         : "Request processed. If this is a new account, check your email for a verification code. Already registered? Sign in or recover your password.", "info");
-       if (typeof confirmation.showModal === "function") {
-         confirmation.showModal();
-       } else {
-         // Older browsers still get the email reminder and clear navigation.
-         w.alert($("signup-confirm-title").textContent + "\\n\\n" +
-           $("signup-confirm-description").textContent);
-         go(confirmationDestination);
+         } catch (_) { /* The code page also accepts the email manually. */ }
+         openSignupAlert({
+           title:"Check your email",
+           description:"If this is a new account, check your inbox for an eight-digit verification code. Already registered? Sign in instead. A successful signup response does not always mean a new email was sent.",
+           destination:"verify-email.html",label:"Enter verification code",
+           secondaryDestination:"login.html",secondaryLabel:"Already have an account? Sign In",
+           footnote:"If no email arrives, check spam or use Sign In to recover an existing account."
+         });
+         status("Request processed. If this is a new account, check your email for a verification code. Already registered? Sign in or recover your password.", "info");
        }
      });
    });
