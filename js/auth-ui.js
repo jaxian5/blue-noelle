@@ -324,6 +324,7 @@
      }
    }
    $("staff-actions").hidden = !hasStaff;
+   $("admin-classwork-link").hidden = !list.some(m => m.status === "ACTIVE" && m.role === "Admin");
    $("student-notice").hidden = !hasActive;
    const logout = $("signout");
    logout.addEventListener("click", () => task($("account-controls"), async () => {
