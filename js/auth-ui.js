@@ -17,7 +17,11 @@
  async function task(form, handler) {
    submitLock(form, true);
    try { await handler(); } catch (error) {
-     status(error?.message || "Unable to complete your request. Please try again.", "error");
+     const limited = error?.code === "over_email_send_rate_limit" ||
+       /email rate limit exceeded/i.test(error?.message || "");
+     status(limited
+       ? "Too many confirmation or recovery emails have been requested. Supabase is temporarily limiting email delivery. Please try again later, or use a confirmation email you already received."
+       : (error?.message || "Unable to complete your request. Please try again."), "error");
    } finally { submitLock(form, false); }
  }
  async function currentUser() {
