@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manage Classwork | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/classwork.css">
+<link rel="stylesheet" href="../css/classwork-admin.css"></head>
+<body>
+<div class="bn-app">
+<header class="bn-header">
+ <a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+ <nav class="bn-nav" aria-label="Main navigation">
+  <a href="dashboard.html">Dashboard</a><a href="classwork.html">Classwork</a>
+  <a class="active" href="admin-classwork.html" aria-current="page">Manage</a><a href="account.html">Account</a>
+ </nav>
+</header>
+<main class="bn-main bn-classwork bn-admin-workspace">
+ <div class="bn-classwork-heading"><div><p class="bn-classwork-eyebrow">Admin workspace · Live Supabase</p>
+ <h1>Manage subjects &amp; assignments</h1>
+ <p class="bn-muted">Every change is permission-checked and recorded in your classroom's audit trail.</p></div>
+ <a href="dashboard.html" class="bn-btn bn-btn-secondary">← Dashboard</a></div>
+ <section class="bn-card bn-classwork-selector">
+ <label for="admin-class">Your classroom</label><select id="admin-class" disabled><option>Checking Admin access…</option></select>
+ <p class="bn-muted bn-text-sm">Only ACTIVE class Admins can manage work. Other classrooms remain isolated.</p>
+ </section>
+ <div id="admin-status" class="bn-card bn-classwork-status" aria-live="polite" role="status">Verifying Admin access…</div>
+ <div id="admin-workspace" hidden>
+ <section class="bn-card bn-admin-panel" aria-labelledby="subject-title">
+  <div class="bn-admin-panel-heading"><div><p class="bn-classwork-eyebrow">01 · Curriculum</p><h2 id="subject-title">Subjects</h2></div>
+  <span class="bn-admin-count" id="subject-count">0 subjects</span></div>
+  <form id="subject-create-form" class="bn-admin-inline-form">
+   <label for="new-subject">Subject name</label>
+   <div class="bn-admin-form-row"><input id="new-subject" maxlength="160" required placeholder="e.g. Data Structures and Algorithms">
+   <button type="submit" class="bn-btn bn-btn-primary">+ Create subject</button></div>
+  </form>
+  <div id="admin-subject-list" class="bn-admin-subject-list"></div>
+ </section>
+ <section class="bn-card bn-admin-panel" aria-labelledby="assignment-title">
+  <div class="bn-admin-panel-heading"><div><p class="bn-classwork-eyebrow">02 · Classwork</p><h2 id="assignment-title">Assignments</h2></div>
+    <button type="button" class="bn-btn bn-btn-secondary" id="new-assignment">+ New assignment</button></div>
+  <form id="assignment-form" class="bn-admin-form" hidden>
+   <h3 id="assignment-form-title">Create assignment</h3><input type="hidden" id="assignment-id">
+   <div class="bn-admin-fields">
+    <label>Subject <select id="assignment-subject" required></select></label>
+    <label>Assignment title <input id="assignment-name" required maxlength="180" placeholder="e.g. Stack Operations Worksheet"></label>
+    <label class="bn-admin-wide">Description <textarea id="assignment-description" maxlength="20000" rows="3" placeholder="What should students learn?"></textarea></label>
+    <label class="bn-admin-wide">Instructions <textarea id="assignment-instructions" maxlength="20000" rows="4" placeholder="Steps, requirements, and grading notes"></textarea></label>
+    <label>Deadline (device-local time) <input type="datetime-local" id="assignment-deadline"></label>
+    <label>Assignment type <select id="assignment-type"><option value="individual">Individual</option><option value="group">Group</option></select></label>
+    <label>Required MIME types (comma separated) <input id="assignment-file-types" placeholder="application/pdf, image/png"></label>
+    <label>Maximum file size (MiB, optional) <input id="assignment-max-mib" type="number" min="1" max="100" step="1" placeholder="e.g. 10"></label>
+   </div>
+   <div class="bn-admin-actions"><button type="submit" id="assignment-submit" class="bn-btn bn-btn-primary">Create assignment</button>
+   <button type="button" id="assignment-cancel" class="bn-btn bn-btn-secondary">Cancel</button></div>
+  </form>
+  <div id="admin-assignment-list" class="bn-admin-assignment-list"></div>
+ </section>
+ </div>
+ <dialog id="subject-rename-dialog" class="bn-admin-dialog" aria-labelledby="rename-title">
+  <form id="subject-rename-form">
+    <h2 id="rename-title">Rename subject</h2>
+    <input type="hidden" id="rename-subject-id">
+    <label for="rename-subject-name">Subject name</label>
+    <input id="rename-subject-name" maxlength="160" required>
+    <div class="bn-admin-actions"><button class="bn-btn bn-btn-primary" type="submit">Save name</button>
+      <button id="rename-cancel" class="bn-btn bn-btn-secondary" type="button">Cancel</button></div>
+  </form>
+ </dialog>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/phase2-admin.js"></script>
+</body></html>
