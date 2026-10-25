@@ -75,47 +75,90 @@
 @media(prefers-reduced-motion:reduce){.bn-entry{scroll-behavior:auto}}
 
 
-/* Signup confirmation appears only after Supabase accepts the registration. */
+/* Prominent, centered signup alert; shown only after Supabase accepts signup. */
 .bn-signup-dialog{
+  position:fixed;
+  inset:0;
+  margin:auto;
   box-sizing:border-box;
-  width:min(430px,calc(100vw - 2rem));
-  max-height:min(90vh,720px);
+  width:min(550px,calc(100vw - 2rem));
+  max-height:min(90dvh,720px);
   overflow-y:auto;
-  border:1px solid var(--bn-border-strong);
-  border-radius:16px;
-  background:var(--bn-surface);
-  color:var(--bn-text);
-  padding:2rem;
-  box-shadow:0 24px 80px rgba(10,25,60,.28);
+  border:1px solid rgba(191,219,254,.8);
+  border-radius:20px;
+  background:#fff;
+  color:#14213f;
+  padding:clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,3rem);
+  box-shadow:0 32px 100px rgba(7,15,38,.48);
   text-align:center;
 }
-.bn-signup-dialog::backdrop{background:rgba(7,15,38,.65)}
+.bn-signup-dialog::backdrop{
+  background:rgba(6,15,37,.78);
+  backdrop-filter:blur(5px);
+}
 .bn-signup-dialog-icon{
   display:grid;
   place-items:center;
-  font-size:2rem;
-  width:66px;
-  height:66px;
+  font-size:2.2rem;
+  width:86px;
+  height:86px;
   border-radius:50%;
   background:#dbeafe;
+  color:#1d4ed8;
+  margin:0 auto 1.4rem;
+}
+.bn-signup-dialog-kicker{
+  color:#2563eb;
+  font-size:.75rem;
+  font-weight:800;
+  letter-spacing:.16em;
+  margin:0 0 .55rem;
+}
+.bn-signup-dialog h2{
+  font-size:clamp(1.8rem,4vw,2.3rem);
+  line-height:1.2;
+  letter-spacing:-.045em;
+  color:#0f244e;
+  margin:0 0 1rem;
+}
+.bn-signup-dialog .bn-signup-dialog-description{
+  max-width:38ch;
+  margin:0 auto;
+  color:#475569;
+  font-size:1.04rem;
+  line-height:1.75;
+}
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-link,
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-link:visited{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  margin:1.65rem auto 0;
+  padding:.45rem .3rem;
+  background:none;
+  border:none;
+  color:#1d4ed8;
+  font-size:1.1rem;
+  font-weight:750;
+  text-decoration:none;
+}
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-link:hover{
   color:#1e40af;
-  margin:0 auto 1rem;
+  text-decoration:underline;
+  text-underline-offset:4px;
 }
-.bn-signup-dialog h2{font-size:1.5rem;letter-spacing:-.02em;margin:0 0 .75rem}
-.bn-signup-dialog p{line-height:1.6;margin:.6rem 0}
-.bn-signup-dialog .bn-entry-note{font-size:.81rem;margin:1rem 0}
-.bn-signup-dialog .bn-primary-action{
-  display:block;
-  width:100%;
-  font:inherit;
-  font-weight:700;
-  cursor:pointer;
-  background:var(--bn-primary);
-  color:#fff;
-  border:0;
-  border-radius:9px;
-  padding:.82rem 1rem;
+.bn-entry-content .bn-signup-dialog .bn-signup-dialog-link:focus-visible{
+  outline:3px solid #2563eb;
+  outline-offset:4px;
+  border-radius:4px;
+}
+.bn-signup-dialog .bn-signup-dialog-footnote{
   margin:1.5rem 0 0;
+  color:#64748b;
+  font-size:.83rem;
+  line-height:1.5;
 }
-.bn-signup-dialog .bn-primary-action:hover{background:var(--bn-primary-hover)}
-.bn-signup-dialog .bn-primary-action:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  .bn-signup-dialog::backdrop{backdrop-filter:none}
+}

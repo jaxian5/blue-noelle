@@ -128,7 +128,8 @@ test("registration confirmation popup exists and is accessible", () => {
   assert.match(registration, /aria-labelledby="signup-confirm-title"/);
   assert.match(registration, /aria-describedby="signup-confirm-description"/);
   assert.match(registration, /id="signup-confirm-description"/);
-  assert.match(registration, /Continue to Sign In/);
+  assert.match(registration, /Continue to Sign-In/);
+  assert.match(registration, /id="signup-confirm-continue" class="bn-signup-dialog-link" href="login\.html\?signup=check-email"/);
   assert.match(core, /confirmation\.showModal\(\)/);
   assert.match(core, /go\("login\.html\?signup=check-email"\)/);
 });
@@ -216,4 +217,57 @@ test("unsuccessful signup shows an error without a confirmation popup or redirec
   for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
   assert.match(el("auth-status").textContent,/Signup denied/);
   assert.equal(redirects.length,0);
+});
+
+
+test("signup alert uses a prominent centered dialog and BLUE text link instead of a filled button", () => {
+  const html = read("pages/register.html");
+  const css = read("css/auth.css");
+  const dialog = html.match(/<dialog id="signup-confirmation"[\s\S]*?<\/dialog>/)?.[0];
+  assert.ok(dialog, "Missing confirmation dialog");
+  assert.match(dialog, /aria-modal="true"/);
+  assert.match(dialog, /Continue to Sign-In/);
+  assert.match(dialog, /class="bn-signup-dialog-link"/);
+  assert.doesNotMatch(dialog, /bn-primary-action/);
+  assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?position:fixed;/);
+  assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?inset:0;/);
+  assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?width:min\(550px,/);
+  assert.match(css, /\.bn-entry-content \.bn-signup-dialog \.bn-signup-dialog-link[\s\S]*?color:#1d4ed8;/);
+  assert.match(css, /\.bn-signup-dialog::backdrop\{/);
+});
+
+test("email sending quota errors explain retry without showing signup confirmation dialog", async () => {
+  const elements = new Map();
+  const el = id => {
+    if (!elements.has(id)) elements.set(id, {
+      value: "", textContent: "", hidden: false, dataset: {}, listeners: {}, opened: false,
+      addEventListener(event, listener) { this.listeners[event] = listener; },
+      querySelectorAll() { return []; },
+      showModal() { this.opened = true; }
+    });
+    return elements.get(id);
+  };
+  let ready;
+  const document = {
+    body: { dataset: { authPage: "register" } },
+    addEventListener(_event, callback) { ready = callback; },
+    getElementById: el,
+    querySelector() { return { value: "Student" }; }
+  };
+  const redirects = [];
+  const limitError = Object.assign(new Error("email rate limit exceeded"), { code: "over_email_send_rate_limit" });
+  const window = {
+    BNLivePhase1: { ready: () => true, signUp: async () => { throw limitError; } },
+    BNBackend: { client: { auth: { getUser: async () => ({ data: { user: null }, error: null }) } } },
+    location: { replace: path => redirects.push(path) }
+  };
+  new Script(core).runInNewContext({ window, document, localStorage: { removeItem() {} } });
+  await ready();
+  el("signup-password").value = "LongPassword2026";
+  el("signup-confirm").value = "LongPassword2026";
+  el("signup-form").listeners.submit({ preventDefault() {} });
+  for (let i = 0; i < 4; i++) await new Promise(resolve => setImmediate(resolve));
+  assert.match(el("auth-status").textContent, /Supabase is temporarily limiting email delivery/);
+  assert.equal(el("signup-confirmation").opened, false);
+  assert.deepEqual(redirects, []);
 });
