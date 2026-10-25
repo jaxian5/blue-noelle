@@ -1,3 +1,5 @@
+> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Supabase Auth test](pages/supabase-auth.html), and [classwork import](pages/import-local-data.html).
+
 # PROJECT: Blue Noelle
 
 **Version 0.4 · Phase 2 complete · September 2026**  
