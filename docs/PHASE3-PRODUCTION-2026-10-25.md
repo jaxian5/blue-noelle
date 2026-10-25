@@ -41,3 +41,13 @@ All migrations were applied in Supabase (the frontend remains branch-only until 
 7. **Email:** Phase 1's deliverability is still on hold. Do NOT disable confirmation or make public signup claims.
 
 **Not claimed:** Full production approval before hands-on Storage API/browser tests, antivirus scanning, or automatic orphan cleanup. A client disconnect can leave PENDING metadata; uploaders can discard it from their draft. Automated periodic cleanup and retention are future operational hardening tasks.
+
+## Free Plan storage budgets and assignment ownership guard
+
+Migration `20261025134536_phase3_free_storage_budget_and_assignment_guard.sql` enforces a conservative **750 MiB global metadata budget** and **200 MiB per-student budget** (both count pending and ready files not marked deleted). This reserves headroom under the Supabase Free project's storage allowance, though actual Storage usage may differ because orphan objects and platform overhead need operational monitoring. Quota checks are serialized with advisory transaction locks to prevent concurrent sessions bypassing the limit.
+
+Phase 2 Admin changes now reject converting an existing assignment between Individual and Group when it has active groups or submissions. This protects Submission ownership invariants and historical group file access.
+
+**QA passed, with rollback:** Prepared five pending 40 MiB files and verified the sixth byte was denied; created a Group and verified the Admin couldn't convert the assignment to Individual. No fake objects or metadata were retained.
+
+**Positive DB-only lifecycle QA passed, with rollback:** Simulated a Storage metadata row inside a transaction (not actual uploaded bytes), finalized the pending File, submitted the version, checked READY permissions, server-side deadline snapshot, and three audit records. A real Storage API byte upload/download test is still required for production sign-off.
