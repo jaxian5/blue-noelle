@@ -68,13 +68,13 @@ test("a successful password sign-in goes directly to dashboard",async()=>{
  assert.equal(redirects[0],"dashboard.html");
  assert.equal(p.$("signin-password").value,"");
 });
-function classroomBackend(){
+function classroomBackend({secondaryRole="Student"}={}){
  const calls=[],user={id:"user1"};
  const rows={
    User:[{id:"user1",full_name:"Alex Example",account_type:"Student"}],
    ClassMembership:[
      {class_id:"classA",role:"Admin",status:"ACTIVE"},
-     {class_id:"classB",role:"Student",status:"ACTIVE"}],
+     {class_id:"classB",role:secondaryRole,status:"ACTIVE"}],
    Class:[{id:"classA",name:"Networks",section:"1"},{id:"classB",name:"Algorithms",section:"2"}],
    Subject:[{id:"subjectA",class_id:"classA",name:"Security"},
      {id:"subjectB",class_id:"classB",name:"Algorithms"}],
@@ -149,4 +149,19 @@ test("post-login pages share a navigation and do not resurrect demo identities",
  assert.match(html,/id="dash-class"/);
  assert.doesNotMatch(dashboard,/localStorage|service_role|getPublicUrl/);
  assert.doesNotThrow(()=>new Script(dashboard));
+});
+
+test("Moderator sees staff tools without treating other Students' files as own",async()=>{
+ const p=mockDOM("dashboard"),backend=classroomBackend({secondaryRole:"Moderator"});
+ const w={BNBackend:{configured:true,client:backend.db},location:{replace(){}}};
+ new Script(dashboard).runInNewContext({window:w,document:p.document,Intl,Date,Number,Map,Set,Promise});
+ await p.ready();
+ p.$("dash-class").value="classB";
+ p.$("dash-class").listeners.change();
+ await flush();
+ assert.equal(p.$("dash-role").textContent,"Moderator");
+ assert.equal(p.$("dash-admin-link").hidden,true);
+ assert.equal(p.$("dash-staff-link").hidden,false);
+ assert.match(p.$("dash-student-accent-title").textContent,/Review without rewriting/);
+ assert.equal(backend.calls.filter(c=>c.rpc==="bn_p3_details").length,0);
 });
