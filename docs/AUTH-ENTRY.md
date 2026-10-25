@@ -19,7 +19,7 @@ Old pages `/pages/phase1-onboarding.html` and `/pages/supabase-auth.html` now re
 
 ## Post-signup confirmation and sign-in (final Phase 1 polish)
 
-Once Supabase accepts an Admin or Student signup, `register.html` shows an accessible **Check your email** modal. After the user acknowledges it, navigation goes to `login.html?signup=check-email`, which displays an inline reminder. The confirmation link itself returns to `login.html?verified=1`. No success modal is shown when Supabase signup fails. If Auth creates an immediate session, the client signs out to preserve the expected sign-in journey.
+Once Supabase accepts an Admin or Student signup, `register.html` shows a **large, centered, accessible Check your email alert** with a darkened backdrop. The blue-text **Continue to Sign-In** link (or dismissing the dialog) navigates to `login.html?signup=check-email`, which displays a reminder. The email confirmation link returns to `login.html?verified=1`. No success alert appears when signup fails; Supabase email rate-limit failures are instead explained in the page's error message. If Auth immediately creates a session, the client signs out to preserve the expected sign-in journey.
 
 ## Registration sequence, following Phase 1 framework
 
@@ -66,3 +66,10 @@ The original September 18 framework remains authoritative for class-scoped roles
 - [ ] Integrate the old academic pages into live Supabase before enabling them as routes.
 
 **Phase 1 is not signed off merely because this interface is ready.** The first Admin bootstrap and real multi-user trials remain the release gate.
+
+
+## Supabase Free Plan email sending limits
+
+Supabase's built-in authentication email provider has a **project-wide allowance of two authentication emails per hour**, which is quickly exhausted by repeated signups and password-reset tests. A per-user minimum interval also applies. The resulting `email rate limit exceeded` response means the email sender is throttling requests; it is **not** evidence that an invitation was approved or that a new account was successfully registered. The app displays a readable error without a confirmation success dialog. Wait for the allowance to reset or follow a previously received link.
+
+For long-term multiple-class deployment, configure your own SMTP provider or Supabase Send Email hook, which is supported without changing Blue Noelle's class ownership or RLS model. A custom sending service has its own quotas and billing requirements. See [Supabase authentication rate limits](https://supabase.com/docs/guides/auth/rate-limits) and [Custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp). Do not disable email confirmation as a workaround.
