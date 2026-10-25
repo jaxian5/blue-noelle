@@ -30,3 +30,36 @@
 .bn-admin-dialog input{margin:.3rem 0 1rem}
 .bn-admin-empty{padding:1.2rem;border-radius:10px;background:#f8fafc;color:#64748b}
 @media(max-width:700px){.bn-admin-fields{grid-template-columns:1fr}.bn-admin-record{align-items:flex-start;flex-direction:column}.bn-admin-record-actions{width:100%}}
+
+/* Accessible MIME picker: native details/summary, categorized checkboxes and
+ * one-click reset. Values remain standard MIME strings in required_file_types.
+ */
+.bn-admin-form .bn-format-fieldset{grid-column:1/-1;border:0;margin:0;padding:0;min-width:0}
+.bn-admin-form .bn-format-fieldset legend{font-size:.85rem;font-weight:800;color:#334155;margin:0 0 .45rem;padding:0}
+.bn-format-picker{border:1px solid #c5d7ec;border-radius:12px;background:white;overflow:hidden}
+.bn-format-picker>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 17px;cursor:pointer;color:#173b68;font-size:.86rem;font-weight:800}
+.bn-format-picker>summary::-webkit-details-marker{display:none}
+.bn-format-picker>summary:hover{background:#f4f8ff}
+.bn-format-picker>summary:focus-visible{outline:3px solid #93c5fd;outline-offset:-3px}
+.bn-format-picker[open]>summary{border-bottom:1px solid #dce7f5;background:#f8fbff}
+.bn-format-picker-title{display:flex;align-items:center;gap:10px}
+.bn-format-caret{font-size:1.3rem;transition:transform .2s;color:#5a79aa}
+.bn-format-picker[open] .bn-format-caret{transform:rotate(180deg)}
+.bn-format-count{color:#2563ad;font-size:.73rem;background:#eaf3ff;border-radius:30px;padding:5px 11px;white-space:nowrap}
+.bn-format-body{padding:17px}
+.bn-format-help{font-size:.78rem;line-height:1.55;color:#667b96;margin:0 0 13px}
+.bn-format-groups{display:grid;gap:16px}
+.bn-format-group h4{color:#607991;font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px}
+.bn-format-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.bn-admin-form .bn-format-grid label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e1eaf5;border-radius:10px;background:#fafdff;font-size:.8rem;font-weight:800;color:#2a486c;margin:0;cursor:pointer;min-width:0;overflow-wrap:anywhere}
+.bn-admin-form .bn-format-grid label:has(input:checked){background:#ebf3ff;border-color:#93baf0;color:#1d539b}
+.bn-admin-panel .bn-format-grid input[type=checkbox],.bn-postlogin .bn-admin-panel .bn-format-grid input[type=checkbox]{width:17px;height:17px;min-width:17px;flex-shrink:0;accent-color:#245fca;margin:0;padding:0;cursor:pointer}
+.bn-admin-form .bn-format-grid label small{display:block;font-size:.7rem;font-weight:500;color:#7185a0;margin-top:2px}
+.bn-format-grid label:focus-within{outline:2px solid #83b9ff;outline-offset:1px}
+.bn-format-footer{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin-top:16px;font-size:.72rem;color:#8191a7}
+.bn-format-clear{background:#f0f6ff;border:1px solid #d6e5f7;color:#285ea6;padding:8px 12px;border-radius:8px;font-weight:800;font-size:.76rem}
+.bn-format-clear:hover{background:#e4f0ff}
+.bn-format-group[hidden]{display:none!important}
+@media(max-width:850px){.bn-format-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.bn-format-grid{grid-template-columns:1fr 1fr}.bn-format-picker>summary{padding:12px;flex-wrap:wrap}.bn-format-body{padding:13px}}
+@media(prefers-reduced-motion:reduce){.bn-format-caret{transition:none}}
