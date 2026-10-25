@@ -63,3 +63,7 @@ Phase 3 requires separate security/acceptance work before enabling upload:
 - Validate object cleanup, file replacement, and private access under Student, Moderator and Admin roles.
 
 **Do not re-enable the old file-upload demo while this is unfinished.**
+
+## Free-plan file size alignment
+
+As of October 2026 Supabase Free projects have a **maximum file size of 50 MB** ([storage docs](https://supabase.com/docs/guides/storage/uploads/file-limits)). A follow-on migration `20261025130703_phase2_free_plan_file_size_cap.sql` caps assignment configuration at **40 MiB** to leave headroom under 50 MB. The Admin form enforces the same cap. Phase 3 Storage must also enforce the bucket/global limit server-side.
