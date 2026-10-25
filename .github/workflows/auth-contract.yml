@@ -1,0 +1,25 @@
+name: Blue Noelle Authentication Contracts
+on:
+  pull_request:
+    paths:
+      - 'pages/**'
+      - 'js/**'
+      - 'css/auth.css'
+      - 'tests/auth-contract.test.mjs'
+      - '.github/workflows/auth-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'pages/**'
+      - 'js/**'
+      - 'css/auth.css'
+      - 'tests/auth-contract.test.mjs'
+jobs:
+  auth-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify canonical sign-in and registration contracts
+        run: node --test tests/auth-contract.test.mjs
