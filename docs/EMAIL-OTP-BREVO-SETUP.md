@@ -1,4 +1,4 @@
-# Blue Noelle · Six-digit email verification with Brevo
+# Blue Noelle · Eight-digit email verification with Brevo
 
 **Status:** Feature implemented in the OTP verification PR; **production activation requires one manual Supabase email-template change and a real new-account test**. Do not claim it is deployed or successfully delivering codes before these checks.
 
@@ -21,12 +21,12 @@
 6. Save the template. The change is made **inside the Supabase dashboard**, not by pushing a GitHub HTML file. That repository HTML is the source-of-truth template to copy. The connected Supabase plugin currently has no supported Auth email-template configuration action.
 7. Review Authentication → Rate Limits. Use reasonable limits that fit Brevo's plan and protect against repeated resend requests. Do **not** disable verification or raise limits arbitrarily.
 
-**Important deployment order:** Save the OTP email template **before merging/deploying** the registration-interface PR, otherwise new users could receive only a confirmation link while the UI asks for a six-digit code.
+**Important deployment order:** Save the OTP email template **before merging/deploying** the registration-interface PR, otherwise new users could receive only a confirmation link while the UI asks for a eight-digit code.
 
 ## User journey
 
 1. At `pages/register.html`, choose **Student** or **Admin**, enter full name, email and password, and submit.
-2. Supabase accepts signup (and Brevo delivers a six-digit confirmation code). The alert offers **Enter verification code** and opens `pages/verify-email.html`.
+2. Supabase accepts signup (and Brevo delivers a eight-digit confirmation code). The alert offers **Enter verification code** and opens `pages/verify-email.html`.
 3. On the verification page, enter the code into six accessible boxes. Typing, pasting and mobile numeric keyboards are supported.
 4. Blue Noelle sends **email + OTP** to Supabase Auth with `type:'email'`. Supabase validates it. The app signs out the verification-created session so the approved next step remains **Sign In**.
 5. The user signs in normally. **Admin** creates one owned class; **Student** redeems an invitation and awaits approval.
@@ -39,7 +39,7 @@
 
 - [ ] Confirm Brevo SMTP is saved, sending domain/sender approved, and the exact template body is live.
 - [ ] Create one **new** test Admin or Student identity from the deployed registration page.
-- [ ] Confirm email arrives with a **six-digit code**, not just a clickable verification link. Verify code and expiry against dashboard settings.
+- [ ] Confirm email arrives with a **eight-digit code**, not just a clickable verification link. Verify code and expiry against dashboard settings.
 - [ ] Check the code-entry screen using typing, paste, backspace, mobile viewport, and keyboard.
 - [ ] Attempt incorrect code: remains unverified. Enter correct code: successful verification and sign-in redirect.
 - [ ] Verify Admin/Student account type is unchanged by verification and old active accounts are unaffected.
