@@ -21,10 +21,14 @@
        /email rate limit exceeded/i.test(error?.message || "");
      const unconfirmed = error?.code === "email_not_confirmed" ||
        /email not confirmed/i.test(error?.message || "");
+     const duplicate = error?.code === "user_already_exists" ||
+       /user already registered|user already exists/i.test(error?.message || "");
      status(limited
        ? "Too many confirmation or recovery emails have been requested. Email delivery is temporarily limited. Please try again later, or use an existing code."
        : unconfirmed
        ? "Your email is not verified. Open Verify Email below and enter your confirmation code, or request a new code from that page."
+       : duplicate
+       ? "An account may already exist for this email. Try signing in or using Forgot password instead of registering again."
        : (error?.message || "Unable to complete your request. Please try again."), "error");
    } finally { submitLock(form, false); }
  }
