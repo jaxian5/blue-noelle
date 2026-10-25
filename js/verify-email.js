@@ -131,7 +131,7 @@
      if(clock()<nextResendAt)throw Error("Wait for the resend countdown to finish.");
      await api().resendSignupCode(email);
      clearDigits();startCooldown();
-     note("A new verification code was requested. Check your inbox or spam folder.","success");
+     note("Request accepted. If this email is awaiting verification, check your inbox or spam folder for a code. Already verified? Sign in instead.","info");
      digits()[0].focus();
    });
  }
