@@ -36,6 +36,7 @@
  }
  async function action(name,payload){
    if(!classId)throw Error("Choose a classroom.");
+   if(!w.BNBackend?.configured)throw Error("Supabase connection is unavailable.");
    const {data,error}=await db().rpc("bn_manage_classwork",{
      p_class:classId,p_action:name,p_data:payload
    });
@@ -226,8 +227,10 @@
            required_file_types:types,
            max_file_size_bytes:max?Number(max)*1048576:null
          };
-         if(!payload.subject_id)throw Error("Select a subject.");
+         if(!payload.subject_id || !subjects.some(s=>s.id===payload.subject_id))throw Error("Select a subject from your classroom.");
          if(!payload.name)throw Error("Enter an assignment title.");
+         if(types.length>12||types.some(t=>t.length>100))throw Error("Choose at most 12 valid file types.");
+         if(max && (!Number.isInteger(Number(max)) || Number(max)<1 || Number(max)>40))throw Error("Maximum file size must be between 1 and 40 MiB.");
          const id=$("assignment-id").value;
          if(id)payload.id=id;
          await action(id?"assignment.update":"assignment.create",payload);
