@@ -49,7 +49,8 @@ test("legacy academic routes no longer load demo accounts or browser-only assign
  }
  const submission=read("pages/submission.html");
  assert.match(submission,/Phase 3/);
- assert.match(submission,/auth\.getUser\(\)/);
+ assert.match(submission,/phase3-submissions\.js/);
+ assert.match(read("js/phase3-submissions.js"),/auth\.getUser\(\)/);
  assert.doesNotMatch(submission,/phase2-assignments\.js|localStorage\.setItem/);
 });
 

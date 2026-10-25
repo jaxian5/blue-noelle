@@ -1,28 +1,60 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Submissions · Phase 3 | Blue Noelle</title><link rel="stylesheet" href="../css/main.css">
-<style>
-.bn-next-wrap{max-width:740px;margin:8vh auto;padding:2rem}.bn-next-panel{border-radius:16px;padding:2rem;border:1px solid #cbd5e1;background:#fff;box-shadow:0 10px 30px #12233f14}
-.bn-next-kicker{text-transform:uppercase;letter-spacing:.14em;color:#2563eb;font-size:.72rem;font-weight:800;margin-bottom:.6rem}
-.bn-next-panel h1{font-size:clamp(1.5rem,4vw,2.2rem);margin-bottom:.8rem}.bn-next-panel p{color:#475569;margin-bottom:1.2rem}
-.bn-next-panel .bn-next-hint{background:#eff6ff;padding:1rem;border-radius:9px;border-left:4px solid #2563eb}
-</style></head><body><main class="bn-next-wrap">
-<section class="bn-next-panel"><p class="bn-next-kicker">Blue Noelle · Upcoming Phase 3</p>
-<h1>Private submission workspace</h1>
-<p>This legacy demonstration submission screen has been retired. Real file uploads, submission versions, deadline snapshots, and private downloads will be activated with Phase 3's authenticated storage policies.</p>
-<div class="bn-next-hint" id="submission-status" role="status" aria-live="polite">Checking your session…</div>
-<p><a class="bn-btn bn-btn-primary" href="classwork.html">Return to live classwork</a> <a class="bn-btn bn-btn-secondary" href="dashboard.html">Dashboard</a></p>
-</section></main>
+<title>Submissions | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css"><link rel="stylesheet" href="../css/classwork.css">
+<link rel="stylesheet" href="../css/submissions.css"></head>
+<body><div class="bn-app">
+<header class="bn-header"><a href="../index.html" class="bn-logo"><span class="bn-logo-mark">BN</span>Blue Noelle</a>
+<nav class="bn-nav" aria-label="Classroom navigation"><a href="dashboard.html">Dashboard</a>
+<a href="classwork.html">Classwork</a><a href="submission.html" class="active" aria-current="page">Submissions</a><a href="account.html">Account</a></nav>
+</header>
+<main class="bn-main bn-submission-page">
+<div class="bn-classwork-heading">
+<div><p class="bn-classwork-eyebrow">Phase 3 · Private workspace</p><h1 id="sub-title">Assignment submissions</h1>
+<p id="sub-description" class="bn-muted">Loading authenticated assignment…</p></div>
+<a href="classwork.html" class="bn-btn bn-btn-secondary">← Classwork</a></div>
+<div id="sub-status" class="bn-card bn-classwork-status" aria-live="polite" role="status">Verifying your session…</div>
+<div id="sub-assignment" class="bn-sub-facts bn-card" hidden>
+<div><span>CLASS</span><strong id="sub-class">—</strong></div><div><span>TYPE</span><strong id="sub-type">—</strong></div>
+<div><span>DEADLINE</span><strong id="sub-deadline">—</strong></div><div><span>STATUS</span><strong id="sub-assignment-status">—</strong></div>
+</div>
+<section id="student-area" class="bn-sub-grid" hidden>
+<div class="bn-card bn-sub-panel">
+<div class="bn-sub-section-title"><div><p class="bn-classwork-eyebrow">YOUR WORK</p><h2>Upload a version</h2></div></div>
+<p class="bn-muted">Each submission version keeps its own files. Once you submit, the submission timestamp and deadline snapshot are stored by Supabase.</p>
+<p id="group-notice" class="bn-sub-callout" hidden></p>
+<form id="sub-upload-form">
+<label for="sub-files">Select files</label>
+<input id="sub-files" type="file" multiple required>
+<p class="bn-sub-hint" id="sub-limits">Files are private. Maximum 12 files per version, 40 MiB per file.</p>
+<div class="bn-sub-buttons"><button type="submit" id="sub-upload" class="bn-btn bn-btn-primary">Upload selected files</button>
+<button type="button" id="sub-refresh" class="bn-btn bn-btn-secondary">Refresh submissions</button></div>
+</form>
+<div class="bn-sub-progress" id="sub-progress" hidden><div class="bn-sub-meter" id="sub-meter"></div>
+<p id="sub-progress-text" aria-live="polite">Uploading…</p></div>
+<div id="sub-draft-panel" hidden>
+<h3>Current draft</h3><div id="sub-draft-files"></div>
+<button id="sub-final-submit" type="button" class="bn-btn bn-btn-primary">Submit this version</button>
+<p class="bn-sub-hint">Check the attachments before submitting. An assignment may accept late work while OPEN; the database records whether it was late.</p>
+</div>
+</div>
+<div class="bn-card bn-sub-panel"><div class="bn-sub-section-title"><div><p class="bn-classwork-eyebrow">HISTORY</p><h2>Previous versions</h2></div></div>
+<div id="sub-history"><p class="bn-muted">No versions yet.</p></div></div>
+</section>
+<section id="staff-area" class="bn-card bn-sub-panel" hidden>
+<div class="bn-sub-section-title"><div><p class="bn-classwork-eyebrow">CLASS OFFICER</p><h2>Student submissions</h2></div>
+<span class="bn-sub-secure">Class-scoped access</span></div>
+<div id="staff-submissions"></div>
+<section id="group-management" hidden>
+<hr><h3>Assignment groups</h3>
+<p class="bn-muted">Only ACTIVE Admins manage group membership. Each Student can belong to only one group per assignment.</p>
+<form id="group-create-form" class="bn-sub-inline">
+<label for="group-name">New group name</label><input id="group-name" required maxlength="120" placeholder="e.g. Research Team 1">
+<button type="submit" class="bn-btn bn-btn-primary">Create group</button></form>
+<div id="group-list"></div>
+</section>
+</section>
+</main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded",async()=>{
- const out=document.getElementById("submission-status");
- if(!window.BNBackend?.configured){out.textContent="Supabase is unavailable.";return}
- try{
-  const {data,error}=await window.BNBackend.client.auth.getUser();
-  if(error||!data?.user){location.replace("login.html");return}
-  out.textContent="You're signed in. File submission is not enabled yet; no uploads are accepted by this page.";
- }catch(e){out.textContent="Unable to check your session. Try again later."}
-});
-</script></body></html>
+<script src="../js/phase3-submissions.js"></script></body></html>
