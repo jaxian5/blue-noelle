@@ -20,9 +20,9 @@ Old pages `/pages/phase1-onboarding.html` and `/pages/supabase-auth.html` now re
 
 ## New post-signup eight-digit email verification
 
-**Feature pending deployment:** The existing signup alert now offers **Enter verification code**, opening `pages/verify-email.html`. The user enters a eight-digit code sent by Brevo (external SMTP) and validated using Supabase Auth `verifyOtp({email,token,type:"email"})`. The code is never stored in app data. After successful verification the auto-issued session is signed out and the user selects **Continue to Sign-In**. A wrong or expired code does not authenticate the account; resend uses the `signup` type and a visible 60-second UI cooldown. Email confirmation must stay enabled.
+**Feature implemented and deployed, delivery on operational hold:** The existing signup alert now offers **Enter verification code**, opening `pages/verify-email.html`. The user enters a eight-digit code sent by Brevo (external SMTP) and validated using Supabase Auth `verifyOtp({email,token,type:"email"})`. The code is never stored in app data. After successful verification the auto-issued session is signed out and the user selects **Continue to Sign-In**. A wrong or expired code does not authenticate the account; resend uses the `signup` type and a visible 60-second UI cooldown. Email confirmation must stay enabled.
 
-**Deployment prerequisite:** Supabase's **Confirm signup** template must be changed from `{{ .ConfirmationURL }}` to `{{ .Token }}` before deploying this UI. Copy [EMAIL-OTP-TEMPLATE.html](EMAIL-OTP-TEMPLATE.html) into Authentication → Email Templates → Confirm signup and perform a real new-account delivery test. See [Brevo setup](EMAIL-OTP-BREVO-SETUP.md).
+**Current configuration requirement:** Supabase's **Confirm signup** template must use the eight-digit OTP placeholder rather than a confirmation link. The original prerequisite was to change from `{{ .ConfirmationURL }}` to `{{ .Token }}` for this UI. The reference template is [EMAIL-OTP-TEMPLATE.html](EMAIL-OTP-TEMPLATE.html). **Brevo delivery to Gmail/Outlook remains unreliable; public signup and password recovery are not release-ready.** Do not disable verification. See [Brevo setup](EMAIL-OTP-BREVO-SETUP.md).
 
 ## Registration sequence, following Phase 1 framework
 
