@@ -12,11 +12,12 @@
  }
  w.BNLivePhase1=Object.freeze({
    ready:()=>Boolean(w.BNBackend?.configured),
-   async signUp(email,password,fullName){
+   async signUp(email,password,fullName,registrationType="Student"){
+     if(!["Student","Admin"].includes(registrationType))throw Error("Choose Student or Admin registration.");
      if(fullName.trim().length<2 || fullName.trim().length>120)throw Error("Full name must contain 2–120 characters.");
      if(password.length<8)throw Error("Password must contain at least eight characters.");
      const emailRedirectTo = new URL("login.html?verified=1", w.location.href).href;
-     const {data,error}=await client().auth.signUp({email:email.trim(),password,options:{emailRedirectTo,data:{full_name:fullName.trim()}}});
+     const {data,error}=await client().auth.signUp({email:email.trim(),password,options:{emailRedirectTo,data:{full_name:fullName.trim(),registration_type:registrationType}}});
      if(error)throw error;return data;
    },
    async signIn(email,password){
@@ -27,6 +28,8 @@
      const {error}=await client().auth.signOut();if(error)throw error;
    },
    user:async()=>{const {data,error}=await client().auth.getUser();if(error?.name==="AuthSessionMissingError")return null;if(error)throw error;return data.user||null;},
+   profile:()=>checked(db=>db.from("User").select("account_type,full_name,username").single()),
+   createClass:(name,section)=>checked(db=>db.rpc("bn_create_owned_class",{p_name:name.trim(),p_section:section.trim()||null})),
    memberships:()=>checked(db=>db.from("ClassMembership").select("id,class_id,role,status,joined_at").order("created_at",{ascending:false})),
    join:(code,username,studentId)=>checked(db=>db.rpc("bn_join_class",{p_code:code.trim(),p_username:username.trim(),p_student_id:studentId.trim()||null})),
    pending:(classId)=>checked(db=>db.rpc("bn_pending_class_registrations",{p_class:classId})),
