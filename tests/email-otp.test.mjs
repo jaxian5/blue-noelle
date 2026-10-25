@@ -47,6 +47,7 @@ test("live signup OTP adapter checks code length, type and resend call",async()=
   }};
   const w={BNBackend:{configured:true,client},location:{href:"https://example.test/pages/verify-email.html"}};
   new Script(adapter).runInNewContext({window:w,URL});
+  await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","123456"),/eight-digit/);
   await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","1234567"),/eight-digit/);
   await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","ABCDEFGH"),/eight-digit/);
   await assert.rejects(w.BNLivePhase1.verifySignupCode("user@example.com","123456789"),/eight-digit/);
@@ -126,4 +127,31 @@ test("expired code remains on screen and cannot produce false success",async()=>
   assert.equal(x.calls.signOutCalls,0);
   assert.equal(x.elem("otp-complete").hidden,true);
   assert.match(x.elem("auth-status").textContent,/expired/);
+});
+
+
+test("pasting an eight-digit code fills each field without truncation",async()=>{
+  const x=fixture({withPending:true});
+  await x.ready();
+  const inputs=x.slots;
+  let prevented=false;
+  inputs[0].listeners.paste({
+    clipboardData:{getData:()=> "12 34 56 78"},
+    preventDefault(){prevented=true}
+  });
+  assert.equal(prevented,true);
+  assert.deepEqual(inputs.map(el=>el.value),[..."12345678"]);
+  inputs[0].listeners.input();
+  assert.equal(inputs[1].focused,true);
+});
+
+test("verification rejects a six-digit code before any backend request",async()=>{
+  const x=fixture({withPending:true});
+  await x.ready();
+  [..."123456"].forEach((ch,i)=>x.slots[i].value=ch);
+  x.elem("otp-form").listeners.submit({preventDefault(){}});
+  for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(x.calls.verifyCalls,0);
+  assert.match(x.elem("auth-status").textContent,/all 8 digits/);
+  assert.equal(x.elem("otp-complete").hidden,true);
 });
