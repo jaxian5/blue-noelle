@@ -76,3 +76,7 @@ The original September 18 framework remains authoritative for class-scoped roles
 Supabase's built-in authentication email provider has a **project-wide allowance of two authentication emails per hour**, which is quickly exhausted by repeated signups and password-reset tests. A per-user minimum interval also applies. The resulting `email rate limit exceeded` response means the email sender is throttling requests; it is **not** evidence that an invitation was approved or that a new account was successfully registered. The app displays a readable error without a confirmation success dialog. Wait for the allowance to reset or follow a previously received link.
 
 For long-term multiple-class deployment, configure your own SMTP provider or Supabase Send Email hook, which is supported without changing Blue Noelle's class ownership or RLS model. A custom sending service has its own quotas and billing requirements. See [Supabase authentication rate limits](https://supabase.com/docs/guides/auth/rate-limits) and [Custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp). Do not disable email confirmation as a workaround.
+
+## Phase 2 academic access
+
+Once signed in, ACTIVE members can open `pages/classwork.html` from My Account. It displays only live `Subject` and `Assignment` rows visible through class-scoped RLS. It does **not** load old localStorage demo identities or expose unaudited writes. Phase 2 creation and status updates follow in separate PRs. See [Phase 2 live kickoff](PHASE2-LIVE-KICKOFF-2026-10-25.md).
