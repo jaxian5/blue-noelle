@@ -128,13 +128,13 @@ test("registration confirmation popup exists and is accessible", () => {
   assert.match(registration, /aria-labelledby="signup-confirm-title"/);
   assert.match(registration, /aria-describedby="signup-confirm-description"/);
   assert.match(registration, /id="signup-confirm-description"/);
-  assert.match(registration, /Continue to Sign-In/);
-  assert.match(registration, /id="signup-confirm-continue" class="bn-signup-dialog-link" href="login\.html\?signup=check-email"/);
+  assert.match(registration, /Enter verification code/);
+  assert.match(registration, /id="signup-confirm-continue" class="bn-signup-dialog-link" href="verify-email\.html"/);
   assert.match(core, /confirmation\.showModal\(\)/);
-  assert.match(core, /go\("login\.html\?signup=check-email"\)/);
+  assert.match(core, /go\(confirmationDestination\)/);
 });
 
-test("successful Student/Admin signup shows the email popup then routes to sign-in", async () => {
+test("successful Student/Admin signup opens email OTP verification", async () => {
   for (const registrationType of ["Student", "Admin"]) {
     const elements = new Map();
     const fakeElement = id => {
@@ -182,7 +182,7 @@ test("successful Student/Admin signup shows the email popup then routes to sign-
     assert.match(fakeElement("signup-confirm-title").textContent, /Check your email/);
     assert.equal(redirects.length, 0, "User should be able to read the popup before redirect");
     fakeElement("signup-confirmation").close();
-    assert.equal(redirects[0], "login.html?signup=check-email");
+    assert.equal(redirects[0], "verify-email.html");
   }
 });
 
@@ -226,7 +226,7 @@ test("signup alert uses a prominent centered dialog and BLUE text link instead o
   const dialog = html.match(/<dialog id="signup-confirmation"[\s\S]*?<\/dialog>/)?.[0];
   assert.ok(dialog, "Missing confirmation dialog");
   assert.match(dialog, /aria-modal="true"/);
-  assert.match(dialog, /Continue to Sign-In/);
+  assert.match(dialog, /Enter verification code/);
   assert.match(dialog, /class="bn-signup-dialog-link"/);
   assert.doesNotMatch(dialog, /bn-primary-action/);
   assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?position:fixed;/);

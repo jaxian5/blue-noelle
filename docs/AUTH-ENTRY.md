@@ -10,21 +10,24 @@
 | --- | --- | --- |
 | Landing | `/index.html` | Choose Sign in or Create account |
 | Sign in | `/pages/login.html` | Supabase Auth email/password, recovery request and new password form |
-| Register | `/pages/register.html` | Account creation → confirmation → authenticated class invite redemption |
+| Register | `/pages/register.html` | Student/Admin signup and creation of a real Supabase Auth account |
+| Verify email | `/pages/verify-email.html` | Six-digit OTP entry, resend countdown and Supabase verification |
 | My Account | `/pages/account.html` | Authenticated session, class-scoped membership statuses, sign out and privileged navigation |
 | Class staff | `/pages/phase1-class-staff.html` | Moderator/Admin pending review, Admin invitation creation |
 | Class operations | `/pages/class-operations.html` | Active officer scheduling and member management (no separate login) |
 
 Old pages `/pages/phase1-onboarding.html` and `/pages/supabase-auth.html` now redirect to the canonical registration/sign-in pages. They're kept as lightweight redirects to preserve links.
 
-## Post-signup confirmation and sign-in (final Phase 1 polish)
+## New post-signup six-digit email verification
 
-Once Supabase accepts an Admin or Student signup, `register.html` shows a **large, centered, accessible Check your email alert** with a darkened backdrop. The blue-text **Continue to Sign-In** link (or dismissing the dialog) navigates to `login.html?signup=check-email`, which displays a reminder. The email confirmation link returns to `login.html?verified=1`. No success alert appears when signup fails; Supabase email rate-limit failures are instead explained in the page's error message. If Auth immediately creates a session, the client signs out to preserve the expected sign-in journey.
+**Feature pending deployment:** The existing signup alert now offers **Enter verification code**, opening `pages/verify-email.html`. The user enters a six-digit code sent by Brevo (external SMTP) and validated using Supabase Auth `verifyOtp({email,token,type:"email"})`. The code is never stored in app data. After successful verification the auto-issued session is signed out and the user selects **Continue to Sign-In**. A wrong or expired code does not authenticate the account; resend uses the `signup` type and a visible 60-second UI cooldown. Email confirmation must stay enabled.
+
+**Deployment prerequisite:** Supabase's **Confirm signup** template must be changed from `{{ .ConfirmationURL }}` to `{{ .Token }}` before deploying this UI. Copy [EMAIL-OTP-TEMPLATE.html](EMAIL-OTP-TEMPLATE.html) into Authentication → Email Templates → Confirm signup and perform a real new-account delivery test. See [Brevo setup](EMAIL-OTP-BREVO-SETUP.md).
 
 ## Registration sequence, following Phase 1 framework
 
 1. **CREATE ACCOUNT:** real Supabase Auth `signUp`. Profile trigger populates `public."User"`. The browser never writes passwords into Blue Noelle JSON or localStorage.
-2. **VERIFY EMAIL:** confirmation link routes back to `/pages/login.html?verified=1`.
+2. **VERIFY EMAIL:** enter the six-digit code on `/pages/verify-email.html`; after successful Supabase verification, proceed to sign in.
 3. **SIGN IN:** Supabase Auth `signInWithPassword` and authenticated session.
 4. **JOIN CLASS:** enter a private class code + username at `register.html`. Server `bn_join_class` requires email confirmation, validates invitation and inserts Student/PENDING membership. No class access on signup alone.
 5. **OFFICER REVIEW:** `phase1-class-staff.html` checks ACTIVE Moderator/Admin membership in the selected class. An authorized officer approves/rejects in the database.

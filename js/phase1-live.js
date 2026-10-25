@@ -20,6 +20,23 @@
      const {data,error}=await client().auth.signUp({email:email.trim(),password,options:{emailRedirectTo,data:{full_name:fullName.trim(),registration_type:registrationType}}});
      if(error)throw error;return data;
    },
+   // Confirm-signup uses the six-digit {{ .Token }} emitted by Supabase Auth.
+   async verifySignupCode(email,token){
+     const sanitized=String(token||"").trim();
+     if(!/^\d{6}$/.test(sanitized))throw Error("Enter a valid six-digit verification code.");
+     const {data,error}=await client().auth.verifyOtp({
+       email:email.trim(),token:sanitized,type:"email"
+     });
+     if(error)throw error;
+     return data;
+   },
+   async resendSignupCode(email){
+     const emailRedirectTo=new URL("login.html?verified=1",w.location.href).href;
+     const {error}=await client().auth.resend({
+       type:"signup",email:email.trim(),options:{emailRedirectTo}
+     });
+     if(error)throw error;
+   },
    async signIn(email,password){
      const {data,error}=await client().auth.signInWithPassword({email:email.trim(),password});
      if(error)throw error;return data;

@@ -114,8 +114,9 @@
    const signupInfo = $("signup-info");
    const confirmation = $("signup-confirmation");
    let signupComplete = false;
+   let confirmationDestination = "verify-email.html";
    confirmation.addEventListener("close", () => {
-     if (signupComplete) go("login.html?signup=check-email");
+     if (signupComplete) go(confirmationDestination);
    });
    async function refresh() {
      const user = await currentUser();
@@ -138,7 +139,8 @@
      task(form, async () => {
        if ($("signup-password").value !== $("signup-confirm").value) throw Error("Passwords do not match.");
        const registrationType = document.querySelector('input[name="registration-type"]:checked')?.value || "Student";
-       const result = await api().signUp($("signup-email").value,$("signup-password").value,$("signup-name").value,registrationType);
+       const email = $("signup-email").value.trim();
+       const result = await api().signUp(email,$("signup-password").value,$("signup-name").value,registrationType);
        $("signup-password").value = ""; $("signup-confirm").value = "";
        // When email confirmation is disabled, signUp may immediately create a
        // session. End it so the requested journey consistently begins at Sign In.
@@ -146,14 +148,26 @@
        signupComplete = true;
        form.reset();
        if (result?.session) {
+         confirmationDestination = "login.html";
          $("signup-confirm-title").textContent = "Account created";
          $("signup-confirm-description").textContent =
-           "Your account is ready. Continue to Sign In with the credentials you just created.";
+           "Your account is ready. Continue to Sign-In to access Blue Noelle.";
        } else {
+         confirmationDestination = "verify-email.html";
+         // Store only a short-lived email hint and resend cooldown. Never the
+         // account password, OTP token, or a trusted role.
+         try {
+           const at = Date.now();
+           sessionStorage.setItem("bn_pending_confirmation_email",
+             JSON.stringify({email,at,nextResendAt:at+60000}));
+         } catch (_) { /* Verification page also accepts manually typed email. */ }
          $("signup-confirm-title").textContent = "Check your email";
          $("signup-confirm-description").textContent =
-           "Check your inbox for an account confirmation link. Once you've verified your email, sign in to continue.";
+           "We sent a six-digit verification code. Open the verification page and enter the code to confirm your account.";
        }
+       $("signup-confirm-continue").href = confirmationDestination;
+       $("signup-continue-label").textContent =
+         result?.session ? "Continue to Sign-In " : "Enter verification code ";
        status("Registration received. Continue to Sign In after reviewing the next step.", "success");
        if (typeof confirmation.showModal === "function") {
          confirmation.showModal();
@@ -161,7 +175,7 @@
          // Older browsers still get the email reminder and clear navigation.
          w.alert($("signup-confirm-title").textContent + "\\n\\n" +
            $("signup-confirm-description").textContent);
-         go("login.html?signup=check-email");
+         go(confirmationDestination);
        }
      });
    });
