@@ -10,6 +10,9 @@ Use Supabase hosted PostgreSQL and Auth as the initial backend; static frontend 
 ## Storage adjustment
 The original document proposes a local application-managed storage backend with `put/get/delete/exists` abstraction and later optional migration to object storage. Because deployment is static and there's no trusted local storage server, **use private Supabase Storage buckets for initial real submissions** while preserving an application-level opaque `storage_key` abstraction. The `File` table already reserves filename, MIME, size and SHA-256 fields. Storage buckets, private access policies and upload/download logic are **Phase 3 work**, not signed off as implemented in Phase 0.
 
+## Multi-class ownership amendment (2026-10-25)
+Blue Noelle now supports **multiple independent classes**, not a deployment dedicated to one section. An immutable signup choice is captured as `User.account_type` (Admin or Student) at Auth creation. A verified Admin creates exactly one owned class via a private transactional RPC, which simultaneously grants their ACTIVE Admin membership. Admin accounts cannot join another class; Student accounts join classes by private invitation and may have different roles in different classes. `Class.owner_user_id` is uniquely indexed and `ClassMembership` has an Admin-ownership guard. Existing sample class rows remain unowned. See [Multi-Class Phase 1](MULTICLASS-PHASE1.md).
+
 ## Trust boundaries
 - **Identity:** Supabase Auth manages password hashes and sessions. `public."User"` provides profile data only.
 - **Class membership:** `public."ClassMembership"` is the authoritative role/status source; client-supplied `user_metadata` is never authorized as a role.
