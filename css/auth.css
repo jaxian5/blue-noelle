@@ -162,3 +162,49 @@
 @media (prefers-reduced-motion:reduce){
   .bn-signup-dialog::backdrop{backdrop-filter:none}
 }
+
+
+/* Email OTP confirmation: keyboard-accessible, responsive six-slot entry. */
+.bn-otp-content{max-width:650px}
+.bn-otp-emblem{
+ display:grid;place-items:center;
+ margin:0 0 1.25rem;
+ width:70px;height:70px;
+ border-radius:22px;
+ background:#dbeafe;
+ color:#1d4ed8;
+ font-size:2rem;
+}
+.bn-otp-fieldset{border:0;min-width:0;padding:0;margin:1.75rem 0 0}
+.bn-otp-fieldset legend{font-size:.94rem;font-weight:750;margin-bottom:.9rem;color:var(--bn-text)}
+.bn-otp-digits{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.35rem,2vw,.8rem);max-width:470px}
+.bn-entry-content .bn-otp-digit{
+ box-sizing:border-box;
+ width:100%;height:clamp(50px,10vw,66px);min-width:0;
+ padding:0;
+ text-align:center;
+ font-size:clamp(1.45rem,4vw,2rem);
+ font-weight:800;
+ font-variant-numeric:tabular-nums;
+ color:#0f244e;
+ border:2px solid #cbd5e1;
+ border-radius:11px;
+ background:#fff;
+ caret-color:#2563eb;
+}
+.bn-entry-content .bn-otp-digit:focus-visible{
+ outline:3px solid #93c5fd;outline-offset:2px;border-color:#2563eb
+}
+.bn-otp-content .bn-primary-action{margin-top:1.4rem}
+.bn-otp-resend{margin:1.5rem 0 0;display:flex;flex-wrap:wrap;column-gap:.45rem;row-gap:.5rem;align-items:baseline}
+.bn-otp-resend span{color:var(--bn-text);font-size:.89rem}
+.bn-otp-resend .bn-inline-button{font-weight:750;color:#1d4ed8}
+.bn-otp-resend .bn-inline-button:disabled{color:#64748b;cursor:not-allowed}
+.bn-otp-resend #otp-resend-timer{width:100%;margin:.2rem 0 0}
+.bn-otp-content #otp-complete{margin:1.4rem 0}
+.bn-otp-content #otp-complete h2{color:#166534;margin:0 0 .8rem}
+.bn-otp-content #otp-complete .bn-btn{margin-top:1rem}
+@media(max-width:420px){
+ .bn-entry-content .bn-otp-digit{border-radius:8px;font-size:1.35rem;height:48px}
+ .bn-otp-digits{gap:.3rem}
+}
