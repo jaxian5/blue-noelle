@@ -73,3 +73,49 @@
 .bn-role-option small{font-size:.8rem;color:var(--bn-text-muted);line-height:1.5}
 @media(max-width:850px){.bn-entry{grid-template-columns:1fr}.bn-entry-aside{min-height:0;padding:1.5rem 1.3rem;gap:.9rem}.bn-entry-aside h2{font-size:1.7rem;margin:0;max-width:none}.bn-entry-aside p,.bn-entry-aside footer,.bn-entry-kicker{display:none}.bn-entry-main{min-height:auto;padding:2rem 1.2rem 3rem;align-items:flex-start}.bn-entry-content{max-width:580px}}
 @media(prefers-reduced-motion:reduce){.bn-entry{scroll-behavior:auto}}
+
+
+/* Signup confirmation appears only after Supabase accepts the registration. */
+.bn-signup-dialog{
+  box-sizing:border-box;
+  width:min(430px,calc(100vw - 2rem));
+  max-height:min(90vh,720px);
+  overflow-y:auto;
+  border:1px solid var(--bn-border-strong);
+  border-radius:16px;
+  background:var(--bn-surface);
+  color:var(--bn-text);
+  padding:2rem;
+  box-shadow:0 24px 80px rgba(10,25,60,.28);
+  text-align:center;
+}
+.bn-signup-dialog::backdrop{background:rgba(7,15,38,.65)}
+.bn-signup-dialog-icon{
+  display:grid;
+  place-items:center;
+  font-size:2rem;
+  width:66px;
+  height:66px;
+  border-radius:50%;
+  background:#dbeafe;
+  color:#1e40af;
+  margin:0 auto 1rem;
+}
+.bn-signup-dialog h2{font-size:1.5rem;letter-spacing:-.02em;margin:0 0 .75rem}
+.bn-signup-dialog p{line-height:1.6;margin:.6rem 0}
+.bn-signup-dialog .bn-entry-note{font-size:.81rem;margin:1rem 0}
+.bn-signup-dialog .bn-primary-action{
+  display:block;
+  width:100%;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+  background:var(--bn-primary);
+  color:#fff;
+  border:0;
+  border-radius:9px;
+  padding:.82rem 1rem;
+  margin:1.5rem 0 0;
+}
+.bn-signup-dialog .bn-primary-action:hover{background:var(--bn-primary-hover)}
+.bn-signup-dialog .bn-primary-action:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
