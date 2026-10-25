@@ -52,3 +52,5 @@ body.bn-postlogin{background:#f3f7fb;color:#142b4b;font-family:"DM Sans",Inter,s
  .bn-postlogin .bn-card{padding:18px}
 }
 @media(prefers-reduced-motion:reduce){.bn-postlogin *{transition:none!important}}
+
+.bn-postlogin .bn-nav .bn-submission-nav-current{display:inline-flex;align-items:center;background:#e9f2ff;color:#2362bb;border-radius:10px;font-weight:850;padding:9px 12px;font-size:.79rem;white-space:nowrap}
