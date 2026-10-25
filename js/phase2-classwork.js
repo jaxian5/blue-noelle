@@ -27,7 +27,7 @@
       timeZone:"Asia/Manila",dateStyle:"medium",timeStyle:"short"
     }).format(date);
   }
-  function cardSubject(subject, assignments) {
+  function cardSubject(subject, assignments, role) {
     const section = node("section",null,"bn-card bn-classwork-subject");
     const heading = node("h3",subject.name || "Untitled subject");
     section.appendChild(heading);
@@ -47,6 +47,12 @@
       status.dataset.status = item.status || "OPEN";
       const deadline = node("span",formatDeadline(item.deadline),"bn-classwork-badge");
       meta.append(kind,status,deadline);
+      if(role==="Student"){
+        const link=node("a","Open submission","bn-btn bn-btn-secondary");
+        link.href="submission.html?assignment="+encodeURIComponent(item.id);
+        link.setAttribute("aria-label","Open submission for "+item.name);
+        meta.append(link);
+      }
       row.append(left,meta);
       body.appendChild(row);
     }
@@ -86,7 +92,7 @@
         target.append(node("div","No subjects yet. An Admin will create the first subject.","bn-card bn-classwork-empty"));
       } else {
         for (const subject of subjects) {
-          target.appendChild(cardSubject(subject,assignments.filter(item=>item.subject_id===subject.id)));
+          target.appendChild(cardSubject(subject,assignments.filter(item=>item.subject_id===subject.id),membership.role));
         }
       }
       $("classwork-content").hidden = false;
