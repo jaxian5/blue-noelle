@@ -83,3 +83,40 @@ test("auth call-to-action links retain readable contrast over button backgrounds
   assert.match(stylesheet,
     /\.bn-entry-content a\.bn-btn-secondary[^{}]*\{[^{}]*color:var\(--bn-text\);/);
 });
+
+test("registration presents Student and Admin paths without instant client-side elevation", () => {
+  const registration = read("pages/register.html");
+  const ui = read("js/auth-ui.js");
+  const service = read("js/phase1-live.js");
+  assert.match(registration, /name="registration-type" value="Student" checked/);
+  assert.match(registration, /name="registration-type" value="Admin"/);
+  assert.match(registration, /id="create-form"/);
+  assert.match(registration, /id="join-form"/);
+  assert.match(ui, /profile\?\.account_type === "Admin"/);
+  assert.match(ui, /create-section/);
+  assert.match(ui, /api\(\)\.createClass/);
+  assert.match(service, /registration_type:registrationType/);
+  assert.match(service, /bn_create_owned_class/);
+});
+
+test("My Account respects the saved account type, not editable auth metadata", () => {
+  const account = read("pages/account.html");
+  const ui = read("js/auth-ui.js");
+  assert.match(account, /id="account-type"/);
+  assert.match(ui, /profile\?\.account_type === "Admin"/);
+  assert.match(ui, /hasOwnedClass/);
+  assert.match(ui, /isAdminAccount \? "Create my one class"/);
+  assert.doesNotMatch(ui, /user_metadata\.registration_type/);
+});
+
+test("versioned SQL enforces one owned class with a private transaction", () => {
+  const path = "supabase/migrations/20261025043228_multiclass_account_types_and_one_owned_class.sql";
+  const sql = read(path);
+  assert.match(sql, /create unique index if not exists bn_one_owned_class_per_admin/i);
+  assert.match(sql, /bn_private\.guard_owner_membership/);
+  assert.match(sql, /bn_private\.create_owned_class_impl/);
+  assert.match(sql, /email_confirmed_at is not null/);
+  assert.match(sql, /registration_type'='Admin'/);
+  assert.match(sql, /bn_create_owned_class\(p_name text,p_section text default null\)/);
+  assert.match(sql, /revoke execute on function public\.bn_create_owned_class/);
+});
