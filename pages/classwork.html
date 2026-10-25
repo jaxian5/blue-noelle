@@ -12,15 +12,17 @@
   <header class="bn-header">
    <a class="bn-logo" href="../index.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
    <nav class="bn-nav" aria-label="Account navigation">
+    <a href="dashboard.html">Dashboard</a>
     <a href="account.html">My Account</a>
     <a href="classwork.html" aria-current="page" class="active">Classwork</a>
+    <a id="classwork-admin-link" href="admin-classwork.html" hidden>Manage</a>
    </nav>
   </header>
   <main class="bn-main bn-classwork">
    <div class="bn-classwork-heading">
     <div><p class="bn-classwork-eyebrow">Live classroom · Phase 2</p><h1>Subjects &amp; Assignments</h1>
      <p class="bn-muted">Your classroom's actual Supabase data. No browser-local demo assignments.</p></div>
-    <a class="bn-btn bn-btn-secondary" href="account.html">Back to My Account</a>
+    <a class="bn-btn bn-btn-secondary" href="dashboard.html">← Dashboard</a>
    </div>
    <section class="bn-card bn-classwork-selector" aria-label="Choose classroom">
      <label for="classwork-class">Active classroom</label>
@@ -34,7 +36,7 @@
    </section>
    <section class="bn-card bn-classwork-notice" aria-label="Phase 2 current scope">
     <strong>Phase 2 is being activated in stages.</strong>
-    <p>Subjects and assignments displayed here are read directly from Supabase. Creation, audited edits, statuses, and deadlines are being moved off the old demo system. File submissions follow in Phase 3.</p>
+    <p>Subjects and assignments displayed here are read directly from Supabase. Admins can now create and manage audited classwork. Private file uploads and submissions follow in Phase 3.</p>
    </section>
   </main>
  </div>
