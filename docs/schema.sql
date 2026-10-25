@@ -1,4 +1,4 @@
--- ============================================================
+-- HISTORICAL DESIGN DRAFT ONLY (September 2026): NOT EXECUTABLE AGAINST LIVE SUPABASE.\n-- Live source of truth: supabase/migrations/ and docs/erd.md.\n-- This legacy schema includes password_hash and different role types intentionally\n-- superseded by Supabase Auth and the accepted ADR-0001. Never db push this file.\n-- ============================================================
 -- PROJECT: Blue Noelle — Phase 0 PostgreSQL Schema Draft
 -- Version 0.1 · September 2026
 -- Source of truth: Working Framework Phase 0 Baseline
