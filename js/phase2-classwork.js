@@ -130,6 +130,7 @@
         const opt=node("option",(cls.name||"Classroom")+(cls.section?" · "+cls.section:""));
         opt.value=cls.id; picker.appendChild(opt);
       }
+      picker.value = classes.find(cls => allowed.has(cls.id)).id;
       picker.disabled=false;
       picker.addEventListener("change",()=>loadClass(picker.value));
       await loadClass(picker.value);
