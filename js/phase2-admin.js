@@ -29,7 +29,7 @@
  }
  function parseManilaDatetime(value){
    if(!value)return null;
-   if(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$/.test(value)){
+   if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)){
      throw Error("Invalid deadline format.");
    }
    // The class uses Philippine Standard Time year-round (UTC+08:00);
