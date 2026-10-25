@@ -1,13 +1,13 @@
 # Blue Noelle: Phase 1 Live Registration Implementation
 
-> **Phase 1 QA / PR #12 merge (2026-10-25):** The original role-scoped invitation, review, RLS and audit integration tests passed. The least-privilege table grant fix was deployed in migration `20261025042230`. [QA report](PHASE1-QA-2026-10-25.md) documents those results **under the original single-class setup**; its manual Admin bootstrap step is historical and superseded by the [multi-class Admin self-registration design](MULTICLASS-PHASE1.md). Live multi-account testing of the revised flow remains pending. Supabase Free still reports the plan-dependent leaked-password-protection advisory.
+> **Phase 1 QA / PR #12 merge (2026-10-25):** The original role-scoped invitation, review, RLS and audit integration tests passed. The least-privilege table grant fix was deployed in migration `20261025042230`. [QA report](PHASE1-QA-2026-10-25.md) documents those results **under the original single-class setup**; its manual Admin bootstrap step is historical and superseded by the [multi-class Admin self-registration design](MULTICLASS-PHASE1.md). The owner has now completed and approved the revised multi-account registration flow; see [Phase 1 sign-off](PHASE1-COMPLETE.md). Supabase Free still reports the plan-dependent leaked-password-protection advisory.
 
 
 > **MULTI-CLASS UPDATE (2026-10-25):** The original manual "first administrator bootstrap" guidance further below is **superseded**. Admin signup now creates a new Admin account type, and the confirmed Admin creates their own class using `bn_create_owned_class`. Students continue joining by invitation. Consult [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the current authoritative flow. Do not run the old bootstrap SQL.
 
 **Source:** `PROJECT_ Blue Noelle.docx`, September 18, 2026, §§3–4, 14–15, 19–20.
 
-**Status 2026-10-25:** core PostgreSQL/RPC workflow implemented; canonical login and registration UI added for controlled testing. **Not production certified until the sign-up/confirm/approve/active path passes real multi-account tests.** The canonical login and registration pages now use Supabase Auth, not the old localStorage demo. Historical academic dashboards remain unintegrated.
+**Status 2026-10-25:** Phase 1 approved by the project owner following live testing. Final signup confirmation-dialog polish is pending merge and CI; see [Phase 1 sign-off](PHASE1-COMPLETE.md). The canonical login and registration pages now use Supabase Auth, not the old localStorage demo. Historical academic dashboards remain unintegrated.
 
 ## Student invitation flow (Admin creation is described in the multi-class update)
 1. A **real, verified Admin** issues a cryptographically random **Student** invitation using `bn_issue_class_invite`. Database saves only SHA-256 hash and restrictions, never the raw code.
@@ -39,9 +39,9 @@ The RPC entry points are SECURITY INVOKER in public; internal elevated functions
 
 Manual initial Admin bootstrap has been **retired** by the October 25 multi-class architecture. The verified Admin signup now creates a new classroom using `bn_create_owned_class` and becomes its owner in the same trusted database transaction. The server enforces **one owned class per Admin account**; no administrator may claim the original sample class or become Admin of another class through a browser request.
 
-The first tested Auth account remains registered as **Student**. For the revised live test, create a **new** Admin account and complete class creation through `pages/register.html`. See [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the release tests.
+The original test account remained a Student; a new verified Admin account created a separate class through `pages/register.html`. The database now records one owned class and active Admin/Student memberships. See [Multi-Class Phase 1](MULTICLASS-PHASE1.md) for the release tests.
 
-## Required testing before Phase 1 sign-off
+## Reference QA checklist and ongoing edge-case coverage
 - [ ] Supabase Auth signup, email confirmation and sign-in via real browser.
 - [ ] Auth trigger creates `public."User"` profile with correct UUID.
 - [ ] Admin issues invite; plaintext never persists in DB; valid code only creates Student/PENDING.
@@ -55,7 +55,7 @@ The first tested Auth account remains registered as **Student**. For the revised
 - [ ] Password resets / sign-outs, redirect URLs, email deliverability, and project Auth rate limits checked (see [canonical auth entry](AUTH-ENTRY.md)).
 - [ ] Cross-device, mobile, empty states, network failure and accessibility checks.
 
-**Do not invite real students or link to the legacy academic dashboard until these tests pass. The canonical `pages/login.html` and `pages/register.html` now point only to Supabase Auth; verification and production acceptance remain open.** Password visibility/editing through localStorage is legacy-demo-only and must be removed during cutover.
+**Do not link new authenticated students to the legacy academic dashboard until Phase 2 has migrated it to Supabase. The canonical `pages/login.html` and `pages/register.html` are already the real Supabase Auth entry points.** Password visibility/editing through localStorage is legacy-demo-only and must be removed during cutover.
 
 
 ## Verified developer tests (2026-10-25)
