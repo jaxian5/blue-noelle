@@ -120,3 +120,100 @@ test("versioned SQL enforces one owned class with a private transaction", () => 
   assert.match(sql, /bn_create_owned_class\(p_name text,p_section text default null\)/);
   assert.match(sql, /revoke execute on function public\.bn_create_owned_class/);
 });
+
+
+test("registration confirmation popup exists and is accessible", () => {
+  const registration = read("pages/register.html");
+  assert.match(registration, /<dialog id="signup-confirmation"/);
+  assert.match(registration, /aria-labelledby="signup-confirm-title"/);
+  assert.match(registration, /aria-describedby="signup-confirm-description"/);
+  assert.match(registration, /id="signup-confirm-description"/);
+  assert.match(registration, /Continue to Sign In/);
+  assert.match(core, /confirmation\.showModal\(\)/);
+  assert.match(core, /go\("login\.html\?signup=check-email"\)/);
+});
+
+test("successful Student/Admin signup shows the email popup then routes to sign-in", async () => {
+  for (const registrationType of ["Student", "Admin"]) {
+    const elements = new Map();
+    const fakeElement = id => {
+      if (!elements.has(id)) elements.set(id, {
+        value: "", textContent: "", hidden: false, dataset: {}, listeners: {},
+        open: false, resets: 0,
+        addEventListener(event, listener) { this.listeners[event] = listener; },
+        querySelectorAll() { return []; },
+        reset() { this.resets += 1; },
+        showModal() { this.open = true; },
+        close() { this.open = false; this.listeners.close?.(); },
+      });
+      return elements.get(id);
+    };
+    let ready;
+    const document = {
+      body: { dataset: { authPage: "register" } },
+      addEventListener(event, listener) { if (event === "DOMContentLoaded") ready = listener; },
+      getElementById: fakeElement,
+      querySelector() { return { value: registrationType }; },
+    };
+    const redirects = [];
+    const calls = [];
+    const api = {
+      ready: () => true,
+      async signUp(...args) { calls.push(args); return { session: null }; },
+    };
+    const window = {
+      BNLivePhase1: api,
+      BNBackend: { client: { auth: { getUser: async () => ({ data: { user: null }, error: null }) } } },
+      location: { href: "https://example.test/pages/register.html", replace(path) { redirects.push(path); } },
+    };
+    const context = { window, document, localStorage: { removeItem() {} } };
+    new Script(core).runInNewContext(context);
+    await ready();
+    fakeElement("signup-password").value = "SomeUniquePassword1!";
+    fakeElement("signup-confirm").value = "SomeUniquePassword1!";
+    fakeElement("signup-name").value = "Test Person";
+    fakeElement("signup-email").value = "test@example.test";
+    fakeElement("signup-form").listeners.submit({ preventDefault() {} });
+    for (let i = 0; i < 4; i++) await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0][3], registrationType);
+    assert.equal(fakeElement("signup-confirmation").open, true);
+    assert.match(fakeElement("signup-confirm-title").textContent, /Check your email/);
+    assert.equal(redirects.length, 0, "User should be able to read the popup before redirect");
+    fakeElement("signup-confirmation").close();
+    assert.equal(redirects[0], "login.html?signup=check-email");
+  }
+});
+
+test("unsuccessful signup shows an error without a confirmation popup or redirect", async () => {
+  const elements = new Map();
+  const el = id => {
+    if (!elements.has(id)) elements.set(id, {
+      value:"",textContent:"",hidden:false,dataset:{},listeners:{},
+      addEventListener(event,cb){this.listeners[event]=cb},
+      querySelectorAll(){return[]}
+    });
+    return elements.get(id);
+  };
+  let ready;
+  const document = {
+    body:{dataset:{authPage:"register"}},
+    addEventListener(_e,cb){ready=cb},
+    getElementById:el,
+    querySelector(){return {value:"Student"}}
+  };
+  const redirects=[];
+  const window={
+    BNLivePhase1:{ready:()=>true,signUp:async()=>{throw Error("Signup denied")}},
+    BNBackend:{client:{auth:{getUser:async()=>({data:{user:null},error:null})}}},
+    location:{replace:p=>redirects.push(p)}
+  };
+  new Script(core).runInNewContext({window,document,localStorage:{removeItem(){}}});
+  await ready();
+  el("signup-password").value="012345678";
+  el("signup-confirm").value="012345678";
+  el("signup-form").listeners.submit({preventDefault(){}});
+  for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.match(el("auth-status").textContent,/Signup denied/);
+  assert.equal(redirects.length,0);
+});

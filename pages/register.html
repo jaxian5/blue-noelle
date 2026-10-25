@@ -58,6 +58,13 @@
 <button type="submit" class="bn-primary-action">Request Student membership</button></form>
 <div class="bn-entry-secondary"><a href="account.html">View membership status</a></div>
 </section>
+<dialog id="signup-confirmation" class="bn-signup-dialog" aria-labelledby="signup-confirm-title" aria-describedby="signup-confirm-description">
+  <div class="bn-signup-dialog-icon" aria-hidden="true">✉</div>
+  <h2 id="signup-confirm-title">Check your email</h2>
+  <p id="signup-confirm-description">Check your inbox for an account confirmation link. Once you've verified your email, sign in to continue.</p>
+  <p class="bn-entry-note">Can't find it? Check your spam folder. Use the email address you registered with.</p>
+  <form method="dialog"><button class="bn-primary-action" type="submit">Continue to Sign In</button></form>
+</dialog>
 <div class="bn-entry-divider">ALREADY HAVE AN ACCOUNT?</div><p style="text-align:center"><a href="login.html">Return to sign in</a></p>
 </div></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>

@@ -38,7 +38,9 @@
  function go(path) { w.location.replace(path); }
  async function login() {
    const recovery = new URLSearchParams(w.location.search).get("mode") === "recovery";
-   const verify = new URLSearchParams(w.location.search).has("verified");
+   const params = new URLSearchParams(w.location.search);
+   const verify = params.has("verified");
+   const signupPending = params.get("signup") === "check-email";
    const form = $("signin-form");
    if (!recovery) {
      const user = await currentUser();
@@ -98,11 +100,19 @@
        go("account.html");
      });
    });
-   if (!verify && !recovery) status("Sign in using the email associated with your Blue Noelle account.", "info");
+   if (!verify && !recovery && signupPending)
+     status("Registration received. Check your email for the confirmation link, then sign in.", "success");
+   else if (!verify && !recovery)
+     status("Sign in using the email associated with your Blue Noelle account.", "info");
  }
  async function register() {
    const form = $("signup-form");
    const signupInfo = $("signup-info");
+   const confirmation = $("signup-confirmation");
+   let signupComplete = false;
+   confirmation.addEventListener("close", () => {
+     if (signupComplete) go("login.html?signup=check-email");
+   });
    async function refresh() {
      const user = await currentUser();
      const profile = user ? await api().profile() : null;
@@ -126,9 +136,29 @@
        const registrationType = document.querySelector('input[name="registration-type"]:checked')?.value || "Student";
        const result = await api().signUp($("signup-email").value,$("signup-password").value,$("signup-name").value,registrationType);
        $("signup-password").value = ""; $("signup-confirm").value = "";
-       if (!result?.session) status("Check your email and confirm your account. Then sign in and enter your class invitation below.", "success");
-       else status("Account created. Continue with your class invitation.", "success");
-       await refresh();
+       // When email confirmation is disabled, signUp may immediately create a
+       // session. End it so the requested journey consistently begins at Sign In.
+       if (result?.session) await api().signOut();
+       signupComplete = true;
+       form.reset();
+       if (result?.session) {
+         $("signup-confirm-title").textContent = "Account created";
+         $("signup-confirm-description").textContent =
+           "Your account is ready. Continue to Sign In with the credentials you just created.";
+       } else {
+         $("signup-confirm-title").textContent = "Check your email";
+         $("signup-confirm-description").textContent =
+           "Check your inbox for an account confirmation link. Once you've verified your email, sign in to continue.";
+       }
+       status("Registration received. Continue to Sign In after reviewing the next step.", "success");
+       if (typeof confirmation.showModal === "function") {
+         confirmation.showModal();
+       } else {
+         // Older browsers still get the email reminder and clear navigation.
+         w.alert($("signup-confirm-title").textContent + "\\n\\n" +
+           $("signup-confirm-description").textContent);
+         go("login.html?signup=check-email");
+       }
      });
    });
    const create = $("create-form");

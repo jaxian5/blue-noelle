@@ -1,13 +1,13 @@
-> **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Live multi-account testing is still required before approving Phase 1.
+> **Multi-class update (October 25, 2026):** Registration now offers Student or Admin. Verified Admins may create **one** class they own. Students join by private invitation and remain PENDING until approved. The original test account remains Student. See [Multi-Class Phase 1](docs/MULTICLASS-PHASE1.md). Phase 1 was approved by the project owner after live multi-account testing; the final confirmation-dialog polish is pending merge.
 
-> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The existing demo login/submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), [real registration](pages/register.html), [membership status](pages/account.html), and [classwork import](pages/import-local-data.html).
+> **Backend update (October 25, 2026):** Supabase now contains all 19 Phase 0 entity tables with Row Level Security. A sample classroom metadata row was migrated from the repository; no plaintext demonstration accounts, public sample invites, or browser-local assignments were copied. The legacy academic dashboard and simulated submissions are **not** production ready. See [migration report](docs/MIGRATION-REPORT-2026-10-25.md), [Blue Noelle sign in](pages/login.html), [real registration](pages/register.html), [membership status](pages/account.html), and [classwork import](pages/import-local-data.html).
 
 # PROJECT: Blue Noelle
 
 **Architecture: Phase 0 formally accepted (October 25, 2026).**  
-**Live implementation:** Phase 1 invited registration and moderation RPCs deployed; real-account acceptance testing and first trusted Admin bootstrap still pending. Phase 2 assignments remain a separate localStorage demo.
+**Live implementation:** Phase 1 approved (Admin/Student self-service signup, invite redemption, class-scoped review, real Auth). Final email-confirmation dialog polish is in review. Phase 2 assignments remain a separate localStorage demo.
 
-Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`, `docs/ADR-0001-supabase-architecture.md`, and `docs/PHASE1-LIVE-REGISTRATION.md`. The old `PHASE1-COMPLETE.md` applies to the **demo only**.
+Authoritative reference: *PROJECT_ Blue Noelle.docx* + `docs/PHASE0-COMPLETE.md`, `docs/ADR-0001-supabase-architecture.md`, and `docs/PHASE1-LIVE-REGISTRATION.md`. [Phase 1 completion](docs/PHASE1-COMPLETE.md) records the owner's live-system acceptance and remaining non-blocking work.
 
 > The database enforces invariants. The backend enforces business rules. The frontend enforces usability.
 

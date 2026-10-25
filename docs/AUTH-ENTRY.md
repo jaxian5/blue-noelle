@@ -17,6 +17,10 @@
 
 Old pages `/pages/phase1-onboarding.html` and `/pages/supabase-auth.html` now redirect to the canonical registration/sign-in pages. They're kept as lightweight redirects to preserve links.
 
+## Post-signup confirmation and sign-in (final Phase 1 polish)
+
+Once Supabase accepts an Admin or Student signup, `register.html` shows an accessible **Check your email** modal. After the user acknowledges it, navigation goes to `login.html?signup=check-email`, which displays an inline reminder. The confirmation link itself returns to `login.html?verified=1`. No success modal is shown when Supabase signup fails. If Auth creates an immediate session, the client signs out to preserve the expected sign-in journey.
+
 ## Registration sequence, following Phase 1 framework
 
 1. **CREATE ACCOUNT:** real Supabase Auth `signUp`. Profile trigger populates `public."User"`. The browser never writes passwords into Blue Noelle JSON or localStorage.

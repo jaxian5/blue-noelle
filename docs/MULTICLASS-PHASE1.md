@@ -59,5 +59,5 @@ At `auth.signUp`, the user selects **Student** or **Admin**. Signup metadata inc
 
 - Database migration `20261025043228_multiclass_account_types_and_one_owned_class.sql` already applied to live Supabase.
 - Transactional tests: Admin profile capture, Student restrictions, unconfirmed Admin restriction, one-class limit, separate class creator isolation, Student invited enrollment, rejection of other-class Admin enrollment, prevention of Student→Admin promotion and successful Student approval **PASS**. All temporary identities/classes rolled back.
-- Actual multi-account browser testing **pending**; Phase 1 is **not** yet approved.
+- The project owner reports successful multi-account live testing and explicitly **approved Phase 1**. At the October 25 verification snapshot, Supabase held one owned class and ACTIVE Admin/Student memberships. See [Phase 1 sign-off](PHASE1-COMPLETE.md).
 - Supabase Free Plan: leaked-password protection is unavailable, so the advisor warning is expected. Use strong unique passwords; never publish private invitation codes.
