@@ -68,3 +68,18 @@ test("authorization uses real class membership status, not role in editable user
   assert.match(live, /bn_review_registration/);
   assert.doesNotMatch(core + live, /raw_user_meta_data|user_metadata\.role/);
 });
+
+test("auth call-to-action links retain readable contrast over button backgrounds", () => {
+  const stylesheet = read("css/auth.css");
+  const account = read("pages/account.html");
+  assert.match(account, /id="join-action"[^>]+class="bn-btn bn-btn-primary"/);
+  assert.match(account, /href="phase1-class-staff\.html" class="bn-btn bn-btn-primary"/);
+  // Specificity (.bn-entry-content a.bn-btn-primary) beats the generic
+  // .bn-entry-content a rule that formerly rendered blue-on-blue text.
+  assert.match(stylesheet,
+    /\.bn-entry-content a\.bn-btn-primary(?::[a-z-]+)?[^{}]*\{[^{}]*background:var\(--bn-primary\);[^{}]*color:#fff;/);
+  assert.match(stylesheet,
+    /\.bn-entry-content a\.bn-btn-primary:hover\{background:var\(--bn-primary-hover\)\}/);
+  assert.match(stylesheet,
+    /\.bn-entry-content a\.bn-btn-secondary[^{}]*\{[^{}]*color:var\(--bn-text\);/);
+});
