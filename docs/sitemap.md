@@ -1,4 +1,4 @@
-# Blue Noelle — Page / Sitemap (Phase 0 + MVP)
+> **Reconciliation (2026-10-25):** This sitemap is the original MVP blueprint; [ADR-0001](ADR-0001-supabase-architecture.md) defines the Supabase deployment, and the Phase 1 real registration pilot uses dedicated `phase1-onboarding.html` and `phase1-class-staff.html` pages until the demo cutover is tested.\n\n# Blue Noelle — Page / Sitemap (Phase 0 + MVP)
 
 **Phase 0 deliverable · Version 0.1**  
 Reference: Working Framework §13, §20, §21
