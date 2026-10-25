@@ -34,6 +34,7 @@ These migrations have been applied to the remote project. Earlier nonmatching fi
 ## Database safeguards tested
 
 - Verified all 19 public tables have RLS enabled.
+- Transactional database smoke test accepted a valid group-owned submission and rejected an invalid submission owner. The test transaction was rolled back; no test records remain.
 - Explicit grants allow authenticated phase-1/2 reading and permitted admin-scoped writes, leaving future-phase tables closed.
 - Confirmed `authenticated` cannot update `Assignment.subject_id` and can update `Assignment.status` (RLS still applies).
 - Verified anonymous execution of three privileged RPCs was blocked previously.
