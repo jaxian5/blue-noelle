@@ -338,3 +338,101 @@ test("explicit duplicate and unverified errors present recovery paths", () => {
   assert.match(verify, /Request accepted\. If this email is awaiting verification/);
   assert.doesNotMatch(verify, /A new verification code was requested\./);
 });
+
+
+test("signup renders distinct existing-account and unverified alerts ONLY for explicit Supabase errors", async () => {
+ for(const scenario of [
+   {code:"user_already_exists",title:"Email already registered",href:"login.html",label:/Continue to Sign-In/},
+   {code:"email_not_confirmed",title:"Email not verified",href:"verify-email.html",label:/Enter verification code/}
+ ]){
+   const elements=new Map();
+   const elem=id=>{
+     if(!elements.has(id))elements.set(id,{
+       value:"",textContent:"",hidden:false,dataset:{},listeners:{},open:false,
+       addEventListener(name,fn){this.listeners[name]=fn;},
+       querySelectorAll(){return[];},
+       reset(){},
+       showModal(){this.open=true;},
+       close(){this.open=false;this.listeners.close?.();}
+     });
+     return elements.get(id);
+   };
+   let ready; const redirects=[];
+   const document={
+     body:{dataset:{authPage:"register"}},
+     addEventListener(name,fn){if(name==="DOMContentLoaded")ready=fn;},
+     getElementById:elem,
+     querySelector(){return {value:"Student"}}
+   };
+   const window={
+     BNLivePhase1:{
+       ready:()=>true,
+       signUp:async()=>{throw Object.assign(Error(scenario.code),{code:scenario.code})}
+     },
+     BNBackend:{client:{auth:{getUser:async()=>({data:{user:null},error:null})}}},
+     location:{href:"https://example.test/pages/register.html",replace:path=>redirects.push(path)}
+   };
+   new Script(core).runInNewContext({window,document,sessionStorage:{setItem(){}},localStorage:{removeItem(){}}});
+   await ready();
+   elem("signup-email").value="example@example.test";
+   elem("signup-name").value="Example";
+   elem("signup-password").value="ValidPassword1!";
+   elem("signup-confirm").value="ValidPassword1!";
+   elem("signup-form").listeners.submit({preventDefault(){}});
+   for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+   assert.equal(elem("signup-confirmation").open,true);
+   assert.equal(elem("signup-confirm-title").textContent,scenario.title);
+   assert.equal(elem("signup-confirm-continue").href,scenario.href);
+   assert.match(elem("signup-continue-label").textContent,scenario.label);
+   assert.equal(redirects.length,0);
+   elem("signup-confirmation").close();
+   assert.equal(redirects[0],scenario.href);
+ }
+});
+
+test("password sign-in surfaces an email-unverified alert when Supabase rejects confirmation",async()=>{
+ const els=new Map();
+ const elem=id=>{
+   if(!els.has(id))els.set(id,{
+     value:"",textContent:"",hidden:false,dataset:{},listeners:{},opened:false,
+     addEventListener(n,cb){this.listeners[n]=cb},
+     querySelectorAll(){return[]},
+     showModal(){this.opened=true},
+   });
+   return els.get(id);
+ };
+ let ready;
+ const document={
+   body:{dataset:{authPage:"login"}},
+   addEventListener(n,cb){if(n==="DOMContentLoaded")ready=cb},
+   getElementById:elem,
+ };
+ const redirects=[];
+ const window={
+   BNLivePhase1:{ready:()=>true,signIn:async()=>{throw Object.assign(Error("Email not confirmed"),{code:"email_not_confirmed"})}},
+   BNBackend:{client:{auth:{getUser:async()=>({data:{user:null},error:null})}}},
+   location:{search:"",href:"https://example.test/pages/login.html",replace:path=>redirects.push(path)}
+ };
+ new Script(core).runInNewContext({window,document,URLSearchParams,URL,localStorage:{removeItem(){}}});
+ await ready();
+ elem("signin-email").value="unverified@example.test";
+ elem("signin-password").value="PrivatePassword1!";
+ elem("signin-form").listeners.submit({preventDefault(){}});
+ for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(elem("login-unverified-alert").opened,true);
+ assert.equal(elem("signin-password").value,"");
+ assert.deepEqual(redirects,[]);
+ assert.match(read("pages/login.html"),/id="login-unverified-title">Email not verified/);
+ assert.match(read("pages/login.html"),/href="verify-email.html" class="bn-signup-dialog-link"/);
+});
+
+test("auth dialogs do not add a public email lookup or treat synthetic successful signups as confirmed accounts",()=>{
+ const register=read("pages/register.html");
+ const login=read("pages/login.html");
+ assert.match(register,/id="signup-confirm-secondary"/);
+ assert.match(register,/id="signup-confirm-footnote"/);
+ assert.match(login,/id="login-unverified-alert"/);
+ assert.match(core,/A successful signup response does not always mean a new email was sent/);
+ assert.doesNotMatch(core,/from\(["']User["']\)\.select\([^\n]*email/);
+ assert.doesNotMatch(core,/checkEmailExists|emailExists|lookupEmail/i);
+});
