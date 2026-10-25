@@ -171,7 +171,7 @@
          } catch (_) { /* Verification page also accepts manually typed email. */ }
          $("signup-confirm-title").textContent = "Check your email";
          $("signup-confirm-description").textContent =
-           "If this is a new account, check your inbox for a six-digit verification code. Already registered? Sign in instead. A successful signup response does not always mean a new email was sent.";
+           "If this is a new account, check your inbox for a eight-digit verification code. Already registered? Sign in instead. A successful signup response does not always mean a new email was sent.";
        }
        $("signup-confirm-continue").href = confirmationDestination;
        $("signup-continue-label").textContent =
