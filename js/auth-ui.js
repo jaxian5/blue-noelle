@@ -56,7 +56,7 @@
    const form = $("signin-form");
    if (!recovery) {
      const user = await currentUser();
-     if (user) return go("account.html");
+     if (user) return go("dashboard.html");
      if (verify) status("Email confirmation received. Sign in to continue your enrollment.", "success");
    } else {
      $("signin-section").hidden = true;
@@ -87,8 +87,8 @@
          throw error;
        }
        $("signin-password").value = "";
-       status("Signed in. Opening your account…", "success");
-       go("account.html");
+       status("Signed in. Opening your workspace…", "success");
+       go("dashboard.html");
      });
    });
    $("show-forgot").addEventListener("click", () => {
@@ -123,8 +123,8 @@
        const {error} = await db().auth.updateUser({password: p});
        if (error) throw error;
        change.reset();
-       status("Password updated. Opening your account…", "success");
-       go("account.html");
+       status("Password updated. Opening your workspace…", "success");
+       go("dashboard.html");
      });
    });
    if (!verify && !recovery && signupPending)
