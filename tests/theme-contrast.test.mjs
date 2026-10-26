@@ -10,13 +10,16 @@ const css=read("css/theme.css");
 const ROLES=["student","moderator","admin","developer"];
 const MODES=["light","dark"];
 function block(selector){
-  const start=css.indexOf(selector+"{");
-  assert.ok(start>=0,"CSS token scope is missing: "+selector);
-  const end=css.indexOf("}",start);
-  assert.ok(end>start,"CSS token scope has no closing brace: "+selector);
-  const body=css.slice(start,end);
-  return Object.fromEntries([...body.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-f]{6})/gi)]
-    .map(match=>[match[1],match[2].toLowerCase()]));
+  const parts=css.split(selector+"{").slice(1);
+  assert.ok(parts.length>0,"CSS token scope is missing: "+selector);
+  const tokens={};
+  for(const part of parts){
+    const body=part.slice(0,part.indexOf("}"));
+    for(const match of body.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-f]{6})/gi)){
+      tokens[match[1]]=match[2].toLowerCase();
+    }
+  }
+  return tokens;
 }
 function palette(role,mode){
   return Object.assign({},block(":root"),block('html[data-role="'+role+'"]'),
