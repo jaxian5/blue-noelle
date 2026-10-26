@@ -126,12 +126,12 @@ test("Schedule form validates and submits only scoped Admin data",async()=>{
  const form=x.dom.$("slot-form");form.data={
   day_of_week:"2",start_local:"10:30",end_local:"11:45",label:"System Architecture"
  };
- form.listeners.submit({preventDefault(){}});await flush();
+ form.listeners.submit({preventDefault(){},target:form});await flush();
  assert.ok(x.calls.some(c=>Array.isArray(c)&&c[0]==="createSlot"&&c[1].class_id==="room-1"
    &&c[1].label==="System Architecture"&&c[1].day_of_week===2));
  const before=x.calls.filter(c=>Array.isArray(c)&&c[0]==="createSlot").length;
  form.data.start_local="16:00";form.data.end_local="11:00";
- form.listeners.submit({preventDefault(){}});await flush();
+ form.listeners.submit({preventDefault(){},target:form});await flush();
  assert.equal(x.calls.filter(c=>Array.isArray(c)&&c[0]==="createSlot").length,before);
  assert.match(x.dom.$("ops-message").textContent,/end time must be later/i);
 });
@@ -140,11 +140,11 @@ test("Rescheduled exception requires both replacement times",async()=>{
  const x=fixture();await x.load();
  const form=x.dom.$("exception-form");
  form.data={exception_date:"2026-11-09",kind:"rescheduled",note:"Moved"};
- form.listeners.submit({preventDefault(){}});await flush();
+ form.listeners.submit({preventDefault(){},target:form});await flush();
  assert.equal(x.calls.filter(c=>Array.isArray(c)&&c[0]==="createException").length,0);
  assert.match(x.dom.$("ops-message").textContent,/require replacement/i);
  form.data.replacement_start_local="13:00";form.data.replacement_end_local="15:00";
- form.listeners.submit({preventDefault(){}});await flush();
+ form.listeners.submit({preventDefault(){},target:form});await flush();
  assert.ok(x.calls.some(c=>Array.isArray(c)&&c[0]==="createException"
    &&c[1].replacement_start_local==="13:00"&&c[1].class_id==="room-1"));
 });
