@@ -121,13 +121,12 @@ BEGIN
    sources:=sources||fitems;
  END LOOP;
  IF fileCount=0 THEN RAISE EXCEPTION 'No completed submissions with READY files to compile';END IF;
- INSERT INTO public."CompilationExport"(class_id,assignment_id,requested_by,format,
-   storage_key,filename,source_count)
- VALUES(cid,p_assignment,actor,p_format,'pending',
-   'blue-noelle-'||left(p_assignment::text,8)||'-'||gen_random_uuid()::text||'.'||p_format,fileCount)
- RETURNING id INTO eid;
+ eid:=gen_random_uuid();
  epath:=cid::text||'/'||p_assignment::text||'/'||eid::text||'.'||p_format;
- UPDATE public."CompilationExport" SET storage_key=epath WHERE id=eid;
+ ename:='blue-noelle-'||left(p_assignment::text,8)||'-'||eid::text||'.'||p_format;
+ INSERT INTO public."CompilationExport"(id,class_id,assignment_id,requested_by,
+   format,storage_key,filename,source_count)
+ VALUES(eid,cid,p_assignment,actor,p_format,epath,ename,fileCount);
  INSERT INTO public."Compilation"(submission_id,source_version_id,export_id,generated_by)
  SELECT sub.id,sv.id,eid,actor FROM public."Submission" sub
  JOIN LATERAL (
