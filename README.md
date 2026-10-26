@@ -81,8 +81,10 @@ error isolation between the roster/weekly schedule/dated exceptions.
 **Database security repairs are already deployed:** migration
 `20261026015109_class_operations_least_privilege_and_audit.sql` removes
 RLS-bypassing schedule `TRUNCATE` privileges and adds atomic AuditLog entries
-for all schedule changes. Do not reapply the deployed migration under a
-different version.
+for all schedule changes. The broader audit also uncovered the same unsafe
+privileges on Subject and Assignment; deployed migration
+`20261026020847_academic_table_least_privilege.sql` revokes those grants.
+Both are already in Supabase history: do not reapply under different versions.
 
 The Phase 4 Class Clock (current/next class, countdown, per-date exception
 behavior), overlap handling and full calendar semantics are **not yet
