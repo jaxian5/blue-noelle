@@ -41,6 +41,8 @@
    if(!model.todayAgenda.events.length){
      box.append(el("p",model.todayAgenda.cancelled?"No classes today. "+(model.todayAgenda.reason||"Schedule exception applies."):"No classes scheduled today.","clock-muted"));
    }else for(const item of model.todayAgenda.events)box.append(liveRow(item,model.nowMs));
+   for(const note of model.todayAgenda.notes||[])
+     box.append(el("p","✦ "+note,"clock-day-notice"));
  }
  function renderWeek(model){
    const box=$("clock-week-list");box.replaceChildren();
@@ -57,6 +59,7 @@
        row.append(el("small",clock().spanLabel(item)+(item.rescheduled?" · Moved":"")));
        list.append(row);
      }
+     for(const note of day.notes||[])list.append(el("span","✦ "+note,"clock-day-notice"));
      card.append(list);box.append(card);
    }
  }
@@ -114,7 +117,8 @@
      {timeZone:"Asia/Manila",weekday:"short",month:"short",day:"numeric"}).format(new Date(next.startMs)):"—");
    text("clock-previous",model.previous?(model.previous.subject_name||model.previous.label):"None today");
    const signature=[selectedClass,model.today,model.current?.id||"",
-     model.next?.id||"",model.todayAgenda.events.length,lastFetch].join("|");
+     model.next?.id||"",model.soonestTask?.id||"",model.overdueTasks.length,
+     model.todayAgenda.events.length,lastFetch].join("|");
    const changed=signature!==lastDrawnAgenda;
    if(changed){
      lastDrawnAgenda=signature;
