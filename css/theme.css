@@ -50,6 +50,8 @@ html[data-role] body.bn-portal{
  --page:var(--ui-page);--white:var(--ui-surface);
  --shadow:var(--ui-shadow);
 }
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
 html[data-theme="dark"]{
  --ui-page:#0c1423;--ui-surface:#172235;--ui-raised:#202d42;
  --ui-text:#e9effa;--ui-muted:#a6b6ce;--ui-border:#35455d;
