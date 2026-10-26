@@ -3,12 +3,12 @@
 BEGIN;
 DO $qa$
 DECLARE
-  admin_id uuid;student_id uuid;class_id uuid;subject_id uuid;
+  admin_id uuid;student_id uuid;v_class uuid;subject_id uuid;
   assignment_id uuid;group_id uuid;submission_id uuid;
   result jsonb;failed boolean;logs_before int;logs_after int;
 BEGIN
  SELECT admin.user_id, student.user_id,admin.class_id,s.id
- INTO admin_id,student_id,class_id,subject_id
+ INTO admin_id,student_id,v_class,subject_id
  FROM public."ClassMembership" admin
  JOIN public."ClassMembership" student
    ON student.class_id=admin.class_id
@@ -28,7 +28,7 @@ BEGIN
  VALUES(subject_id,'Phase 5 rollback only',true,'OPEN',admin_id)
  RETURNING id INTO assignment_id;
  SELECT count(*) INTO logs_before FROM public."AuditLog"
- WHERE class_id=class_id AND action='COMPILATION_MANIFEST_EXPORTED';
+ WHERE class_id=v_class AND action='COMPILATION_MANIFEST_EXPORTED';
  PERFORM set_config('request.jwt.claim.sub',admin_id::text,true);
  PERFORM set_config('role','authenticated',true);
  result:=public.bn_p3_groups(assignment_id,'create',NULL,NULL,'QA Test Team');
@@ -67,7 +67,7 @@ BEGIN
 
  PERFORM set_config('role','postgres',true);
  SELECT count(*) INTO logs_after FROM public."AuditLog"
- WHERE class_id=class_id AND action='COMPILATION_MANIFEST_EXPORTED';
+ WHERE class_id=v_class AND action='COMPILATION_MANIFEST_EXPORTED';
  IF logs_after-logs_before<>1 THEN RAISE EXCEPTION 'Manifest export was not audited';END IF;
  RAISE NOTICE 'PASS: Admin group, member, metadata manifest, audit, Student denial, draft freeze';
 END $qa$;
