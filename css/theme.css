@@ -1,0 +1,271 @@
+/* Blue Noelle unified theme tokens.
+   Role hue affects presentation only; never authentication or permissions.
+   Theme applies across public pages and every canonical signed-in route. */
+:root{
+ --role-main:#245bc7;--role-hover:#1649aa;--role-ink:#24436f;
+ --role-soft:#e9f2ff;--role-active:#2654a4;
+ --role-sidebar-a:#102e60;--role-sidebar-b:#0b2041;
+ --role-hero-a:#163d7d;--role-hero-b:#2674bd;
+ --role-art:#b6d9ff;--role-name:"Student";
+ --ui-page:#f3f7fb;--ui-surface:#ffffff;--ui-raised:#f7faff;
+ --ui-text:#152e50;--ui-muted:#667c98;--ui-border:#dfe7f3;
+ --ui-line:#e9eff7;--ui-input:#fcfdff;--ui-sidebar-text:#d0e0f8;
+ --ui-inverse:#fff;--ui-success-bg:#e6f7f0;--ui-success-text:#215f50;
+ --ui-shadow:0 12px 35px rgba(15,36,68,.06);
+ --bn-primary:var(--role-main);--bn-primary-hover:var(--role-hover);
+ --bn-primary-light:var(--role-main);--bn-accent:var(--role-main);
+ --bn-bg:var(--ui-page);--bn-surface:var(--ui-surface);
+ --bn-border:var(--ui-border);--bn-border-strong:var(--ui-border);
+ --bn-text:var(--ui-text);--bn-text-muted:var(--ui-muted);
+ --ink:var(--ui-text);--muted:var(--ui-muted);--line:var(--ui-border);
+ --page:var(--ui-page);--white:var(--ui-surface);
+ --blue:var(--role-main);--blue-light:var(--role-soft);
+ --accent:var(--role-main);--accent-soft:var(--role-soft);
+ --nav:var(--role-sidebar-b);--shadow:var(--ui-shadow);
+}
+html[data-role="moderator"]{
+ --role-main:#7746c7;--role-hover:#6234a9;--role-ink:#5b3699;
+ --role-soft:#f2eafb;--role-active:#744ab2;
+ --role-sidebar-a:#382065;--role-sidebar-b:#21143f;
+ --role-hero-a:#4b247a;--role-hero-b:#9160ce;--role-art:#ebc9ff;
+}
+html[data-role="admin"]{
+ --role-main:#514bd5;--role-hover:#3d36b3;--role-ink:#3f3b9f;
+ --role-soft:#eeedff;--role-active:#5045bb;
+ --role-sidebar-a:#22245e;--role-sidebar-b:#141736;
+ --role-hero-a:#2b2e78;--role-hero-b:#6763c2;--role-art:#c8c5ff;
+}
+html[data-role="developer"]{
+ --role-main:#51647c;--role-hover:#38485d;--role-ink:#46546a;
+ --role-soft:#e7edf3;--role-active:#506275;
+ --role-sidebar-a:#36414f;--role-sidebar-b:#19232f;
+ --role-hero-a:#435365;--role-hero-b:#889aaf;--role-art:#f6f9ff;
+}
+/* An existing dashboard body sets an old violet custom property. Override
+   locally as well so a class role switch never inherits the old color. */
+html[data-role] body.bn-portal{
+ --accent:var(--role-main);--accent-soft:var(--role-soft);
+ --ink:var(--ui-text);--muted:var(--ui-muted);--line:var(--ui-border);
+ --page:var(--ui-page);--white:var(--ui-surface);
+ --shadow:var(--ui-shadow);
+}
+html[data-theme="dark"]{
+ --ui-page:#0c1423;--ui-surface:#172235;--ui-raised:#202d42;
+ --ui-text:#e9effa;--ui-muted:#a6b6ce;--ui-border:#35455d;
+ --ui-line:#2b3a50;--ui-input:#141f30;--ui-sidebar-text:#d3def0;
+ --ui-inverse:#f7faff;--ui-success-bg:#183b38;--ui-success-text:#9ae8c9;
+ --ui-shadow:0 15px 34px rgba(0,0,0,.22);
+ --bn-shadow:0 3px 12px rgba(0,0,0,.2);
+ --bn-shadow-md:0 7px 25px rgba(0,0,0,.23);
+}
+html[data-theme="dark"][data-role="student"]{
+ --role-main:#74b9ff;--role-hover:#9bcfff;--role-ink:#b8dbff;
+ --role-soft:#163559;--role-active:#254c84;
+ --role-sidebar-a:#142c54;--role-sidebar-b:#09172c;
+ --role-hero-a:#18375f;--role-hero-b:#275f9a;--role-art:#bddfff;
+}
+html[data-theme="dark"][data-role="moderator"]{
+ --role-main:#d1a0ff;--role-hover:#e5c5ff;--role-ink:#e7c9ff;
+ --role-soft:#392553;--role-active:#5b358c;
+ --role-sidebar-a:#352050;--role-sidebar-b:#1b1230;
+ --role-hero-a:#452967;--role-hero-b:#77509f;--role-art:#edd1ff;
+}
+html[data-theme="dark"][data-role="admin"]{
+ --role-main:#a9a1ff;--role-hover:#d0cbff;--role-ink:#d7d2ff;
+ --role-soft:#302e59;--role-active:#44409a;
+ --role-sidebar-a:#24274f;--role-sidebar-b:#11162b;
+ --role-hero-a:#2b2f66;--role-hero-b:#5458a0;--role-art:#d2d5ff;
+}
+html[data-theme="dark"][data-role="developer"]{
+ --role-main:#d4dbe7;--role-hover:#f1f5f9;--role-ink:#e3e9f0;
+ --role-soft:#303d4b;--role-active:#536375;
+ --role-sidebar-a:#343f4b;--role-sidebar-b:#101923;
+ --role-hero-a:#344253;--role-hero-b:#6d7d90;--role-art:#ffffff;
+}
+/* The sidebar, avatar, hero, alerts, buttons and badges follow role. */
+html[data-role] :is(.bn-workspace-sidebar,.bn-shared-app .bn-workspace-sidebar,.bn-settings-sidebar){
+ background:linear-gradient(160deg,var(--role-sidebar-a),var(--role-sidebar-b));
+ color:var(--ui-sidebar-text);
+}
+html[data-role] :is(.bn-side-link.selected,.bn-shared-app .bn-side-link.selected,
+ .bn-settings-nav a.active,.bn-portal[data-workspace=admin] .bn-side-link.selected){
+ background:var(--role-active);color:#fff;border-color:#ffffff20;
+}
+html[data-role] :is(.bn-brand-glyph,.bn-shared-app .bn-brand-glyph,.bn-settings-brand-mark,
+ .bn-top-account,.bn-settings-avatar,.bn-logo-mark){
+ background:linear-gradient(140deg,var(--role-main),var(--role-sidebar-a));
+ color:#fff;
+}
+html[data-role] :is(.bn-hero,.bn-portal[data-workspace=admin] .bn-hero){
+ background:linear-gradient(115deg,var(--role-hero-a),var(--role-hero-b));
+ color:#fff;
+}
+html[data-role] .bn-hero .bn-hero-star{color:var(--role-art)}
+html[data-role] :is(.bn-overline,.bn-spotlight-kicker,.bn-panel-overline,
+ .bn-classwork-eyebrow,.bn-settings-eyebrow,.bn-settings-card-kicker){color:var(--role-main)}
+html[data-role] .bn-hero .bn-overline{color:var(--role-art)}
+html[data-role] :is(.bn-primary-link,.bn-settings-primary,.bn-admin-panel .bn-btn-primary,
+ .bn-postlogin .bn-btn-primary,.bn-entry-content .bn-primary-action,
+ .bn-entry-content .bn-btn-primary,.bn-spotlight a){
+ border-color:var(--role-main);
+}
+html[data-role] :is(.bn-primary-link,.bn-settings-primary,.bn-admin-panel .bn-btn-primary,
+ .bn-postlogin .bn-btn-primary,.bn-entry-content .bn-primary-action,
+ .bn-entry-content .bn-btn-primary){background:var(--role-main);color:#fff}
+html[data-theme="dark"] :is(.bn-primary-link,.bn-settings-primary,.bn-admin-panel .bn-btn-primary,
+ .bn-postlogin .bn-btn-primary,.bn-entry-content .bn-primary-action,
+ .bn-entry-content .bn-btn-primary){color:#102035}
+html[data-role] :is(.bn-primary-link,.bn-settings-primary,.bn-admin-panel .bn-btn-primary,
+ .bn-postlogin .bn-btn-primary):hover{background:var(--role-hover)}
+html[data-role] :is(.bn-spotlight a,.bn-panel-head>a,.bn-shortcut b,
+ .bn-settings-back,.bn-settings-profile-link,.bn-classwork-eyebrow,
+ .bn-text-link,.bn-format-count,.bn-format-clear){color:var(--role-main)}
+html[data-role] :is(.bn-metric-icon,.bn-shortcut-icon,.bn-subject-glyph,
+ .bn-roster-avatar,.bn-task-symbol,.bn-settings-security-icon){color:var(--role-main);background:var(--role-soft)}
+html[data-role] .bn-admin-accent{background:linear-gradient(120deg,var(--role-hero-a),var(--role-hero-b))}
+html[data-role] .bn-accent-panel:not(.bn-admin-accent){background:linear-gradient(120deg,var(--role-hero-a),var(--role-hero-b))}
+html[data-role] .bn-accent-panel :is(.bn-panel-overline,.bn-panel-head){color:#deebff}
+html[data-role] .bn-hero-link{color:#182c4a;background:#f9fbff}
+html[data-role] .bn-classwork-badge:not([data-status="CLOSED"]){background:var(--role-soft);color:var(--role-ink)}
+html[data-role] .bn-format-picker .bn-format-grid label:has(input:checked){background:var(--role-soft);border-color:var(--role-main);color:var(--role-ink)}
+html[data-role] input[type=checkbox]{accent-color:var(--role-main)}
+/* System preference + user setting toggle. Compact enough for desktop/mobile. */
+.bn-theme-toggle{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ border:1px solid var(--ui-border);color:var(--ui-text);
+ background:var(--ui-raised);border-radius:10px;
+ padding:9px 12px;font:800 .76rem "DM Sans",system-ui,sans-serif;
+ line-height:1.2;white-space:nowrap;cursor:pointer;min-height:37px;
+}
+.bn-theme-toggle .bn-theme-icon{font-size:1rem;line-height:1}
+.bn-theme-toggle:hover{border-color:var(--role-main);background:var(--role-soft)}
+.bn-theme-toggle:focus-visible{outline:3px solid var(--role-main);outline-offset:3px}
+.bn-theme-floating{position:fixed;bottom:18px;right:18px;z-index:90;box-shadow:var(--ui-shadow)}
+html[data-theme="dark"] .bn-theme-toggle{background:var(--ui-raised);color:var(--ui-text)}
+html[data-theme="dark"] .bn-theme-floating{background:var(--ui-surface)}
+/* Surface, typography and controls across dashboard, account and classwork. */
+html[data-theme] :is(body.bn-portal,body.bn-postlogin,body[data-account-page="settings"]){
+ background:var(--ui-page);color:var(--ui-text);
+}
+html[data-theme] :is(.bn-dashboard-card,.bn-metric,.bn-spotlight,.bn-shortcut,
+ .bn-dashboard-classpicker,.bn-settings-card,.bn-settings-profile-card,
+ .bn-card,.bn-postlogin .bn-card,.bn-classwork-selector){
+ background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text);
+ box-shadow:var(--ui-shadow);
+}
+html[data-theme] :is(.bn-topbar,.bn-shared-app .bn-topbar,.bn-settings-topbar,
+ .bn-portal .bn-topbar){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
+html[data-theme] :is(.bn-classwork-heading h1,.bn-postlogin .bn-classwork-heading h1,
+ .bn-panel-head h2,.bn-settings-profile-visual h2,.bn-admin-section-head h2,
+ .bn-metric strong,.bn-sub-facts strong,.bn-card-title,.bn-task-title,
+ .bn-class-select select,.bn-roster-count strong,.bn-settings-heading h1,
+ .bn-profile-pill,.bn-breadcrumb strong,.bn-user-identity>span,
+ .bn-shared-app .bn-breadcrumb strong){color:var(--ui-text)}
+html[data-theme] :is(.bn-postlogin .bn-muted,.bn-muted,.bn-settings-help,
+ .bn-settings-card-intro,.bn-settings-heading>p:last-child,.bn-sub-hint,
+ .bn-dashboard-footer,.bn-settings-footer,.bn-metric p,.bn-spotlight p,
+ .bn-classwork-item p,.bn-roster-count span,.bn-task-meta,
+ .bn-sub-panel p,.bn-sub-facts span,.bn-entry-lead){color:var(--ui-muted)}
+html[data-theme] :is(.bn-class-role,.bn-task,.bn-subject-item,.bn-classwork-item,
+ .bn-sub-file,.bn-sub-record,.bn-shortcut,.bn-admin-record,.bn-format-picker,
+ .bn-postlogin .bn-classwork-item,.bn-dashboard-classpicker){
+ border-color:var(--ui-line);
+}
+html[data-theme] :is(.bn-subject-item,.bn-admin-record,.bn-classwork-item,
+ .bn-postlogin .bn-classwork-item,.bn-admin-form,.bn-admin-inline-form,
+ .bn-settings-photo-preview,.bn-format-picker,.bn-format-grid label,
+ .bn-format-picker>summary,.bn-settings-memberships>article){
+ background:var(--ui-raised);color:var(--ui-text);border-color:var(--ui-border);
+}
+html[data-theme] :is(.bn-card input,.bn-card select,.bn-card textarea,
+ .bn-admin-panel input,.bn-admin-panel select,.bn-admin-panel textarea,
+ .bn-postlogin .bn-admin-panel input,.bn-postlogin .bn-sub-panel input,
+ .bn-sub-panel input,.bn-sub-panel select,.bn-classwork-selector select,
+ .bn-postlogin .bn-classwork-selector select,.bn-settings-card input,
+ .bn-settings-card input[readonly],.bn-entry-content input,
+ .bn-postlogin input,.bn-postlogin select,.bn-postlogin textarea){
+ background:var(--ui-input);color:var(--ui-text);border-color:var(--ui-border);
+}
+html[data-theme] input::placeholder,html[data-theme] textarea::placeholder{color:var(--ui-muted);opacity:.85}
+html[data-theme] :is(.bn-settings-card label,.bn-sub-panel label,
+ .bn-postlogin .bn-classwork-selector label,.bn-admin-form label,
+ .bn-classwork-selector label,.bn-format-fieldset legend,.bn-admin-form .bn-format-grid label,
+ .bn-class-role strong,.bn-classwork-subject h3,.bn-subject-info strong,
+ .bn-settings-crumb strong,.bn-task-content strong){color:var(--ui-text)}
+html[data-theme] :is(.bn-format-help,.bn-format-footer,.bn-format-grid label small,
+ .bn-subject-info span,.bn-format-group h4){color:var(--ui-muted)}
+html[data-theme] :is(.bn-settings-nav,.bn-settings-top-actions,.bn-breadcrumb,.bn-settings-crumb,
+ .bn-shared-app .bn-breadcrumb){color:var(--ui-muted)}
+/* Dark theme catches legacy hard-coded white or pale-blue islands. */
+html[data-theme="dark"] :is(.bn-admin-panel,.bn-sub-panel,.bn-dashboard-card,.bn-settings-card,
+ .bn-profile-pill,.bn-settings-profile-card,.bn-settings-photo-preview){
+ background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text);
+}
+html[data-theme="dark"] :is(.bn-postlogin .bn-admin-form,.bn-admin-form,.bn-admin-inline-form,
+ .bn-format-picker>summary:hover,.bn-format-picker[open]>summary,
+ .bn-format-grid label,.bn-classwork-item,.bn-admin-record,
+ .bn-sub-panel input[type=file],.bn-settings-file-button,.bn-settings-memberships>article,
+ .bn-settings-card input[readonly],.bn-sub-progress,.bn-sub-callout){
+ background:var(--ui-raised);color:var(--ui-text);border-color:var(--ui-border);
+}
+html[data-theme="dark"] :is(.bn-dashboard-notice[data-state=success],
+ .bn-postlogin .bn-classwork-status[data-state=success],
+ .bn-settings-notice[data-state=success]){background:var(--ui-success-bg);border-color:#286b5b;color:var(--ui-success-text)}
+html[data-theme="dark"] :is(.bn-dashboard-notice,.bn-settings-notice,
+ .bn-classwork-status,.bn-postlogin .bn-classwork-status){
+ background:#20324c;border-color:var(--ui-border);color:#c4d8fa;
+}
+html[data-theme="dark"] :is(.bn-dashboard-notice[data-state=error],
+ .bn-settings-notice[data-state=error],.bn-classwork-status[data-state=error]){background:#452634;color:#ffc1c9;border-color:#844354}
+html[data-theme="dark"] :is(.bn-shortcut-icon,.bn-metric-icon,.bn-subject-glyph,
+ .bn-roster-avatar,.bn-settings-security-icon,.bn-task-symbol,
+ .bn-profile-pill,.bn-classwork-badge){color:var(--role-main);background:var(--role-soft)}
+html[data-theme="dark"] :is(.bn-signout,.bn-shared-app .bn-signout,
+ .bn-settings-logout,.bn-settings-outline,.bn-btn-secondary,
+ .bn-postlogin .bn-btn-secondary,.bn-format-clear,.bn-format-count,
+ .bn-settings-file-button){background:var(--ui-raised);color:var(--ui-text);border-color:var(--ui-border)}
+html[data-theme="dark"] .bn-settings-side-note{background:linear-gradient(135deg,var(--role-sidebar-a),var(--role-sidebar-b))}
+html[data-theme="dark"] .bn-sub-meter{background:var(--role-main)}
+html[data-theme="dark"] :is(.bn-spotlight-kicker,.bn-panel-overline,.bn-settings-card-kicker,
+ .bn-settings-eyebrow,.bn-classwork-eyebrow){color:var(--role-main)}
+html[data-theme="dark"] :is(.bn-top-account,.bn-settings-avatar,.bn-logo-mark){color:#fff}
+html[data-theme="dark"] :is(.bn-postlogin .bn-card,.bn-sub-file,.bn-sub-record){box-shadow:var(--ui-shadow)}
+html[data-theme="dark"] :is(.bn-card table,.bn-card th,.bn-card td,
+ .ops-list th,.ops-list td,.staff-wrap th,.staff-wrap td){
+ color:var(--ui-text);border-color:var(--ui-border);
+}
+html[data-theme="dark"] :is(.bn-admin-dialog,dialog.bn-admin-dialog){
+ background:var(--ui-surface);color:var(--ui-text);border:1px solid var(--ui-border);
+}
+html[data-theme="dark"] .bn-admin-dialog::backdrop{background:#050a17bc}
+/* Account uses the same role-colored sidebar as Dashboard. */
+html[data-role] :is(.bn-settings-profile-card .bn-profile-pill,.bn-profile-pill){
+ background:var(--role-soft);color:var(--role-main);
+}
+html[data-role] .bn-settings-side-note{
+ background:linear-gradient(135deg,var(--role-hero-a),var(--role-sidebar-b));
+}
+html[data-role] .bn-settings-file-button{color:var(--role-main)}
+/* Maintain readable brand color across public entry/OTP without altering
+   Phase 1 layout or role claims before authentication. */
+html[data-theme="dark"] :is(.bn-entry,.bn-entry-main,.bn-entry-content){background:var(--ui-surface);color:var(--ui-text)}
+html[data-theme="dark"] .bn-entry-aside{background:linear-gradient(150deg,#101c35,#183967 90%)}
+html[data-theme="dark"] .bn-entry-aside :is(p,footer){color:#d1e3fb}
+html[data-theme="dark"] .bn-entry-content :is(label,h1,h2){color:var(--ui-text)}
+html[data-theme="dark"] .bn-entry-content :is(.bn-entry-panel,.bn-entry-card,
+ .bn-entry-form,.bn-auth-status){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
+html[data-theme="dark"] .bn-entry-content input{background:var(--ui-input);color:var(--ui-text);border-color:var(--ui-border)}
+html[data-theme="dark"] .bn-landing{background:linear-gradient(160deg,#080f1b 0%,#132b4f 55%,#1b466a 130%);color:#f7fbff}
+html[data-theme="light"] .bn-landing{background:linear-gradient(150deg,#112b55,#195ca5 74%,#298fc6);color:white}
+html[data-theme] .bn-landing-actions .bn-btn-primary{background:var(--bn-primary);color:white;border-color:var(--bn-primary)}
+html[data-theme="dark"] .bn-landing-actions .bn-btn-primary{background:#d1e4ff;color:#142840;border-color:#d1e4ff}
+/* Native controls, status and document readability. */
+html[data-theme="dark"]{scrollbar-color:#586986 #111b2b}
+html[data-theme="dark"] option{background:#19283d;color:#f1f5fc}
+html[data-theme="dark"] ::selection{background:#546da3;color:#fff}
+@media(max-width:750px){
+ .bn-top-actions .bn-theme-toggle{padding:8px;min-width:36px}
+ .bn-top-actions .bn-theme-label{display:none}
+ .bn-theme-floating{bottom:12px;right:12px}
+}
+@media(prefers-reduced-motion:reduce){.bn-theme-toggle{transition:none}}
