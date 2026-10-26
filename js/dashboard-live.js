@@ -301,7 +301,7 @@
      if(error||!auth?.user){w.location.replace("login.html");return}
      const user=auth.user;
      const profiles=await query(db().from("User").select("full_name,account_type,is_developer").eq("id",user.id));
-     document.documentElement.dataset.developer=profiles[0]?.is_developer===true?"true":"false";
+     if(document.documentElement)document.documentElement.dataset.developer=profiles[0]?.is_developer===true?"true":"false";
      w.BNTheme?.setRole(profiles[0]?.is_developer?"developer":"student",{isDeveloper:profiles[0]?.is_developer===true});
      const name=(profiles[0]?.full_name||"").trim();
      const first=name.split(/\s+/)[0]||"there";
