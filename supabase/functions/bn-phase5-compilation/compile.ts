@@ -18,8 +18,15 @@ export function filenameForSource(file: Source, index: number): string {
     clean(file.owner, "Student") + "_v" + Number(file.version);
   return folder + "/" + clean(file.name, "attachment", 90);
 }
+export function exactBuffer(bytes: Uint8Array): ArrayBuffer {
+  // Deno/WebCrypto expects ArrayBuffer, not a view potentially backed by
+  // SharedArrayBuffer. Copies exactly the byteLength, ignoring spare capacity.
+  const copy = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(copy).set(bytes);
+  return copy;
+}
 export async function hash(bytes: Uint8Array): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const digest = await crypto.subtle.digest("SHA-256", exactBuffer(bytes));
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 export async function buildPdf(files: { source: Source; bytes: Uint8Array }[]): Promise<Uint8Array> {
