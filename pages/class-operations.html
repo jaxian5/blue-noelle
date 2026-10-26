@@ -43,7 +43,7 @@
 <div class="bn-app">
 <header class="bn-header">
 <a href="dashboard.html" class="bn-logo"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
-<nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="class-operations.html" class="active">Class Operations</a><a href="phase1-class-staff.html">Registration queue</a></nav>
+<nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="class-operations.html" class="active">Class Operations</a><a href="phase1-class-staff.html">Registration queue</a><a href="class-clock.html">Class Clock</a></nav>
 </header>
 <main class="bn-main">
 <h1>Schedule &amp; Members</h1>
@@ -66,6 +66,7 @@
 <form id="slot-form" class="ops-form">
 <label>Day<select name="day_of_week" required><option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option></select></label>
 <label>Class / activity<input name="label" required maxlength="120" placeholder="e.g. Programming 3"></label>
+<label class="ops-wide">Related subject (optional)<select id="ops-slot-subject" name="subject_id"><option value="">Unlinked activity</option></select></label>
 <label>Starts (Manila)<input type="time" name="start_local" required></label>
 <label>Ends (Manila)<input type="time" name="end_local" required></label>
 <button class="bn-btn bn-btn-primary ops-wide" type="submit">Add schedule slot</button>
@@ -76,17 +77,18 @@
 <label>Date<input type="date" name="exception_date" required></label>
 <label>Type<select name="kind"><option value="holiday">Holiday</option><option value="cancelled">Cancelled</option><option value="special">Special</option><option value="rescheduled">Rescheduled</option></select></label>
 <label class="ops-wide">Note<input name="note" maxlength="250" placeholder="e.g. No classes"></label>
+<label class="ops-wide">Affected class session <select id="ops-target-slot" name="schedule_slot_id"><option value="">Entire class day / standalone event</option></select><small class="ops-help">Required for Rescheduled. Optional for Cancelled. Choose a class on the selected date.</small></label>
 <label>Replacement starts (Manila)<input type="time" name="replacement_start_local"></label>
 <label>Replacement ends (Manila)<input type="time" name="replacement_end_local"></label>
 <button class="bn-btn bn-btn-primary ops-wide" type="submit">Add exception</button>
 </form>
 <div class="bn-table-wrap bn-mt-1"><table class="ops-list"><thead><tr><th>Date</th><th>Type</th><th>Note</th><th></th></tr></thead><tbody id="exception-rows"></tbody></table></div></section>
-<section class="bn-card"><h2 class="bn-card-title">Schedule notes</h2><p class="bn-muted">Weekly slots must end after they begin. Rescheduled exceptions require both replacement times. Future Phase 4 Class Clock logic will apply exceptions and show the current/next class. All schedule edits are audited.</p></section>
+<section class="bn-card"><h2 class="bn-card-title">Schedule notes</h2><p class="bn-muted">The Class Clock shows current/next classes, weekly sessions, and individual deadlines. Overlapping slots are rejected by the database. Rescheduling targets a specific recurring session. Changes are auditable.</p></section>
 </div></div>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script>
-<script src="../js/supabase-adapter.js"></script><script src="../js/workspace-shell.js?v=20261026-nav"></script>
+<script src="../js/supabase-adapter.js"></script><script src="../js/workspace-shell.js?v=20261026-phase4"></script>
 <script src="../js/class-operations.js"></script>
 <script src="../js/class-operations-ui.js?v=20261026-ops"></script>
 </body></html>

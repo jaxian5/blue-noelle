@@ -24,13 +24,13 @@ test("release docs distinguish merged Phase 2/3 code from owner acceptance", () 
 test("production routes never load local demo identities or role JSON", () => {
   const pages = [
     "index.html","pages/login.html","pages/register.html","pages/verify-email.html",
-    "pages/account.html","pages/dashboard.html","pages/classwork.html",
+    "pages/account.html","pages/dashboard.html","pages/class-clock.html","pages/classwork.html",
     "pages/admin-classwork.html","pages/submission.html",
     "pages/class-operations.html","pages/phase1-class-staff.html"
   ];
   for (const path of pages) {
     const html = read(path);
-    assert.doesNotMatch(html, /<script[^>]+src=["'][^"']*(?:core\.js|phase1-auth\.js|phase2-assignments\.js)/i, path);
+    assert.doesNotMatch(html, /<script[^>]+src=["'][^"']*\/(?:core\.js|phase1-auth\.js|phase2-assignments\.js)/i, path);
     assert.doesNotMatch(html, /(?:src|href)=["'][^"']*data\/roles\.json/i, path);
   }
 });

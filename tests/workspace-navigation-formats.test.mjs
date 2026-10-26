@@ -8,14 +8,14 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const read=p=>readFileSync(resolve(root,p),"utf8");
 const admin=read("js/phase2-admin.js"),shell=read("js/workspace-shell.js");
 const adminPage=read("pages/admin-classwork.html");
-const paths=["classwork","admin-classwork","submission","phase1-class-staff","class-operations","account"];
+const paths=["class-clock","classwork","admin-classwork","submission","phase1-class-staff","class-operations","account"];
 
-test("all six secondary pages load one shared authenticated sidebar",()=>{
+test("all authenticated secondary pages load one shared sidebar",()=>{
  for(const page of paths){
   const html=read("pages/"+page+".html");
   assert.match(html,/workspace-shell\.css/,page);
-  assert.match(html,/workspace-shell\.js\?v=20261026-nav/,page);
-  assert.doesNotMatch(html,/core\.js|phase1-auth\.js|phase2-assignments\.js/);
+  assert.match(html,/workspace-shell\.js\?v=20261026-phase4/,page);
+  assert.doesNotMatch(html,/<script[^>]+src=["\x27][^"\x27]*\/(?:core|phase1-auth|phase2-assignments)\.js/i);
  }
  assert.match(shell,/getUser\(\)/);
  assert.match(shell,/from\("ClassMembership"\)/);
@@ -31,7 +31,7 @@ test("all six secondary pages load one shared authenticated sidebar",()=>{
 test("dashboard and secondary pages have corresponding navigation choices",()=>{
  const overview=read("pages/dashboard.html");
  const styles=read("css/workspace-shell.css");
- for(const route of ["dashboard.html","classwork.html","admin-classwork.html","phase1-class-staff.html","class-operations.html","account.html"]){
+ for(const route of ["dashboard.html","class-clock.html","classwork.html","admin-classwork.html","phase1-class-staff.html","class-operations.html","account.html"]){
   assert.ok(shell.includes('href:"'+route+'"'));
   assert.ok(overview.includes('href="'+route+'"'),route);
  }

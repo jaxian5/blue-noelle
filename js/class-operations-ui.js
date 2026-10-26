@@ -8,6 +8,7 @@
  const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
  const TYPES=new Set(["holiday","cancelled","special","rescheduled"]);
  let active=new Map(),classes=new Map(),generation=0,busy=false;
+ let weeklySlots=[];
  function node(tag,text){
    const el=document.createElement(tag);
    if(text!==undefined)el.textContent=String(text??"");
@@ -100,10 +101,46 @@
      group.append(rolePicker,statePicker,save);td.appendChild(group);
    }
  }
+ function refreshTargetOptions(){
+   const picker=$("ops-target-slot");
+   const date=$("exception-form").querySelector?.('[name="exception_date"]')?.value||
+     $("ops-exception-date")?.value||"";
+   const kind=$("exception-form").querySelector?.('[name="kind"]')?.value||
+     $("ops-exception-kind")?.value||"";
+   const isTargeted=kind==="cancelled"||kind==="rescheduled";
+   picker.disabled=!isAdmin()||busy||!isTargeted;
+   const selected=picker.value;
+   picker.replaceChildren();
+   const none=node("option","Entire class day / standalone event");
+   none.value="";picker.appendChild(none);
+   let candidates=weeklySlots;
+   if(/^\\d{4}-\\d{2}-\\d{2}$/.test(date)){
+     const dow=new Date(date+"T12:00:00Z").getUTCDay();
+     candidates=weeklySlots.filter(slot=>Number(slot.day_of_week)===dow);
+   }
+   for(const slot of candidates){
+     const option=node("option",slot.label+" · "+DAYS[slot.day_of_week]+" "+String(slot.start_local).slice(0,5));
+     option.value=slot.id;picker.appendChild(option);
+   }
+   picker.value=candidates.some(slot=>slot.id===selected)?selected:"";
+   // Make the common case efficient while still requiring an explicit match.
+   if(kind==="rescheduled"&&!picker.value&&candidates.length===1)picker.value=candidates[0].id;
+ }
+ async function refreshSubjects(classId){
+   if(typeof w.BNClassOps.subjects!=="function")return;
+   const subjects=await w.BNClassOps.subjects(classId);
+   const picker=$("ops-slot-subject");picker.replaceChildren();
+   const first=node("option","Unlinked activity");first.value="";picker.appendChild(first);
+   for(const subject of subjects||[]){
+     const option=node("option",subject.name||"Subject");option.value=subject.id;
+     picker.appendChild(option);
+   }
+ }
  function redrawSlots(rows,role){
+   weeklySlots=rows;
    const tbody=$("slot-rows");tbody.replaceChildren();
    $("ops-slot-count").textContent=rows.length+" recurring slot"+(rows.length===1?"":"s");
-   if(!rows.length){empty(tbody,"No weekly classes scheduled yet.");return}
+   if(!rows.length){empty(tbody,"No weekly classes scheduled yet.");refreshTargetOptions();return}
    for(const item of rows){
      const tr=tbody.insertRow();cell(tr,DAYS[item.day_of_week]||"Unknown day");
      cell(tr,String(item.start_local).slice(0,5)+"–"+String(item.end_local).slice(0,5));
@@ -117,6 +154,7 @@
        }));
      }else td.textContent="Read only";
    }
+   refreshTargetOptions();
  }
  function redrawExceptions(rows,role){
    const tbody=$("exception-rows");tbody.replaceChildren();
@@ -129,7 +167,8 @@
      const timing=item.replacement_start_local
        ?" ("+String(item.replacement_start_local).slice(0,5)+"–"+
          String(item.replacement_end_local).slice(0,5)+")":"";
-     cell(tr,note+timing);
+     const matching=weeklySlots.find(slot=>slot.id===item.schedule_slot_id);
+     cell(tr,(matching?matching.label+" · ":"")+note+timing);
      const td=tr.insertCell();
      if(role==="Admin"){
        td.appendChild(button("Delete",()=>{
@@ -166,6 +205,8 @@
        failures.push(section[0]+": "+feedback(outcome.reason));
      }
    }
+   // Subject names are helpful but must never block the core clock/roster.
+   try{await refreshSubjects(classId)}catch(_){}
    if(failures.length){
      notice("Some data could not be loaded. "+failures.join(" | "),"error");
      return false;
@@ -175,6 +216,10 @@
    return true;
  }
  async function init(){
+   const exceptionForm=$("exception-form");
+   for(const name of ["exception_date","kind"]){
+     exceptionForm.querySelector?.('[name="'+name+'"]')?.addEventListener("change",refreshTargetOptions);
+   }
    $("ops-class").addEventListener("change",()=>{void refresh()});
    $("ops-refresh").addEventListener("click",()=>{void refresh()});
    $("slot-form").addEventListener("submit",e=>{
@@ -187,8 +232,9 @@
        const label=String(form.get("label")||"").trim();
        if(!label||label.length>120)throw Error("Enter an activity name (up to 120 characters).");
        if(!start||!end||start>=end)throw Error("The end time must be later than the start time.");
+       const subjectId=String(form.get("subject_id")||"");
        await w.BNClassOps.createSlot({class_id:chosen(),day_of_week:Number(form.get("day_of_week")),
-         start_local:start,end_local:end,label});
+         start_local:start,end_local:end,label,subject_id:subjectId||null});
        e.target.reset();
      },"Weekly schedule saved.");
    });
@@ -199,6 +245,7 @@
        const form=new FormData(e.target),kind=String(form.get("kind")||"");
        const date=String(form.get("exception_date")||"");
        const note=String(form.get("note")||"").trim();
+       const target=String(form.get("schedule_slot_id")||"");
        const start=String(form.get("replacement_start_local")||"");
        const end=String(form.get("replacement_end_local")||"");
        if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!TYPES.has(kind)){
@@ -208,11 +255,18 @@
        if(Boolean(start)!==Boolean(end)||start&&start>=end){
          throw Error("Enter both replacement times, with the end later than the start.");
        }
+       if(kind==="rescheduled"&&!target){
+         throw Error("Choose the class session being rescheduled.");
+       }
+       if((kind==="holiday"||kind==="cancelled")&&(start||end)){
+         throw Error("Cancellations and holidays must not have replacement times.");
+       }
        if(kind==="rescheduled"&&!start){
          throw Error("Rescheduled classes require replacement start and end times.");
        }
        await w.BNClassOps.createException({class_id:chosen(),exception_date:date,
-         kind,note,replacement_start_local:start||null,replacement_end_local:end||null});
+         kind,note,schedule_slot_id:target||null,
+         replacement_start_local:start||null,replacement_end_local:end||null});
        e.target.reset();
      },"Exception saved.");
    });

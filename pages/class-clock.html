@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head>
+<script src="../js/theme.js?v=20261026-theme"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark"><meta name="theme-color" content="#142951">
+<title>Class Clock | Blue Noelle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css?v=phase4-1">
+<link rel="stylesheet" href="../css/workspace-pages.css?v=phase4-1">
+<link rel="stylesheet" href="../css/workspace-shell.css?v=phase4-1">
+<link rel="stylesheet" href="../css/class-clock.css?v=phase4-1">
+<link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
+</head>
+<body class="bn-postlogin bn-clock-page">
+<div class="bn-app">
+<header class="bn-header">
+<a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a>
+<nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="class-clock.html" class="active">Class Clock</a></nav>
+</header>
+<main class="bn-main bn-clock-main">
+<div class="clock-heading">
+<div><p class="bn-classwork-eyebrow">PHASE 4 · ADAPTED FROM CLASS CLOCK V2.9</p>
+<h1>Class Clock <span class="clock-heading-star" aria-hidden="true">✦</span></h1>
+<p class="bn-muted">A live Manila-time timetable for your approved classroom. Never miss what's next.</p></div>
+<div class="clock-heading-actions">
+<button id="clock-notifications" type="button" class="clock-soft-button" aria-pressed="false">🔕 Class reminders off</button>
+<button id="clock-reload" type="button" class="clock-soft-button">↻ Refresh schedule</button></div>
+</div>
+<p id="clock-status" class="bn-dashboard-notice" role="status" aria-live="polite">Verifying your classroom access…</p>
+<section class="clock-toolbar" aria-label="Clock classroom">
+<div><label for="clock-class">YOUR CLASSROOM</label><select id="clock-class" disabled><option value="">Loading approved classrooms…</option></select></div>
+<div><span class="clock-toolbar-small">DISPLAY TIMEZONE</span><strong>Asia/Manila · UTC+08:00</strong></div>
+<div class="clock-now"><span id="clock-date">Today</span><strong id="clock-now">--:--:--</strong></div>
+</section>
+<div id="clock-content" hidden>
+<section class="clock-hero" id="clock-hero" aria-labelledby="clock-event">
+<div class="clock-hero-left">
+<span class="clock-hero-eyebrow" id="clock-state">GETTING READY</span>
+<h2 id="clock-event">Finding your next class…</h2>
+<p class="clock-hero-summary" id="clock-summary">Your approved classroom schedule is loading.</p>
+<div class="clock-hero-chip"><span aria-hidden="true">◷</span> <span id="clock-label">TIME REMAINING</span></div>
+<div class="clock-countdown" id="clock-countdown" role="timer" aria-live="off">--:--:--</div>
+<div class="clock-unit-labels"><span>HOURS</span><span>MINUTES</span><span>SECONDS</span></div>
+</div>
+<div class="clock-hero-right">
+<div class="clock-context"><span>NEXT CLASS</span><strong id="clock-next-name">Nothing scheduled</strong><small id="clock-next-time">—</small></div>
+<div class="clock-context"><span>LAST CLASS</span><strong id="clock-previous">—</strong></div>
+<a class="clock-hero-link" href="class-operations.html" id="clock-admin-link" hidden>Manage classroom schedule ↗</a>
+</div>
+</section>
+<div class="clock-columns">
+<section class="clock-card clock-today" aria-labelledby="clock-today-heading">
+<div class="clock-section-head"><div><span class="clock-section-kicker">TODAY IN YOUR CLASSROOM</span><h2 id="clock-today-heading">Today's schedule</h2></div><span id="clock-today-badge" class="clock-counter">0 sessions</span></div>
+<div id="clock-today-list" class="clock-events"></div>
+</section>
+<section class="clock-card" aria-labelledby="clock-tasks-heading">
+<div class="clock-section-head"><div><span class="clock-section-kicker">CLASS CLOCK · TASKS MODE</span><h2 id="clock-tasks-heading">Upcoming deadlines</h2></div><a href="classwork.html">All classwork ↗</a></div>
+<div class="clock-task-lead" id="clock-task-lead"><span>NEAREST DEADLINE</span><strong id="clock-task-countdown">--:--:--</strong><small id="clock-task-name">No upcoming work</small></div>
+<div id="clock-task-list" class="clock-tasks"></div>
+</section>
+</div>
+<section class="clock-card clock-weekly" aria-labelledby="clock-week-heading">
+<div class="clock-section-head"><div><span class="clock-section-kicker">YOUR WEEK AT A GLANCE</span><h2 id="clock-week-heading">Weekly timetable</h2></div><span class="clock-counter">Rolling 7 days</span></div>
+<div id="clock-week-list" class="clock-week-grid"></div>
+</section>
+<p class="clock-disclaimer">The clock updates every second. Academic deadlines come from live assignments, not local task-completion flags. Browser reminders work only while this page remains open.</p>
+</div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-adapter.js"></script>
+<script src="../js/workspace-shell.js?v=20261026-phase4"></script>
+<script src="../js/class-clock-core.js?v=phase4-1"></script>
+<script src="../js/class-clock-page.js?v=phase4-1"></script>
+</body></html>

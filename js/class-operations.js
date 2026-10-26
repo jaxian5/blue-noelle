@@ -37,6 +37,7 @@
      {p_membership:membershipId,p_approve:Boolean(approve)})),
    updateMember:(membershipId,role,status)=>query(db=>db.rpc("bn_update_member",
      {p_membership:membershipId,p_role:role,p_status:status})),
+   subjects:(classId)=>query(db=>db.from("Subject").select("id,name").eq("class_id",id(classId)).is("deleted_at",null)),
    slots:(classId)=>query(db=>db.from("ScheduleSlot").select("*").eq("class_id",id(classId))
      .order("day_of_week").order("start_local")),
    exceptions:(classId)=>query(db=>db.from("ScheduleException").select("*")
