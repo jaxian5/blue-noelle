@@ -204,14 +204,14 @@
      const assignments=subjectIds.length?await query(db().from("Assignment")
        .select("id,name,deadline,status,subject_id")
        .in("subject_id",subjectIds).eq("status","OPEN")):[];
-     if(mine!==epoch)return;
+     if(mine!==epoch||id!==selectedClass)return;
      [slotRows,exceptionRows,subjectRows,assignmentRows]=[slots,exceptions,subjects,assignments];
      lastFetch=Date.now();
      $("clock-content").hidden=false;
      renderTick();
      message("Live class clock ready · Manila time · "+slotRows.length+" weekly slot"+(slotRows.length===1?"":"s"),"success");
    }catch(e){
-     if(mine!==epoch)return;
+     if(mine!==epoch||id!==selectedClass)return;
      message("Unable to refresh this classroom: "+(e.message||e)+". Older results, if any, remain visible.","error");
    }finally{
      fetchInProgress=false;
@@ -241,7 +241,7 @@
      selectedClass=rooms.find(r=>r.id===requested)?.id||rooms[0].id;
      picker.value=selectedClass;picker.disabled=false;
      picker.addEventListener("change",()=>{
-       selectedClass=picker.value;slotRows=[];exceptionRows=[];assignmentRows=[];subjectRows=[];
+       selectedClass=picker.value;++epoch;slotRows=[];exceptionRows=[];assignmentRows=[];subjectRows=[];
        lastDrawnAgenda="";
        $("clock-content").hidden=true;
        const role=memberships.find(m=>m.class_id===selectedClass)?.role;
