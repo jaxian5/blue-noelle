@@ -50,10 +50,25 @@ BEGIN
  PERFORM set_config('role','postgres',true);
  INSERT INTO public."Submission"(assignment_id,group_id,status)
  VALUES(assignment_id,group_id,'DRAFT') RETURNING id INTO submission_id;
+ INSERT INTO public."SubmissionVersion"(
+   submission_id,version_number,uploaded_by,upload_state,
+   submitted_at,deadline_at_submission)
+ VALUES(submission_id,1,student_id,'READY',
+   '2026-10-26T04:00:00Z','2026-10-26T03:00:00Z');
+ INSERT INTO public."SubmissionVersion"(
+   submission_id,version_number,uploaded_by,upload_state)
+ VALUES(submission_id,2,student_id,'UPLOADING');
  PERFORM set_config('role','authenticated',true);
  result:=public.bn_p5_groups_read(assignment_id);
  IF NOT (result->0->>'locked')::boolean THEN
   RAISE EXCEPTION 'Group read model did not lock after draft';END IF;
+ result:=public.bn_p5_compilation(assignment_id,false);
+ IF (result->>'count')::int<>1 OR
+    (result->'entries'->0->>'version')::int<>1 OR
+    (result->'entries'->0->>'late')::boolean IS DISTINCT FROM true THEN
+   RAISE EXCEPTION 'Compilation lost historical submitted Version 1 while Version 2 is draft';END IF;
+ IF result::text LIKE '%storage_key%' THEN
+   RAISE EXCEPTION 'Compilation leaked Storage object paths';END IF;
  failed:=false;
  BEGIN
   PERFORM public.bn_p3_groups(assignment_id,'remove_member',group_id,student_id,NULL);
