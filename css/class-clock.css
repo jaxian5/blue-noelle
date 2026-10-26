@@ -74,3 +74,19 @@
 @media(max-width:750px){.clock-hero{grid-template-columns:1fr;padding:28px 24px}.clock-hero-right{border-left:0;border-top:1px solid #ffffff44;padding:18px 0 0;grid-template-columns:1fr 1fr}.clock-heading{align-items:start;flex-direction:column}.clock-toolbar .clock-now{text-align:left}}
 @media(max-width:510px){.clock-week-grid{grid-template-columns:repeat(2,1fr)}.clock-hero-right{grid-template-columns:1fr}.clock-countdown{font-size:2.8rem}.clock-unit-labels{gap:30px}.clock-card{padding:18px}}
 @media(prefers-reduced-motion:reduce){.clock-page *{animation:none!important;transition:none!important}}
+
+/* Phase 4 clock preview on the existing authenticated Student/Admin Dashboard. */
+.clock-dashboard-preview{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+ background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:16px;
+ box-shadow:var(--ui-shadow);padding:19px 23px;margin:0 0 23px;color:var(--ui-text)}
+.clock-dashboard-preview-icon{flex-shrink:0;display:grid;place-items:center;width:47px;height:47px;
+ border-radius:13px;background:var(--role-soft);color:var(--role-ink);font-size:1.5rem}
+.clock-dashboard-preview-content{min-width:180px;flex:1}
+.clock-dashboard-preview-content>span{color:var(--role-main);font-size:.63rem;letter-spacing:.15em;font-weight:900}
+.clock-dashboard-preview-content h2{color:var(--ui-text);font:800 1rem Manrope,sans-serif;
+ letter-spacing:-.02em;margin:3px 0}
+.clock-dashboard-preview-content p{color:var(--ui-muted);font-size:.74rem;margin:0}
+.clock-dashboard-timer{font:800 clamp(1.3rem,2.3vw,2rem) Manrope,sans-serif;
+ font-variant-numeric:tabular-nums;color:var(--role-ink);white-space:nowrap}
+.clock-dashboard-preview-link{font-size:.78rem;font-weight:850;color:var(--role-ink);white-space:nowrap}
+@media(max-width:580px){.clock-dashboard-preview-link{flex-basis:100%}}
