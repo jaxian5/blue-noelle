@@ -123,7 +123,7 @@
    return manifest;
  }
  // An Edge Function generates the bytes. Never compile private files in a
- // public browser or persist Storage keys/local role state in localStorage.
+ // public browser or persist sensitive Storage paths or role state.
  async function invokeCompilation(body){
    const {data,error}=await db().functions.invoke("bn-phase5-compilation",{body});
    if(error){
