@@ -10,11 +10,11 @@ const admin=read("js/phase2-admin.js"),shell=read("js/workspace-shell.js");
 const adminPage=read("pages/admin-classwork.html");
 const paths=["class-clock","classwork","admin-classwork","submission","phase1-class-staff","class-operations","account"];
 
-test("all six secondary pages load one shared authenticated sidebar",()=>{
+test("all authenticated secondary pages load one shared sidebar",()=>{
  for(const page of paths){
   const html=read("pages/"+page+".html");
   assert.match(html,/workspace-shell\.css/,page);
-  assert.match(html,/workspace-shell\.js\?v=20261026-nav/,page);
+  assert.match(html,/workspace-shell\.js\?v=20261026-phase4/,page);
   assert.doesNotMatch(html,/core\.js|phase1-auth\.js|phase2-assignments\.js/);
  }
  assert.match(shell,/getUser\(\)/);
