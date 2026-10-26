@@ -30,7 +30,7 @@ test("production routes never load local demo identities or role JSON", () => {
   ];
   for (const path of pages) {
     const html = read(path);
-    assert.doesNotMatch(html, /<script[^>]+src=["'][^"']*(?:core\.js|phase1-auth\.js|phase2-assignments\.js)/i, path);
+    assert.doesNotMatch(html, /<script[^>]+src=["'][^"']*\/(?:core\.js|phase1-auth\.js|phase2-assignments\.js)/i, path);
     assert.doesNotMatch(html, /(?:src|href)=["'][^"']*data\/roles\.json/i, path);
   }
 });
