@@ -64,6 +64,9 @@ test("Edge requires JWT Auth + user-scoped RPC before any private service-key re
  assert.match(edge,/storage\.from\(BUCKET\)\.remove/);
  assert.match(edge,/cacheControl: "0", upsert: false/);
  assert.match(edge,/await hash\(bytes\) !== grant\.sha256/);
+ assert.match(edge,/"Content-Type": "application\/octet-stream"/);
+ assert.match(edge,/"X-File-Mime": grant\.format === "pdf"/);
+ assert.match(edge,/"Content-Disposition": 'attachment; filename="/);
  assert.doesNotMatch(edge,/getPublicUrl|createSignedUrl|localStorage|user_metadata/);
 });
 test("ZIP keeps mixed files; PDF sources must be PDF and are merged page-by-page",()=>{
