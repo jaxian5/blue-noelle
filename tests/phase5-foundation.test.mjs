@@ -9,7 +9,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const read=path=>readFileSync(resolve(root,path),"utf8");
 const page=read("pages/phase5-groups.html");
 const ui=read("js/phase5-groups.js");
-const sql=read("supabase/migrations/20261026140500_phase5_group_integrity_compilation_manifest.sql");
+const sql=read("supabase/migrations/20261026063125_phase5_group_integrity_compilation_manifest.sql");
 
 test("Phase 5 workspace uses real auth, shared navigation and no demos",()=>{
  assert.doesNotThrow(()=>new Script(ui));
