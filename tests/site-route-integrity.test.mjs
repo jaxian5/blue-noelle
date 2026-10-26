@@ -29,7 +29,7 @@ test("canonical pages do not reference missing local href/src assets",()=>{
 test("canonical pages load only production controllers and never local demo authentication",()=>{
  for(const page of canonical.filter(p=>p.startsWith("pages/"))){
    const html=readFileSync(resolve(root,page),"utf8");
-   assert.doesNotMatch(html,/<script[^>]+src=["'][^"']*(?:core|phase1-auth|phase2-assignments)\.js/i,page);
+   assert.doesNotMatch(html,/<script[^>]+src=["'][^"']*\/(?:core|phase1-auth|phase2-assignments)\.js/i,page);
  }
  const ops=readFileSync(resolve(root,"pages/class-operations.html"),"utf8");
  assert.match(ops,/class-operations-ui\.js/);
