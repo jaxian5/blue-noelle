@@ -3,7 +3,7 @@
 // ACTIVE staff authorization and fixes exact immutable source versions.
 // Verify JWT at the Supabase gateway AND check auth.getUser per request.
 import { createClient } from "npm:@supabase/supabase-js@2.117.3";
-import { buildPdf,buildZip,hash,clean,MAX_SOURCE_BYTES,MAX_OUTPUT_BYTES,MAX_FILES } from "./compile.ts";
+import { buildPdf,buildZip,hash,clean,exactBuffer,MAX_SOURCE_BYTES,MAX_OUTPUT_BYTES,MAX_FILES } from "./compile.ts";
 import type { Source } from "./compile.ts";
 
 type Job = {
@@ -78,7 +78,7 @@ Deno.serve(async (req: Request) => {
     if (bytes.length !== Number(grant.size) || await hash(bytes) !== grant.sha256)
       return json({ error: "Compilation integrity verification failed" }, 409, origin);
     const name = clean(grant.name, "blue-noelle-compilation." + grant.format, 145);
-    return new Response(bytes, { status: 200, headers: {
+    return new Response(exactBuffer(bytes), { status: 200, headers: {
       ...headers(origin), "Content-Type": grant.format === "pdf" ? "application/pdf" : "application/zip",
       "Content-Disposition": 'attachment; filename="' + name + '"',
       "Content-Length": String(bytes.length),
@@ -121,7 +121,7 @@ Deno.serve(async (req: Request) => {
     if (!output.length || output.length > MAX_OUTPUT_BYTES) throw new Error("TOO_LARGE");
     const digest = await hash(output);
     const { error: uploadError } = await server.storage.from(BUCKET).upload(job.key,
-      new Blob([output], { type: job.format === "pdf" ? "application/pdf" : "application/zip" }),
+      new Blob([exactBuffer(output)], { type: job.format === "pdf" ? "application/pdf" : "application/zip" }),
       { contentType: job.format === "pdf" ? "application/pdf" : "application/zip",
         cacheControl: "0", upsert: false });
     if (uploadError) throw new Error("STORAGE_FAILED");
