@@ -2,12 +2,12 @@
 
 A private, multi-class classroom platform hosted on **GitHub Pages**, using **Supabase Auth, PostgreSQL, guarded RPCs, and private Supabase Storage**. The initial deployment stays on free services.
 
-> **Release snapshot · October 25, 2026**
+> **Release snapshot · October 26, 2026**
 >
 > - **Phase 0:** architecture accepted; the executable database schema lives under `supabase/migrations/`.
 > - **Phase 1:** class-scoped Auth, Admin-owned classrooms and invitation/approval flows implemented and previously accepted. **Email deliverability is on operational hold**: Gmail rejected some Brevo messages (`550 5.7.1`) and one Outlook message was not visible despite a “Delivered” event. **New public self-service signup and password recovery are not release-ready.** Existing confirmed sessions can use later phases. Do not disable confirmation or use privileged keys in the browser.
-> - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. **Owner live Admin/Student browser acceptance is still required** before final sign-off.
-> - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. **Live file-byte upload/download and cross-account Storage acceptance are outstanding.** A merged PR is not itself proof of production readiness.
+> - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. The owner completed an initial live testing round and provisionally approved the phase; final browser sign-off is still pending.
+> - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. The owner provisionally approved Phase 3 after initial live testing. Final real-byte integrity and independent cross-account Storage isolation evidence remain required before release acceptance.
 > - **Later phases:** chat, announcements, notifications and compilation remain **deny-by-default schema placeholders** until separately implemented and tested.
 
 ## Appearance: role colors and Dark Mode
@@ -62,15 +62,34 @@ This frontend redesign does **not** count as Phase 2/3 final live acceptance.
 | Workflow | Entry |
 | --- | --- |
 | Sign in / register / OTP | [Sign in](pages/login.html) · [Register](pages/register.html) · [Verify email](pages/verify-email.html) |
-| Account and memberships | [My Account](pages/account.html) |
+| Profile & security (or enrollment if no ACTIVE class) | [My Account](pages/account.html) |
 | Classroom overview | [Live dashboard](pages/dashboard.html) |
 | Read subjects and assignments | [Classwork](pages/classwork.html) |
 | Admin subject/assignment management | [Manage classwork](pages/admin-classwork.html) |
 | Student submissions / authorized staff review | [Private submissions](pages/submission.html) (requires `?assignment=<uuid>` from a real assignment link) |
 | Staff registration review | [Class staff](pages/phase1-class-staff.html) |
-| Class scheduling and operations | [Class operations](pages/class-operations.html) |
+| Classroom roster and weekly scheduling | [Schedule & members](pages/class-operations.html) |
 
 Production pages use **Supabase Auth + class membership RLS**. The browser may use only public Supabase URL and publishable key; never database passwords, `sb_secret_*`, or the service-role key.
+
+## Class Operations and Phase 4 readiness
+
+The Schedule & Members screen is being repaired through
+[PR #32](https://github.com/jaxian5/blue-noelle/pull/32), with readable
+class names, Admin schedule operations, authorized registration reviews and
+error isolation between the roster/weekly schedule/dated exceptions.
+**Database security repairs are already deployed:** migration
+`20261026015109_class_operations_least_privilege_and_audit.sql` removes
+RLS-bypassing schedule `TRUNCATE` privileges and adds atomic AuditLog entries
+for all schedule changes. The broader audit also uncovered the same unsafe
+privileges on Subject and Assignment; deployed migration
+`20261026020847_academic_table_least_privilege.sql` revokes those grants.
+Both are already in Supabase history: do not reapply under different versions.
+
+The Phase 4 Class Clock (current/next class, countdown, per-date exception
+behavior), overlap handling and full calendar semantics are **not yet
+implemented**. See the [pre-Phase 4 audit](docs/PRE-PHASE4-AUDIT-2026-10-26.md).
+A passing CI/database test is distinct from real browser acceptance.
 
 ## Architectural rules
 

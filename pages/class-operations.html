@@ -3,7 +3,7 @@
 <head>
 <script src="../js/theme.js?v=20261026-theme"></script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Class Operations · Blue Noelle</title>
+<title>Schedule &amp; Members · Blue Noelle</title>
 <link rel="stylesheet" href="../css/main.css?v=20261026-contrast-aa">
 <style>
 .ops-layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -13,7 +13,27 @@
 .ops-form label{display:grid;gap:.2rem;font-size:.85rem}
 .ops-form input,.ops-form select{width:100%;padding:.55rem;border:1px solid var(--bn-border-strong);border-radius:6px;background:var(--bn-bg);color:var(--bn-text)}
 .ops-wide{grid-column:1/-1}
-.ops-message{padding:.75rem;border-radius:6px;margin:1rem 0}
+.ops-message{padding:.9rem 1.1rem;border-radius:11px;margin:1rem 0;border:1px solid var(--ui-border);background:var(--ui-info-bg);color:var(--ui-info-text)}
+.ops-message[data-state=error]{background:var(--ui-error-bg);color:var(--ui-error-text)}
+.ops-message[data-state=success]{background:var(--ui-success-bg);color:var(--ui-success-text)}
+.ops-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ops-top>label{font-weight:800}
+.ops-top select{flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--ui-border);background:var(--ui-input);color:var(--ui-text);border-radius:10px}
+.ops-role-label{padding:6px 11px;border-radius:100px;background:var(--role-soft);color:var(--role-ink);font-size:.8rem;font-weight:800}
+.ops-help{color:var(--ui-muted);font-size:.8rem;margin-top:10px}
+.ops-count{color:var(--ui-muted);font-weight:700;font-size:.76rem}
+.ops-row-actions{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.ops-row-actions select{max-width:145px;font-size:.76rem;border:1px solid var(--ui-border);color:var(--ui-text);background:var(--ui-input);border-radius:8px;padding:7px}
+.ops-row-actions button,.ops-list td button{font-size:.75rem;padding:7px 11px}
+.ops-empty{color:var(--ui-muted);font-size:.85rem;padding:16px 10px!important}
+.ops-list th{color:var(--ui-muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
+.ops-list td{color:var(--ui-text);vertical-align:middle;overflow-wrap:anywhere}
+.ops-form :is(input,select){background:var(--ui-input);color:var(--ui-text);border-color:var(--ui-border)}
+.ops-form :is(input,select,button):disabled{opacity:.57;cursor:not-allowed}
+.ops-form label{color:var(--ui-text);font-weight:700}
+.ops-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+@media(max-width:560px){.ops-form{grid-template-columns:1fr}.ops-layout{gap:12px}.ops-list{font-size:.8rem}}
+
 @media(max-width:800px){.ops-layout{grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="../css/workspace-pages.css?v=20261026-contrast-aa"><link rel="stylesheet" href="../css/workspace-shell.css?v=20261026-contrast-aa">
@@ -26,22 +46,23 @@
 <nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="class-operations.html" class="active">Class Operations</a><a href="phase1-class-staff.html">Registration queue</a></nav>
 </header>
 <main class="bn-main">
-<h1>Class Operations</h1>
-<p class="bn-muted">Live class-scoped administration and weekly scheduling. Only approved class officers may make changes. Sign in once through the unified Blue Noelle login.</p>
+<h1>Schedule &amp; Members</h1>
+<p class="bn-muted">Review your approved classroom roster, recurring class times, and dated schedule changes. All times are in Asia/Manila.</p>
 <div id="ops-message" class="ops-message" role="status" aria-live="polite">Checking backend availability…</div>
-<section class="bn-card"><h2 class="bn-card-title">Account session</h2>
-<p class="bn-muted bn-text-sm">Blue Noelle now uses one sign-in page. Sign in first, then return to Class Operations. Only approved class officers can open these tools.</p>
-<div class="bn-flex" style="flex-wrap:wrap"><a href="login.html" class="bn-btn bn-btn-secondary">Sign in</a><a href="account.html" class="bn-btn bn-btn-secondary">My Account</a></div>
-</section>
-<div class="bn-card">
-<label for="class-choice">Active class</label>
-<select id="class-choice" class="bn-btn bn-btn-secondary"></select>
+<section class="bn-card" aria-label="Current classroom">
+<div class="ops-top">
+<label for="ops-class">Active classroom</label>
+<select id="ops-class" aria-label="Choose your approved class" autocomplete="off"></select>
+<strong id="ops-role" class="ops-role-label">Checking access…</strong>
+<button id="ops-refresh" type="button" class="bn-btn bn-btn-secondary">Refresh data</button>
 </div>
+<p id="ops-edit-hint" class="ops-help">Your permissions are checked by Supabase for every operation.</p>
+</section>
 <div id="ops-panel" hidden>
 <div class="ops-layout bn-mt-2">
-<section class="bn-card"><h2 class="bn-card-title">Members</h2><p class="bn-muted bn-text-sm">Moderators can review the directory. Only Admin can change roles or membership statuses.</p>
+<section class="bn-card"><h2 class="bn-card-title">Members <small id="ops-member-count" class="ops-count"></small></h2><p class="bn-muted bn-text-sm">Admins can manage Student and Moderator memberships. Both Admins and Moderators can approve pending requests. Owned-class Admins cannot be changed.</p>
 <div class="bn-table-wrap"><table class="ops-list"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="member-rows"></tbody></table></div></section>
-<section class="bn-card"><h2 class="bn-card-title">Recurring weekly schedule</h2>
+<section class="bn-card"><h2 class="bn-card-title">Recurring weekly schedule <small id="ops-slot-count" class="ops-count"></small></h2>
 <form id="slot-form" class="ops-form">
 <label>Day<select name="day_of_week" required><option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option></select></label>
 <label>Class / activity<input name="label" required maxlength="120" placeholder="e.g. Programming 3"></label>
@@ -50,63 +71,22 @@
 <button class="bn-btn bn-btn-primary ops-wide" type="submit">Add schedule slot</button>
 </form>
 <div class="bn-table-wrap bn-mt-1"><table class="ops-list"><thead><tr><th>Day</th><th>Time</th><th>Activity</th><th></th></tr></thead><tbody id="slot-rows"></tbody></table></div></section>
-<section class="bn-card"><h2 class="bn-card-title">Schedule exceptions</h2><p class="bn-muted bn-text-sm">Holidays, cancellations and reschedules for a specific date.</p>
+<section class="bn-card"><h2 class="bn-card-title">Schedule exceptions <small id="ops-exception-count" class="ops-count"></small></h2><p class="bn-muted bn-text-sm">Holidays, cancellations and reschedules for a specific date.</p>
 <form id="exception-form" class="ops-form">
 <label>Date<input type="date" name="exception_date" required></label>
 <label>Type<select name="kind"><option value="holiday">Holiday</option><option value="cancelled">Cancelled</option><option value="special">Special</option><option value="rescheduled">Rescheduled</option></select></label>
 <label class="ops-wide">Note<input name="note" maxlength="250" placeholder="e.g. No classes"></label>
+<label>Replacement starts (Manila)<input type="time" name="replacement_start_local"></label>
+<label>Replacement ends (Manila)<input type="time" name="replacement_end_local"></label>
 <button class="bn-btn bn-btn-primary ops-wide" type="submit">Add exception</button>
 </form>
 <div class="bn-table-wrap bn-mt-1"><table class="ops-list"><thead><tr><th>Date</th><th>Type</th><th>Note</th><th></th></tr></thead><tbody id="exception-rows"></tbody></table></div></section>
-<section class="bn-card"><h2 class="bn-card-title">Integration status</h2><p class="bn-muted">This interface connects to Supabase only after project configuration and Supabase Auth sign-in. The existing browser demonstration remains separate. Privileged actions are checked in PostgreSQL, not trusted to frontend role controls.</p></section>
+<section class="bn-card"><h2 class="bn-card-title">Schedule notes</h2><p class="bn-muted">Weekly slots must end after they begin. Rescheduled exceptions require both replacement times. Future Phase 4 Class Clock logic will apply exceptions and show the current/next class. All schedule edits are audited.</p></section>
 </div></div>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script>
 <script src="../js/supabase-adapter.js"></script><script src="../js/workspace-shell.js?v=20261026-nav"></script>
 <script src="../js/class-operations.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-const $=id=>document.getElementById(id), msg=$('ops-message'), choice=$('class-choice');
-const status=t=>{msg.textContent=t;};
-const node=(tag,text)=>{const el=document.createElement(tag);el.textContent=String(text??'');return el;};
-const td=(row,t)=>row.appendChild(node('td',t));
-const addButton=(row,title,click)=>{const cell=row.insertCell();const b=node('button',title);b.type='button';b.className='bn-btn bn-btn-secondary';b.addEventListener('click',click);cell.appendChild(b);};
-const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-let roles=new Map();
-const call=async fn=>{try{await fn();status('Saved successfully.');}catch(err){status('Error: '+err.message);}};
-async function refresh(){
-const id=choice.value,role=roles.get(id),admin=role==='Admin';
-const [members,slots,exceptions]=await Promise.all([BNClassOps.directory(id),BNClassOps.slots(id),BNClassOps.exceptions(id)]);
-for(const key of ['member-rows','slot-rows','exception-rows']) $(key).replaceChildren();
-members.forEach(m=>{const tr=$('member-rows').insertRow();td(tr,m.full_name);td(tr,m.role);td(tr,m.status);
-if(!admin){td(tr,'Read only');return;}
-const cell=tr.insertCell(),role=node('select');['Student','Moderator','Admin'].forEach(v=>{const o=node('option',v);o.value=v;role.appendChild(o);});role.value=m.role;
-const state=node('select');['PENDING','ACTIVE','REJECTED','REMOVED'].forEach(v=>{const o=node('option',v);o.value=v;state.appendChild(o);});state.value=m.status;
-const save=node('button','Save');save.type='button';save.className='bn-btn bn-btn-secondary';save.addEventListener('click',()=>call(async()=>{await BNClassOps.updateMember(m.membership_id,role.value,state.value);await refresh();}));
-cell.append(role,state,save);
-});
-slots.forEach(s=>{const tr=$('slot-rows').insertRow();td(tr,days[s.day_of_week]);td(tr,s.start_local.slice(0,5)+'–'+s.end_local.slice(0,5));td(tr,s.label);
-if(admin) addButton(tr,'Delete',()=>{if(confirm('Delete this schedule slot?'))call(async()=>{await BNClassOps.deleteSlot(s.id);await refresh();});});else td(tr,'Read only');
-});
-exceptions.forEach(e=>{const tr=$('exception-rows').insertRow();td(tr,e.exception_date);td(tr,e.kind);td(tr,e.note);
-if(admin)addButton(tr,'Delete',()=>{if(confirm('Delete this exception?'))call(async()=>{await BNClassOps.deleteException(e.id);await refresh();});});else td(tr,'Read only');
-});
-for(const id of ['slot-form','exception-form']) $(id).querySelector('button[type=submit]').disabled=!admin;
-}
-if(!window.BNClassOps?.ready()){status('Supabase is unavailable. Check your network connection and the public browser configuration.');return;}
-try {
-const memberships=await BNClassOps.memberships();
-memberships.filter(m=>['Admin','Moderator'].includes(m.role)).forEach(m=>{roles.set(m.class_id,m.role);const o=node('option',m.class_id+' ('+m.role+')');o.value=m.class_id;choice.appendChild(o);});
-if(!choice.options.length){status('Sign in with Blue Noelle and obtain an ACTIVE Moderator/Admin membership before using these tools. Go to My Account for details.');return;}
-$('ops-panel').hidden=false;choice.onchange=()=>call(refresh);await refresh();status('Connected to Supabase. Schedule timezone: Asia/Manila.');
-}catch(e){status('Connection failed: '+e.message);}
-$('slot-form').addEventListener('submit',e=>{e.preventDefault();call(async()=>{const f=new FormData(e.target);
-const start=f.get('start_local'),end=f.get('end_local');if(start>=end)throw Error('End time must be after start time.');
-await BNClassOps.createSlot({class_id:choice.value,day_of_week:Number(f.get('day_of_week')),label:String(f.get('label')).trim(),start_local:start,end_local:end});
-e.target.reset();await refresh();});});
-$('exception-form').addEventListener('submit',e=>{e.preventDefault();call(async()=>{const f=new FormData(e.target);
-await BNClassOps.createException({class_id:choice.value,exception_date:f.get('exception_date'),kind:f.get('kind'),note:String(f.get('note')||'')});e.target.reset();await refresh();});});
-});
-</script>
+<script src="../js/class-operations-ui.js?v=20261026-ops"></script>
 </body></html>
