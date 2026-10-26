@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head>
+<script src="../js/theme.js?v=20261026-theme"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Groups &amp; Compilation | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-pages.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-shell.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/phase5.css?v=20261026-p5">
+<link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
+</head>
+<body class="bn-postlogin"><div class="bn-app">
+<header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span>Blue Noelle</a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="classwork.html">Classwork</a><a href="phase5-groups.html" class="active">Groups &amp; Compilation</a></nav></header>
+<main class="bn-main bn-p5">
+<div class="p5-heading"><div><p class="bn-classwork-eyebrow">PRIVATE WORKSPACE · PHASE 5</p>
+<h1>Groups &amp; Compilation</h1><p class="bn-muted">Organize assignment teams and review version-verified submissions from your classroom.</p></div>
+<a href="classwork.html" class="bn-btn bn-btn-secondary">← Classwork</a></div>
+<div id="p5-status" class="p5-notice" role="status" aria-live="polite">Verifying your account…</div>
+<section class="bn-card p5-filters" aria-label="Selected classroom and assignment">
+<div><label for="p5-class">Approved classroom</label><select id="p5-class" disabled><option>Loading classrooms…</option></select></div>
+<div><label for="p5-assignment">Assignment</label><select id="p5-assignment" disabled><option>Select an approved classroom</option></select></div>
+<button id="p5-refresh" type="button" class="bn-btn bn-btn-secondary">Refresh</button>
+</section>
+<section id="p5-content" hidden>
+<div class="p5-summary bn-card"><div><p class="bn-classwork-eyebrow">CURRENT ASSIGNMENT</p><h2 id="p5-assignment-name">Assignment</h2><p id="p5-assignment-meta" class="bn-muted"></p></div>
+<a id="p5-submission-link" href="classwork.html" class="bn-btn bn-btn-secondary">Open submissions ↗</a></div>
+<section id="p5-student" class="bn-card" hidden>
+<h2>My group</h2><p id="p5-student-group" class="bn-muted">Loading your assigned group…</p>
+<p class="bn-muted">Only an Admin may organize groups. Your group's versioned work remains private to authorized members.</p>
+</section>
+<section id="p5-staff" class="p5-grid" hidden>
+<div class="bn-card"><div class="p5-card-heading"><h2>Assignment groups</h2><span id="p5-group-count" class="p5-tag">0 groups</span></div>
+<p class="bn-muted">An Admin creates teams and assigns approved Students. A team is locked after its first submission draft to protect version and file access.</p>
+<form id="p5-create-form" class="p5-create" hidden>
+<label for="p5-group-name">New group name</label><input id="p5-group-name" maxlength="120" required placeholder="e.g. Team Meridian">
+<button class="bn-btn bn-btn-primary" type="submit">Create group</button>
+</form>
+<div id="p5-group-list" class="p5-group-list"><p class="bn-muted">Choose a group assignment.</p></div>
+</div>
+<div class="bn-card"><div class="p5-card-heading"><h2>Compilation review</h2><span class="p5-tag">STAFF ONLY</span></div>
+<p class="bn-muted">Shows the latest completed, submitted version per Student or group. Draft files are excluded. This metadata preview does not merge or publish private file bytes.</p>
+<div class="p5-actions"><button id="p5-preview" type="button" class="bn-btn bn-btn-secondary">Refresh preview</button>
+<button id="p5-export" type="button" class="bn-btn bn-btn-primary">Export manifest (JSON)</button></div>
+<div id="p5-compilation" class="p5-compilation"><p class="bn-muted">Choose an assignment to review submitted versions.</p></div>
+</div>
+</section>
+</section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/workspace-shell.js?v=20261026-phase5"></script>
+<script src="../js/phase5-groups.js?v=20261026-p5"></script>
+</body></html>
