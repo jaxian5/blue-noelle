@@ -85,7 +85,8 @@ BEGIN
  LEFT JOIN public."Group" g ON g.id=sub.group_id
  LEFT JOIN public."User" u ON u.id=sub.student_id
  WHERE sub.assignment_id=p_assignment
-  AND sub.deleted_at IS NULL AND sub.status='SUBMITTED';
+  AND sub.deleted_at IS NULL AND sub.status<>'DELETED';
+ -- Include previous submitted versions even if a newer draft is underway.
 
  IF p_export THEN
   INSERT INTO public."AuditLog"(
