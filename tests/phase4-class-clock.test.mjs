@@ -120,3 +120,40 @@ test("Phase 4 is inspired by Class Clock but uses only Blue Noelle's client",()=
  assert.match(page,/class-clock-core\.js/);
  assert.match(page,/class-clock-page\.js/);
 });
+
+test("untimed special notes stay visible without becoming fake clock sessions",()=>{
+ const ex=[{id:"notice",kind:"special",exception_date:"2026-10-26",
+   note:"Room inspection",replacement_start_local:null,replacement_end_local:null}];
+ const m=C.evaluate({now:when("2026-10-26","08:00:00"),slots:[one],exceptions:ex});
+ assert.deepEqual(m.todayAgenda.notes,["Room inspection"]);
+ assert.equal(m.todayAgenda.events.length,1);
+});
+test("adjusted daily overlaps produce an explicit warning, not an arbitrary next class",()=>{
+ const m=C.evaluate({now:when("2026-10-26","07:00:00"),
+   slots:[one,another],exceptions:[resched("2026-10-26","slot-a","11:30","12:00")]});
+ assert.match(m.warnings.join(" "),/overlap/);
+ assert.equal(m.todayAgenda.events.length,2);
+});
+test("Clock page and dashboard preview parse and have explicit authenticated boundaries",()=>{
+ const fs=require("node:fs");const {Script}=require("node:vm");
+ for(const path of ["js/class-clock-page.js","js/dashboard-clock.js"]){
+   const content=fs.readFileSync(resolve(root,path),"utf8");
+   assert.doesNotThrow(()=>new Script(content),path);
+   assert.match(content,/getUser\(\)/,path);
+   assert.match(content,/ClassMembership/,path);
+   assert.doesNotMatch(content,/service_role|sb_secret_|from\("profiles"\)/,path);
+ }
+ const html=fs.readFileSync(resolve(root,"pages/dashboard.html"),"utf8");
+ assert.match(html,/id="dash-clock-preview"/);
+ assert.match(html,/dashboard-clock\.js/);
+ assert.match(html,/href="class-clock\.html"/);
+});
+test("Calendar view has no permission to edit academic data or ask for notifications automatically",()=>{
+ const fs=require("node:fs");
+ const src=fs.readFileSync(resolve(root,"js/class-clock-page.js"),"utf8");
+ assert.doesNotMatch(src,/\.insert\(|\.delete\(|\.upsert\(|\.update\(/);
+ assert.match(src,/clock-notifications"\)\.addEventListener\("click"/);
+ assert.match(src,/Notification\.requestPermission\(\)/);
+ assert.match(src,/if\(!reminders/);
+ assert.match(src,/\+\+epoch/);
+});
