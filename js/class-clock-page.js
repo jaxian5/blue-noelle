@@ -105,7 +105,7 @@
    text("clock-state",model.state==="IN_CLASS"?"CLASS IN SESSION":
      model.state==="UPCOMING"?"UP NEXT":"NO CLASS SCHEDULED");
    text("clock-event",current?(current.subject_name||current.label):
-     next?(next.subject_name||next.label):"No scheduled classes");
+     next?(next.subject_name||next.label):"No class in the next 14 days");
    text("clock-summary",current?"Currently in progress · "+clock().spanLabel(current):
      next?"Your next class starts "+new Intl.DateTimeFormat("en-PH",
        {timeZone:"Asia/Manila",weekday:"long",month:"short",day:"numeric"}).format(new Date(next.startMs)):
