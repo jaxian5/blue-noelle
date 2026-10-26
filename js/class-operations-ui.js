@@ -239,6 +239,9 @@
        const option=node("option",(cls?.name||"Classroom "+(active.size>1?id.slice(0,8):""))+" · "+role);
        option.value=id;picker.appendChild(option);
      }
+     // Some browsers/test DOMs do not select a newly appended option until
+     // focus. Make the authorized first class explicit before any RPC.
+     if(!picker.value||!active.has(picker.value))picker.value=staff[0].class_id;
      await refresh();
    }catch(e){
      notice("Unable to load Class Operations: "+feedback(e),"error");
