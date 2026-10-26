@@ -39,7 +39,7 @@
  }
  function setRole(role,{isDeveloper=false}={}){
    const normalized=String(role||"student").trim().toLowerCase();
-   root.dataset.role=isDeveloper?"developer":(ROLES.has(normalized)?normalized:"student");
+   root.dataset.role=(isDeveloper||root.dataset.developer==="true")?"developer":(ROLES.has(normalized)?normalized:"student");
    const indicator=document.querySelector("[data-theme-role-indicator]");
    if(indicator)indicator.textContent=root.dataset.role.slice(0,1).toUpperCase()+root.dataset.role.slice(1)+" palette";
  }
@@ -54,14 +54,14 @@
    const label=document.createElement("span");label.className="bn-theme-label";
    button.append(icon,label);
    button.addEventListener("click",toggle);
-   const host=document.querySelector(".bn-top-actions, .bn-settings-top-actions, .bn-entry-content .bn-entry-header, .bn-nav");
+   const host=document.querySelector(".bn-top-actions, .bn-settings-top-actions");
    if(host){host.prepend(button)}
    else{button.classList.add("bn-theme-floating");document.body.append(button)}
    paintMode();
  }
  if(!root.dataset.role)root.dataset.role="student";
  paintMode(); // in <head>, before stylesheet render, to prevent a white flash
- document.addEventListener("DOMContentLoaded",createToggle);
+ document.addEventListener("DOMContentLoaded",()=>w.setTimeout(createToggle,0));
  const media=w.matchMedia?.("(prefers-color-scheme: dark)");
  media?.addEventListener?.("change",()=>{if(!choice)paintMode()});
  w.BNTheme=Object.freeze({
