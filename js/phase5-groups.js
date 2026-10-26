@@ -83,8 +83,11 @@
  }
  async function reloadGroups(){
    if(!active?.is_group){groupData=[];roster=[];drawGroups();return}
-   const g=await rpc("bn_p5_groups_read",{p_assignment:active.id});
-   const r=role==="Admin"?await groupCall("roster"):[];
+   const wanted=active.id,turn=requestId,viewerRole=role;
+   const g=await rpc("bn_p5_groups_read",{p_assignment:wanted});
+   const r=viewerRole==="Admin"?await rpc("bn_p3_groups",{
+     p_assignment:wanted,p_action:"roster"}):[];
+   if(turn!==requestId||active?.id!==wanted||role!==viewerRole)return;
    groupData=Array.isArray(g)?g:[];roster=Array.isArray(r)?r:[];
    drawGroups();
  }
@@ -152,7 +155,7 @@
    }
  }
  async function loadAssignments(){
-   ++requestId;
+   const turn=++requestId;
    const id=$("p5-class").value;
    active=null;$("p5-content").hidden=true;
    if(!id)return;
@@ -161,6 +164,7 @@
    assignments=(subjects?.length?await query(db().from("Assignment")
      .select("id,name,is_group,status,subject_id").in("subject_id",subjects.map(x=>x.id))
      .is("deleted_at",null)):[])||[];
+   if(turn!==requestId||id!==$("p5-class").value)return;
    assignments.sort((a,b)=>a.name.localeCompare(b.name));
    const picker=$("p5-assignment"),preferred=new URLSearchParams(w.location.search).get("assignment");
    picker.replaceChildren();
