@@ -127,3 +127,18 @@ test("Contrast audit does not reintroduce global white-on-white or dark-on-dark 
  assert.ok(css.includes("html[data-theme] :is(.bn-hero-link"));
  assert.ok(css.includes("html[data-theme] .bn-signup-dialog"));
 });
+
+test("CSS cache keys and account destructive action follow latest contrast tokens",()=>{
+ const pages=["index.html","pages/login.html","pages/register.html",
+  "pages/verify-email.html","pages/dashboard.html","pages/account.html",
+  "pages/classwork.html","pages/admin-classwork.html","pages/submission.html",
+  "pages/class-operations.html","pages/phase1-class-staff.html"];
+ for(const path of pages){
+  const html=read(path);
+  assert.ok(html.includes("css/theme.css?v=20261026-contrast-aa"),path);
+  assert.ok(html.includes("v=20261026-contrast-aa"),path);
+ }
+ const account=read("css/account-settings.css");
+ assert.ok(account.includes("color:var(--ui-error-text)"));
+ assert.ok(!account.includes("color:#8c4560"));
+});
