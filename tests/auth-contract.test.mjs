@@ -52,7 +52,8 @@ test("older preview pages redirect, and Class Operations no longer prompts for a
   assert.match(read("pages/supabase-auth.html"), /location\.replace\("login\.html"\)/);
   const ops = read("pages/class-operations.html");
   assert.doesNotMatch(ops, /supabase-login-form|supabase-password|supabase-logout/);
-  assert.doesNotMatch(ops, /href="login\\.html"/);\n  assert.match(ops, /class-operations-ui\\.js/);
+  assert.doesNotMatch(ops, /href="login\.html"/);
+  assert.match(ops, /class-operations-ui\.js/);
 });
 
 test("new screens and controllers have valid JavaScript syntax", () => {
