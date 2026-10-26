@@ -7,6 +7,11 @@ DECLARE
  v_admin uuid; v_class uuid; v_other uuid; v_slot uuid; v_exception uuid;
  v_audit_before integer;v_audit_after integer;v_directory integer;
 BEGIN
+ IF has_table_privilege('authenticated','public."Subject"','TRUNCATE')
+   OR has_table_privilege('authenticated','public."Assignment"','TRUNCATE')
+   OR has_table_privilege('authenticated','public."Subject"','TRIGGER')
+   OR has_table_privilege('authenticated','public."Assignment"','TRIGGER')
+ THEN RAISE EXCEPTION 'Academic table privileges bypass RLS';END IF;
  IF has_table_privilege('authenticated','public."ScheduleSlot"','TRUNCATE')
    OR has_table_privilege('authenticated','public."ScheduleException"','TRUNCATE')
    OR has_table_privilege('authenticated','public."ScheduleSlot"','TRIGGER')
