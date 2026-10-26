@@ -174,3 +174,10 @@ test("shared sidebar actually mounts and Admin/Student permissions follow authen
  assert.equal(get("shell-sidebar").dataset.open,"true");
  assert.equal(get("shell-menu").attributes["aria-expanded"],"true");
 });
+
+test("Phase 3 file picker reflects assignment format restrictions but retains upload validation",()=>{
+ const source=read("js/phase3-submissions.js");
+ assert.match(source,/\$\("sub-files"\)\.accept=allowed\.join\(","\)/);
+ assert.match(source,/allowed\.length&&!allowed\.includes\(mime\)/);
+ assert.match(source,/bn_p3_prepare/);
+});
