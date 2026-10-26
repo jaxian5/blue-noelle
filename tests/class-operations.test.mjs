@@ -139,7 +139,7 @@ test("Schedule form validates and submits only scoped Admin data",async()=>{
 test("Rescheduled exception requires both replacement times",async()=>{
  const x=fixture();await x.load();
  const form=x.dom.$("exception-form");
- form.data={exception_date:"2026-11-09",kind:"rescheduled",note:"Moved"};
+ form.data={exception_date:"2026-11-09",kind:"rescheduled",note:"Moved",schedule_slot_id:"slot-1"};
  form.listeners.submit({preventDefault(){},target:form});await flush();
  assert.equal(x.calls.filter(c=>Array.isArray(c)&&c[0]==="createException").length,0);
  assert.match(x.dom.$("ops-message").textContent,/require replacement/i);
