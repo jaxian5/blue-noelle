@@ -9,7 +9,8 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 > - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. The owner completed an initial live testing round and provisionally approved the phase; final browser sign-off is still pending.
 > - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. The owner provisionally approved Phase 3 after initial live testing. Final real-byte integrity and independent cross-account Storage isolation evidence remain required before release acceptance.
 > - **Phase 4:** Class Clock v2.9-inspired NOW/NEXT countdown, real weekly schedule, dated exceptions, and assignment deadline countdown are implemented in [PR #33](https://github.com/jaxian5/blue-noelle/pull/33). The Phase 4 database schema and guards are applied, with final authenticated browser acceptance **pending**. The Class Clock cannot be marked production-finalized from CI alone.
-> - **Later phases:** chat, announcements, notifications and compilation remain **deny-by-default schema placeholders** until separately implemented and tested.
+> - **Phase 5:** Groups & Compilation Milestone 1 is implemented in [PR #34](https://github.com/jaxian5/blue-noelle/pull/34), with two deployed guarded read-model/membership-snapshot migrations and verified database rollback tests. Staff compilation **metadata manifests** and audited JSON export are available on the branch; protected combined PDF/ZIP generation is a separate follow-up and **not complete**.
+> - **Later phases:** chat, announcements and durable notifications remain **deny-by-default schema placeholders** until separately implemented and tested.
 
 ## Appearance: role colors and Dark Mode
 
@@ -66,6 +67,7 @@ This frontend redesign does **not** count as Phase 2/3 final live acceptance.
 | Profile & security (or enrollment if no ACTIVE class) | [My Account](pages/account.html) |
 | Classroom overview | [Live dashboard](pages/dashboard.html) |
 | Phase 4 live timetable and upcoming deadlines | [Class Clock](pages/class-clock.html) |
+| Phase 5 assignment teams and compilation manifests | [Groups & Compilation](pages/phase5-groups.html) |
 | Read subjects and assignments | [Classwork](pages/classwork.html) |
 | Admin subject/assignment management | [Manage classwork](pages/admin-classwork.html) |
 | Student submissions / authorized staff review | [Private submissions](pages/submission.html) (requires `?assignment=<uuid>` from a real assignment link) |
@@ -73,6 +75,20 @@ This frontend redesign does **not** count as Phase 2/3 final live acceptance.
 | Classroom roster and weekly scheduling | [Schedule & members](pages/class-operations.html) |
 
 Production pages use **Supabase Auth + class membership RLS**. The browser may use only public Supabase URL and publishable key; never database passwords, `sb_secret_*`, or the service-role key.
+
+## Phase 5: Groups & Compilation
+
+The signed-in [Groups & Compilation](pages/phase5-groups.html) workspace
+lets Admins organize assignment-specific groups with existing audited Phase 3
+RPCs, Students view their own group, and Admins/Moderators preview/export
+server-verified submission metadata. Database triggers freeze a group's
+membership after the first submission draft to protect private versioned
+work. Both Phase 5 migrations are deployed, and rollback SQL acceptance
+passed. **This is not a finished merged-file/PDF generator**: the `Compilation`
+table remains deny-by-default until safe private artifact generation exists.
+
+See [Phase 5 development and acceptance](docs/PHASE5-GROUPS-COMPILATION-2026-10-26.md).
+Manual cross-account and UI acceptance still remain.
 
 ## Class Operations and Phase 4 integration
 
