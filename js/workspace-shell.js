@@ -11,6 +11,7 @@
  const accountPage=page==="account.html";
  const items=[
    {href:"dashboard.html",icon:"▦",label:"Overview"},
+   {href:"class-clock.html",icon:"◷",label:"Class Clock"},
    {href:"classwork.html",icon:"▤",label:"Subjects & classwork"},
    {href:"admin-classwork.html",icon:"✎",label:"Manage classwork",role:"admin",id:"classwork-admin-link"},
    {href:"phase1-class-staff.html",icon:"◎",label:"Member requests",role:"staff"},
