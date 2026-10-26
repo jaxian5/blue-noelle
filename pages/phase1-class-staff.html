@@ -1,10 +1,12 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html><html lang="en"><head>
+<script src="../js/theme.js?v=20261026-theme"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Class Registration Review · Blue Noelle</title><link rel="stylesheet" href="../css/main.css"><style>
 .staff-wrap{max-width:1060px;margin:auto}.staff-wrap select,.staff-wrap input{background:var(--bn-bg);color:var(--bn-text);border:1px solid var(--bn-border-strong);border-radius:5px;padding:.6rem;max-width:100%}
 .staff-wrap label{display:block;margin:.8rem 0}.staff-wrap table{width:100%;border-collapse:collapse}.staff-wrap th,.staff-wrap td{padding:.7rem .4rem;border-bottom:1px solid var(--bn-border-strong);text-align:left;font-size:.85rem}
 .staff-wrap .status{padding:.7rem;margin:.8rem 0;border:1px solid var(--bn-border-strong);border-radius:5px}
 .staff-wrap #issued-code{white-space:pre-wrap;overflow-wrap:anywhere}
-</style><link rel="stylesheet" href="../css/workspace-pages.css"><link rel="stylesheet" href="../css/workspace-shell.css"></head><body class="bn-postlogin"><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
+</style><link rel="stylesheet" href="../css/workspace-pages.css"><link rel="stylesheet" href="../css/workspace-shell.css"><link rel="stylesheet" href="../css/theme.css?v=20261026-theme">
+</head><body class="bn-postlogin"><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
 <main class="bn-main staff-wrap"><h1>Class member verification</h1><p class="bn-muted">Real Supabase approval queue. Sign in once through the central login page. Only ACTIVE Moderators and Admins may review student requests in their own class, while only ACTIVE Admins may issue new Student invitations.</p>
 <p class="status" id="staff-message" role="status" aria-live="polite">Checking permissions…</p>
 <div class="bn-card"><label>Class <select id="staff-class" aria-label="Active staff class"></select></label><button class="bn-btn bn-btn-secondary" id="reload" type="button">Refresh pending requests</button></div>
