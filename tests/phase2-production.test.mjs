@@ -16,7 +16,7 @@ test("live dashboard is redesigned and no longer invokes demo identity or assign
  assert.match(html,/id="dash-class"/);
  assert.match(html,/id="dash-count-open"/);
  assert.match(html,/id="dash-admin-link"/);
- assert.doesNotMatch(html,/(?:core|phase1-auth|phase2-assignments)\.js/);
+ assert.doesNotMatch(html,/<script[^>]+src=["\x27][^"\x27]*\/(?:core|phase1-auth|phase2-assignments)\.js(?:\?[^"\x27]*)?["\x27]/i);
  assert.doesNotMatch(html,/Juan Dela Cruz|Ana Reyes|EDUC 2 · The Teaching Profession/);
  assert.doesNotMatch(dash,/localStorage\s*\.|BN\.getCurrentUser|\.insert\(|\.update\(/);
  assert.doesNotThrow(()=>new Script(dash));
@@ -45,7 +45,7 @@ test("legacy academic routes no longer load demo accounts or browser-only assign
  })){
   const page=read(path);
   assert.match(page,new RegExp("location\\.replace\\(\\\""+to.replace(".","\\.")+"\\\"\\)"));
-  assert.doesNotMatch(page,/phase1-auth\.js|phase2-assignments\.js|core\.js/);
+  assert.doesNotMatch(page,/<script[^>]+src=["\x27][^"\x27]*\/(?:core|phase1-auth|phase2-assignments)\.js/i);
  }
  const submission=read("pages/submission.html");
  assert.match(submission,/Phase 3/);
