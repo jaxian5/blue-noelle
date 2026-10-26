@@ -34,6 +34,9 @@ BEGIN
  result:=public.bn_p3_groups(assignment_id,'create',NULL,NULL,'QA Test Team');
  group_id:=(result->0->>'id')::uuid;
  IF group_id IS NULL THEN RAISE EXCEPTION 'Audited group RPC did not create group';END IF;
+ result:=public.bn_p5_groups_read(assignment_id);
+ IF jsonb_array_length(result)<>1 OR (result->0->>'locked')::boolean THEN
+  RAISE EXCEPTION 'Read-only staff roster should show unlocked group';END IF;
  result:=public.bn_p3_groups(assignment_id,'add_member',group_id,student_id,NULL);
  IF jsonb_array_length(result->0->'members')<>1 THEN
   RAISE EXCEPTION 'Group membership was not assigned';
@@ -48,6 +51,9 @@ BEGIN
  INSERT INTO public."Submission"(assignment_id,group_id,status)
  VALUES(assignment_id,group_id,'DRAFT') RETURNING id INTO submission_id;
  PERFORM set_config('role','authenticated',true);
+ result:=public.bn_p5_groups_read(assignment_id);
+ IF NOT (result->0->>'locked')::boolean THEN
+  RAISE EXCEPTION 'Group read model did not lock after draft';END IF;
  failed:=false;
  BEGIN
   PERFORM public.bn_p3_groups(assignment_id,'remove_member',group_id,student_id,NULL);
@@ -64,6 +70,10 @@ BEGIN
  EXCEPTION WHEN insufficient_privilege THEN failed:=true;
  END;
  IF NOT failed THEN RAISE EXCEPTION 'Student accessed staff compilation manifest';END IF;
+ failed:=false;
+ BEGIN PERFORM public.bn_p5_groups_read(assignment_id);
+ EXCEPTION WHEN insufficient_privilege THEN failed:=true;END;
+ IF NOT failed THEN RAISE EXCEPTION 'Student accessed staff roster';END IF;
 
  PERFORM set_config('role','postgres',true);
  SELECT count(*) INTO logs_after FROM public."AuditLog"
