@@ -64,6 +64,8 @@
    const globalHoliday=edits.find(e=>e.kind==="holiday"&&!e.schedule_slot_id);
    const globalCancel=edits.find(e=>e.kind==="cancelled"&&!e.schedule_slot_id);
    const cancelled=Boolean(globalHoliday||globalCancel);
+   const notes=edits.filter(e=>e.kind==="special"&&!e.replacement_start_local)
+     .map(e=>e.note||"Special day").filter(Boolean);
    const result=[];
    if(!cancelled)for(const slot of base){
      const per=edits.filter(e=>sameSlot(e,slot.id));
@@ -98,7 +100,13 @@
      }
    }
    result.sort((a,b)=>a.startMs-b.startMs||a.endMs-b.endMs||String(a.id).localeCompare(String(b.id)));
-   return {date:day,weekday:dayOfWeek,label:WEEK[dayOfWeek],events:result,cancelled,
+   // Flag conflicting one-day overrides without quietly choosing a winner.
+   for(let i=1;i<result.length;i++){
+     if(result[i].startMs<result[i-1].endMs){
+       warnings.push("Two adjusted classes overlap on "+day+". Ask the Admin to correct the exception.");
+     }
+   }
+   return {date:day,weekday:dayOfWeek,label:WEEK[dayOfWeek],events:result,cancelled,notes,
      reason:(globalHoliday||globalCancel)?.note||null,
      warnings:[...new Set(warnings)]};
  }
