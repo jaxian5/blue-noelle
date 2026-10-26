@@ -76,7 +76,11 @@ The authenticated, JWT-verifying Edge Function
   staff via `bn_p5_export_access`, audits the download request,
   streams the private output back with safe attachment headers, and
   rechecks the saved SHA-256 and size. **No permanent public or
-  client-side signed URLs** are used.
+  client-side signed URLs** are used. For `supabase.functions.invoke`,
+  the authenticated download returns `application/octet-stream` so
+  Supabase JS decodes it as a binary Blob, not text; the expected PDF/ZIP
+  type is reported separately in `X-File-Mime` and the safe download
+  filename has the correct extension.
 
 **PDF:** merges source PDF pages in sequence, preceded by a labeled
 source-identification cover for each original file. It accepts only
@@ -125,6 +129,13 @@ download-request audit events are recorded in `AuditLog`.
 - `bn_p5_compilation` rejects Students and outsiders, and does not expose
   private file keys. `bn_p5_groups_read` rejects Students and outsiders.
 - Read permissions do not change the Phase 3 private Storage policies.
+- Supabase security advisors report `RLS enabled without policy` for
+  deny-by-default private/placeholder tables, including `CompilationExport`.
+  This is intentional and paired with revoked client grants and guarded RPCs.
+  The Auth advisor separately reports **leaked password protection disabled**,
+  a pre-existing operational hardening task unrelated to Phase 5. Review
+  [password security configuration](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection)
+  before broad public account onboarding.
 - Existing Phase 2/3/4 schema, audits, submission versions and deadlines
   were not changed.
 - PDF/ZIP binary generation and service-role Storage operations run only
@@ -156,6 +167,10 @@ PASS against the connected production database. It prepares an actual
 Phase 3 submitted PDF metadata fixture, pins a compilation source version,
 verifies Student denial of build/history/access, single-flight protection,
 audited READY and FAILED transitions, and rollback of all records.
+
+**Edge deployment:** `bn-phase5-compilation` deployed in the connected
+Supabase project (version 3, `verify_jwt=true`). It has no anonymous
+release endpoint and is not part of the GitHub Pages deployment.
 
 **Deno Edge fixtures:** `tests/phase5-edge-fixtures.test.ts` builds
 two real PDF inputs into a five-page compilation and a mixed-file ZIP,
