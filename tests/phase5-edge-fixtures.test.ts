@@ -58,7 +58,7 @@ Deno.test("Mixed non-PDF inputs cannot be silently merged into a PDF",async()=>{
 });
 Deno.test("Output digests and safety limits are deterministic",async()=>{
   const bytes=new TextEncoder().encode("safe compiled bytes");
-  assert.equal(await hash(bytes),"398bb173652aef65391d1ee8f0d51943ab8f1b3ee514c80cc7a4d2c92db968b77"); 
+  assert.equal(await hash(bytes),"00126d668b73a65c47b599ebf6acd87612bfa9fa1e6f20bab3f7b1c77a2a8bd3"); 
   assert.equal(MAX_SOURCE_BYTES,20971520);
   assert.equal(MAX_OUTPUT_BYTES,25165824);
   assert.equal(MAX_FILES,48);
