@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../css/main.css?v=20261026-contrast-aa">
 <link rel="stylesheet" href="../css/workspace-pages.css?v=20261026-contrast-aa">
 <link rel="stylesheet" href="../css/workspace-shell.css?v=20261026-contrast-aa">
-<link rel="stylesheet" href="../css/phase5.css?v=20261026-p5">
+<link rel="stylesheet" href="../css/phase5.css?v=20261026-p5-artifacts">
 <link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
 </head>
 <body class="bn-postlogin"><div class="bn-app">
@@ -39,16 +39,30 @@
 <div id="p5-group-list" class="p5-group-list"><p class="bn-muted">Choose a group assignment.</p></div>
 </div>
 <div class="bn-card"><div class="p5-card-heading"><h2>Compilation review</h2><span class="p5-tag">STAFF ONLY</span></div>
-<p class="bn-muted">Shows the latest completed, submitted version per Student or group. Draft files are excluded. This metadata preview does not merge or publish private file bytes.</p>
+<p class="bn-muted">Shows the latest completed, submitted version per Student or group. Draft files are excluded. Use Generated compilations below to create private PDF/ZIP output.</p>
 <div class="p5-actions"><button id="p5-preview" type="button" class="bn-btn bn-btn-secondary">Refresh preview</button>
 <button id="p5-export" type="button" class="bn-btn bn-btn-primary">Export manifest (JSON)</button></div>
 <div id="p5-compilation" class="p5-compilation"><p class="bn-muted">Choose an assignment to review submitted versions.</p></div>
 </div>
+</section>
+<section id="p5-generated" class="bn-card p5-generated" hidden aria-label="Generated compilations">
+ <div class="p5-card-heading"><div><p class="bn-classwork-eyebrow">PHASE 5 · PRIVATE FILE OUTPUT</p>
+ <h2>Generated compilations</h2></div><span class="p5-tag">STAFF ONLY</span></div>
+ <p class="bn-muted">Compile submitted version snapshots into a private file. PDF merges only PDF submissions. ZIP preserves mixed attachment formats. Limits: 48 files, 20 MiB of source data per compilation.</p>
+ <div class="p5-actions">
+  <button id="p5-build-pdf" type="button" class="bn-btn bn-btn-primary">Generate combined PDF</button>
+  <button id="p5-build-zip" type="button" class="bn-btn bn-btn-secondary">Generate ZIP</button>
+  <button id="p5-history-refresh" type="button" class="bn-btn bn-btn-secondary">Refresh history</button>
+ </div>
+ <p id="p5-build-status" class="bn-muted" aria-live="polite">Only completed, submitted versions are included.</p>
+ <div id="p5-history" class="p5-history" aria-label="Compilation history">
+  <p class="bn-muted">No generated files yet.</p>
+ </div>
 </section>
 </section>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
 <script src="../js/workspace-shell.js?v=20261026-phase5"></script>
-<script src="../js/phase5-groups.js?v=20261026-p5"></script>
+<script src="../js/phase5-groups.js?v=20261026-p5-artifacts"></script>
 </body></html>
