@@ -19,7 +19,7 @@
 .bn-sub-progress p{margin:.5rem 0 0}
 .bn-sub-file,.bn-sub-record{padding:.8rem 0;border-bottom:1px solid #e2e8f0;display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem}
 .bn-sub-record:last-child,.bn-sub-file:last-child{border:0}
-.bn-sub-file-info{overflow-wrap:anywhere;min-width:0;flex:1}.bn-sub-file-info strong{display:block;font-size:.83rem;color:#1e3a8a}
+.bn-sub-file-info{overflow-wrap:anywhere;min-width:0;flex:1}.bn-sub-file-info strong{display:block;font-size:.83rem;color:var(--ui-text)}
 .bn-sub-file-info small{display:block;font-size:.74rem;color:var(--ui-muted)}
 .bn-sub-mini{font-size:.72rem;font-weight:750;color:var(--role-ink)}
 .bn-sub-file button{padding:.28rem .55rem;font-size:.75rem}
