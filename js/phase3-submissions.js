@@ -252,6 +252,7 @@
    const current=memberships?.find(m=>m.status==="ACTIVE");
    if(!current)throw Error("ACTIVE classroom membership required.");
    role=current.role;
+   w.BNTheme?.setRole(role);
    $("sub-title").textContent=assignment.name;
    $("sub-description").textContent=assignment.description||"Submit the requested files securely.";
    $("sub-class").textContent=room.name+(room.section?" · "+room.section:"");

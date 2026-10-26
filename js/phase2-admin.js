@@ -238,6 +238,7 @@
        opt.value=room.id;picker.append(opt);
      }
      picker.disabled=false;classId=classes[0].id;picker.value=classId;
+     w.BNTheme?.setRole("Admin");
      picker.addEventListener("change",()=>guard(async()=>{
        const next=picker.value;
        if(!classes.some(x=>x.id===next)){emit("Unauthorized classroom selection.","error");return}
