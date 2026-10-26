@@ -76,3 +76,18 @@ test("Phase 5 respects role-aware light and dark palettes",()=>{
  assert.match(styles,/@media\(max-width:900px\)/);
  assert.match(page,/css\/theme\.css/);
 });
+
+test("Moderator group roster stays read-only and current class selection discards stale RPC results",()=>{
+ const readModel=read("supabase/migrations/20261026063345_phase5_staff_group_read.sql");
+ assert.match(readModel,/bn_p5_groups_read_impl/);
+ assert.match(readModel,/cm\.role IN \('Admin','Moderator'\)/);
+ assert.match(readModel,/'locked',EXISTS/);
+ assert.match(readModel,/gm\.removed_at IS NULL/);
+ assert.match(readModel,/REVOKE ALL ON FUNCTION public\.bn_p5_groups_read\(uuid\) FROM PUBLIC,anon/);
+ assert.match(ui,/bn_p5_groups_read/);
+ assert.match(ui,/viewerRole==="Admin"/);
+ assert.match(ui,/group\.locked/);
+ assert.match(ui,/turn!==requestId\|\|active\?\.id!==wanted/);
+ assert.match(ui,/turn!==requestId\|\|id!==\$\("p5-class"\)\.value/);
+ assert.doesNotMatch(ui,/\.from\("GroupMembership"\)/);
+});
