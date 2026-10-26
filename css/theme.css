@@ -23,6 +23,7 @@
  --accent:var(--role-main);--accent-soft:var(--role-soft);
  --nav:var(--role-sidebar-b);--shadow:var(--ui-shadow);
 }
+html[data-role="student"]{--role-name:"Student";}
 html[data-role="moderator"]{
  --role-main:#7746c7;--role-hover:#6234a9;--role-ink:#5b3699;
  --role-soft:#f2eafb;--role-active:#744ab2;
