@@ -33,6 +33,7 @@ const MESSAGE: Record<string, string> = {
   PDF_ONLY: "PDF compilation supports PDF submissions only. Choose ZIP for other file types.",
   TOO_LARGE: "The compilation exceeds the maximum allowed file size.",
   MISSING_SOURCE: "A submitted file is unavailable or no longer matches its recorded metadata.",
+  TOO_MANY_PAGES: "PDF compilation is limited to 150 original pages.",
   INVALID_JOB: "The submitted source manifest could not be verified.",
 };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -62,7 +63,9 @@ Deno.serve(async (req: Request) => {
   try {
     const text = await req.text();
     if (text.length > 4096) throw new Error("Request too large");
-    body = JSON.parse(text);
+    const parsed = JSON.parse(text);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid payload");
+    body = parsed;
   } catch (_) { return json({ error: "Invalid request JSON" }, 400, origin); }
   const action = body.action;
   if (action === "download") {
