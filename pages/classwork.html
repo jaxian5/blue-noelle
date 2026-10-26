@@ -6,7 +6,7 @@
  <title>Classwork | Blue Noelle</title>
  <link rel="stylesheet" href="../css/main.css">
  <link rel="stylesheet" href="../css/classwork.css">
-<link rel="stylesheet" href="../css/workspace-pages.css">
+<link rel="stylesheet" href="../css/workspace-pages.css"><link rel="stylesheet" href="../css/workspace-shell.css">
 </head>
 <body class="bn-postlogin">
  <div class="bn-app">
@@ -21,8 +21,8 @@
   </header>
   <main class="bn-main bn-classwork">
    <div class="bn-classwork-heading">
-    <div><p class="bn-classwork-eyebrow">STUDENT WORKSPACE · CLASSWORK</p><h1>Subjects &amp; Assignments</h1>
-     <p class="bn-muted">Your classroom's actual Supabase data. No browser-local demo assignments.</p></div>
+    <div><p class="bn-classwork-eyebrow">CLASSROOM WORKSPACE · CLASSWORK</p><h1>Subjects &amp; Assignments</h1>
+     <p class="bn-muted">Subjects, assignments and deadlines for your approved classroom.</p></div>
     <a class="bn-btn bn-btn-secondary" href="dashboard.html">← Dashboard</a>
    </div>
    <section class="bn-card bn-classwork-selector" aria-label="Choose classroom">
@@ -37,13 +37,13 @@
    </section>
    <section class="bn-card bn-classwork-notice" aria-label="Phase 2 current scope">
     <strong>Classwork backed by Supabase</strong>
-    <p>Subjects and assignments displayed here are read directly from Supabase. Admins can now create and manage audited classwork. Private file uploads and versioned submissions are implemented in Phase 3, with live Storage acceptance testing still pending.</p>
+    <p>Subjects and assignments displayed here are read directly from Supabase. Admins can now create and manage audited classwork. Private versioned submissions are available; final browser and file-integrity acceptance remains pending.</p>
    </section>
   </main>
  </div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
  <script src="../js/supabase-config.js"></script>
- <script src="../js/supabase-adapter.js"></script>
+ <script src="../js/supabase-adapter.js"></script><script src="../js/workspace-shell.js?v=20261026-nav"></script>
  <script src="../js/phase2-classwork.js"></script>
 </body>
 </html>

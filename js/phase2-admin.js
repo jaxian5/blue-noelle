@@ -120,6 +120,40 @@
      if(subjects.some(s=>s.id===previous))picker.value=previous;
    }
  }
+ // The assignment's immutable schema still stores standard MIME values.
+ // This picker only replaces how Admins choose them. Empty means unrestricted.
+ function formatInputs(){
+   return Array.from($("assignment-file-types").querySelectorAll('input[name="assignment-file-format"]'));
+ }
+ function formatSelection(){
+   return formatInputs().filter(input=>input.checked).map(input=>input.value);
+ }
+ function updateFormatSummary(){
+   const count=formatSelection().length;
+   $("assignment-format-count").textContent=count
+     ?count+" format"+(count===1?"":"s")+" selected"
+     :"All supported formats";
+ }
+ function restoreFormatSelection(saved=[]){
+   const selected=Array.isArray(saved)?saved.filter(x=>typeof x==="string"):[];
+   const known=new Set(formatInputs().filter(input=>input.dataset?.legacy!=="true").map(input=>input.value));
+   const legacy=$("assignment-legacy-options");
+   legacy.replaceChildren();
+   // Maintain any existing specialized MIME values on edit. The Admin can
+   // uncheck them, but merely opening an editor cannot silently erase them.
+   for(const mime of selected.filter(value=>!known.has(value))){
+     const label=node("label");
+     const input=node("input");
+     input.type="checkbox";input.name="assignment-file-format";
+     input.value=mime;input.checked=true;input.dataset.legacy="true";
+     const text=node("span",mime);
+     label.append(input,text);legacy.append(label);
+   }
+   $("assignment-legacy-formats").hidden=!legacy.children.length;
+   for(const input of formatInputs())input.checked=selected.includes(input.value);
+   updateFormatSummary();
+   $("assignment-format-picker").open=false;
+ }
  function editAssignment(item){
    $("assignment-form").hidden=false;
    $("assignment-form-title").textContent="Edit assignment";
@@ -131,7 +165,7 @@
    $("assignment-instructions").value=item.instructions||"";
    $("assignment-deadline").value=dateLocal(item.deadline);
    $("assignment-type").value=item.is_group?"group":"individual";
-   $("assignment-file-types").value=(item.required_file_types||[]).join(", ");
+   restoreFormatSelection(item.required_file_types||[]);
    $("assignment-max-mib").value=item.max_file_size_bytes
      ?Math.ceil(item.max_file_size_bytes/1048576):"";
    $("assignment-form").scrollIntoView({behavior:"smooth",block:"start"});
@@ -140,6 +174,7 @@
  function startAssignment(){
    if(!subjects.length){emit("Create a subject before adding assignments.","error");return}
    $("assignment-form").reset();
+   restoreFormatSelection([]);
    $("assignment-id").value="";
    $("assignment-form-title").textContent="Create assignment";
    $("assignment-submit").textContent="Create assignment";
@@ -227,6 +262,18 @@
        });
      });
      $("rename-cancel").addEventListener("click",()=>$("subject-rename-dialog").close());
+     $("assignment-file-types").addEventListener("change",event=>{
+       if(event.target?.name!=="assignment-file-format")return;
+       if(formatSelection().length>12){
+         event.target.checked=false;
+         emit("Choose no more than 12 accepted file formats.","error");
+       }
+       updateFormatSummary();
+     });
+     $("assignment-formats-clear").addEventListener("click",()=>{
+       for(const input of formatInputs())input.checked=false;
+       updateFormatSummary();
+     });
      $("new-assignment").addEventListener("click",startAssignment);
      $("assignment-cancel").addEventListener("click",()=>$("assignment-form").hidden=true);
      $("assignment-form").addEventListener("submit",event=>{
@@ -234,7 +281,7 @@
        guard(async()=>{
          const raw=$("assignment-deadline").value;
          const deadline=parseManilaDatetime(raw);
-         const types=$("assignment-file-types").value.split(",").map(s=>s.trim()).filter(Boolean);
+         const types=formatSelection();
          const max=$("assignment-max-mib").value;
          const payload={
            subject_id:$("assignment-subject").value,

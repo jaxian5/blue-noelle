@@ -4,7 +4,7 @@
 .staff-wrap label{display:block;margin:.8rem 0}.staff-wrap table{width:100%;border-collapse:collapse}.staff-wrap th,.staff-wrap td{padding:.7rem .4rem;border-bottom:1px solid var(--bn-border-strong);text-align:left;font-size:.85rem}
 .staff-wrap .status{padding:.7rem;margin:.8rem 0;border:1px solid var(--bn-border-strong);border-radius:5px}
 .staff-wrap #issued-code{white-space:pre-wrap;overflow-wrap:anywhere}
-</style><link rel="stylesheet" href="../css/workspace-pages.css"></head><body class="bn-postlogin"><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
+</style><link rel="stylesheet" href="../css/workspace-pages.css"><link rel="stylesheet" href="../css/workspace-shell.css"></head><body class="bn-postlogin"><div class="bn-app"><header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span><span>Blue Noelle</span></a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="account.html">Account</a><a href="phase1-class-staff.html" class="active">Staff verification</a><a href="class-operations.html">Class Operations</a></nav></header>
 <main class="bn-main staff-wrap"><h1>Class member verification</h1><p class="bn-muted">Real Supabase approval queue. Sign in once through the central login page. Only ACTIVE Moderators and Admins may review student requests in their own class, while only ACTIVE Admins may issue new Student invitations.</p>
 <p class="status" id="staff-message" role="status" aria-live="polite">Checking permissions…</p>
 <div class="bn-card"><label>Class <select id="staff-class" aria-label="Active staff class"></select></label><button class="bn-btn bn-btn-secondary" id="reload" type="button">Refresh pending requests</button></div>
@@ -21,7 +21,7 @@
 <code id="issued-code" role="status" aria-live="polite"></code>
 </section></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
-<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script><script src="../js/phase1-live.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script><script src="../js/workspace-shell.js?v=20261026-nav"></script><script src="../js/phase1-live.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded",async()=>{
  const $=id=>document.getElementById(id),message=t=>{$("staff-message").textContent=t;};

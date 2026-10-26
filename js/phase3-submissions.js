@@ -264,6 +264,9 @@
     $("sub-files").disabled=assignment.status!=="OPEN";
     $("sub-upload").disabled=assignment.status!=="OPEN";
     const allowed=assignment.required_file_types||[];
+    // Hint native file pickers about allowed formats. Server-side validation
+    // and the existing upload guard remain authoritative.
+    $("sub-files").accept=allowed.join(",");
     const max=Math.min(Number(assignment.max_file_size_bytes)||MAX,MAX);
     $("sub-limits").textContent="Up to 12 files per version; "+Math.floor(max/1048576)+
       " MiB per file. "+(allowed.length?"Allowed: "+allowed.join(", "):"Supported file types accepted.")+
