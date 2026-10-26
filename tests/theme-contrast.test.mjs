@@ -15,7 +15,7 @@ function block(selector){
   const end=css.indexOf("}",start);
   assert.ok(end>start,"CSS token scope has no closing brace: "+selector);
   const body=css.slice(start,end);
-  return Object.fromEntries([...body.matchAll(/(--[\\w-]+)\\s*:\\s*(#[0-9a-f]{6})/gi)]
+  return Object.fromEntries([...body.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-f]{6})/gi)]
     .map(match=>[match[1],match[2].toLowerCase()]));
 }
 function palette(role,mode){
@@ -121,6 +121,6 @@ test("Contrast audit does not reintroduce global white-on-white or dark-on-dark 
  assert.ok(source.length>2000);
  assert.doesNotMatch(source,/body\s*\{[^}]*color:\s*#fff/i);
  assert.doesNotMatch(source,/\*\s*\{[^}]*color:\s*#fff/i);
- assert.ok(css.includes("html[data-theme] .bn-hero-link"));
+ assert.ok(css.includes("html[data-theme] :is(.bn-hero-link"));
  assert.ok(css.includes("html[data-theme] .bn-signup-dialog"));
 });
