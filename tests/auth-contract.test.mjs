@@ -225,7 +225,7 @@ test("unsuccessful signup shows an error without a confirmation popup or redirec
 });
 
 
-test("signup alert uses a prominent centered dialog and BLUE text link instead of a filled button", () => {
+test("signup alert uses a prominent centered dialog and theme-colored text link instead of a filled button", () => {
   const html = read("pages/register.html");
   const css = read("css/auth.css");
   const dialog = html.match(/<dialog id="signup-confirmation"[\s\S]*?<\/dialog>/)?.[0];
@@ -237,7 +237,7 @@ test("signup alert uses a prominent centered dialog and BLUE text link instead o
   assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?position:fixed;/);
   assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?inset:0;/);
   assert.match(css, /\.bn-signup-dialog\s*\{[\s\S]*?width:min\(550px,/);
-  assert.match(css, /\.bn-entry-content \.bn-signup-dialog \.bn-signup-dialog-link[\s\S]*?color:#1d4ed8;/);
+  assert.match(css, /\.bn-entry-content \.bn-signup-dialog \.bn-signup-dialog-link[\s\S]*?color:var\(--role-ink\);/);
   assert.match(css, /\.bn-signup-dialog::backdrop\{/);
 });
 
