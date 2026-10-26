@@ -19,7 +19,8 @@
    timeZone:"Asia/Manila",dateStyle:"medium",timeStyle:"short"}).format(new Date(t))}
  function setBusy(on){
    busy=on;
-   for(const id of ["p5-refresh","p5-preview","p5-export","p5-create-form"]){
+   for(const id of ["p5-refresh","p5-preview","p5-export","p5-create-form",
+       "p5-build-pdf","p5-build-zip","p5-history-refresh"]){
      const e=$(id);if(!e)continue;
      for(const c of id==="p5-create-form"?e.querySelectorAll("input,button"): [e])c.disabled=on;
    }
@@ -121,6 +122,86 @@
    }
    return manifest;
  }
+ // An Edge Function generates the bytes. Never compile private files in a
+ // public browser or persist sensitive Storage paths or role state.
+ async function invokeCompilation(body){
+   const {data,error}=await db().functions.invoke("bn-phase5-compilation",{body});
+   if(error){
+     let reason=error.message||"Compilation service is unavailable.";
+     try{
+       const payload=await error.context?.json();
+       if(payload?.error)reason=payload.error;
+     }catch(_){}
+     throw Error(reason);
+   }
+   return data;
+ }
+ function renderHistory(rows){
+   const container=$("p5-history");container.replaceChildren();
+   if(!rows?.length){
+     container.append(node("p","No private compilation files have been generated yet.","bn-muted"));
+     return;
+   }
+   for(const exportRow of rows){
+     const card=node("article",null,"p5-history-row");
+     const info=node("div",null,"p5-history-info");
+     const extension=String(exportRow.format||"").toUpperCase();
+     info.append(node("strong",extension+" · "+formatTime(exportRow.created_at)));
+     info.append(node("small",exportRow.status+" · "+
+       exportRow.source_count+" source file"+(exportRow.source_count===1?"":"s")+
+       (exportRow.size?" · "+(exportRow.size/1024/1024).toFixed(2)+" MiB":"")));
+     if(exportRow.sha256)info.append(node("code","SHA-256: "+exportRow.sha256,"p5-history-hash"));
+     if(exportRow.status==="FAILED")info.append(node("small","Generation failed. "+(exportRow.error_code||"Please retry.")));
+     card.append(info);
+     if(exportRow.status==="READY"){
+       const action=node("button","Download "+extension,"bn-btn bn-btn-secondary");
+       action.type="button";
+       action.addEventListener("click",()=>{void perform(async()=>{
+         const data=await invokeCompilation({action:"download",id:exportRow.id});
+         if(!(data instanceof Blob))throw Error("Unexpected file response from compilation service.");
+         if(data.size!==Number(exportRow.size))throw Error("Generated file size has changed.");
+         const url=URL.createObjectURL(data);
+         try{
+           const a=node("a");
+           a.href=url;
+           a.download=String(exportRow.filename||"blue-noelle-compilation."+exportRow.format)
+             .replace(/[^A-Za-z0-9._-]/g,"_");
+           document.body.append(a);a.click();a.remove();
+         }finally{w.setTimeout(()=>URL.revokeObjectURL(url),30000)}
+       },"Private compilation downloaded.");});
+       card.append(action);
+     }
+     container.append(card);
+   }
+ }
+ async function loadHistory(){
+   if(!active||!["Admin","Moderator"].includes(role))return;
+   const assignmentId=active.id,turn=requestId;
+   const history=await rpc("bn_p5_export_history",{p_assignment:assignmentId});
+   if(turn===requestId&&active?.id===assignmentId)
+     renderHistory(Array.isArray(history)?history:[]);
+ }
+ async function generate(format){
+   if(!active||!["Admin","Moderator"].includes(role))
+     throw Error("ACTIVE classroom staff access required.");
+   if(!["pdf","zip"].includes(format))throw Error("Choose PDF or ZIP.");
+   const assignmentId=active.id;
+   $("p5-build-status").textContent="Preparing private "+format.toUpperCase()+
+     " compilation from verified submitted versions…";
+   try{
+     const result=await invokeCompilation({action:"build",assignment_id:assignmentId,format});
+     if(!result||result.status!=="READY")throw Error("Compilation did not finish successfully.");
+     if(active?.id===assignmentId){
+       $("p5-build-status").textContent=format.toUpperCase()+" ready: "+
+         result.file_count+" files, "+(result.size/1024/1024).toFixed(2)+" MiB.";
+       await loadHistory();
+     }
+   }catch(e){
+     $("p5-build-status").textContent="Generation failed: "+(e.message||"Unknown error");
+     await loadHistory().catch(()=>{});
+     throw e;
+   }
+ }
  async function loadSelected(){
    const mine=++requestId;
    active=selectedAssignment();
@@ -129,6 +210,8 @@
    $("p5-content").hidden=false;
    $("p5-student").hidden=role!=="Student";
    $("p5-staff").hidden=!["Admin","Moderator"].includes(role);
+   $("p5-generated").hidden=!["Admin","Moderator"].includes(role);
+   $("p5-history").replaceChildren();
    $("p5-create-form").hidden=role!=="Admin"||!active.is_group;
    $("p5-group-list").replaceChildren();
    $("p5-compilation").replaceChildren();
@@ -147,6 +230,8 @@
        else{$("p5-group-list").append(node("p","Individual assignments do not use groups.","bn-muted"));}
        if(mine!==requestId)return;
        const manifest=await preview(false);
+       if(mine!==requestId)return;
+       await loadHistory();
        if(mine!==requestId)return;
        status("Loaded "+manifest.count+" verified submitted version"+(manifest.count===1?"":"s")+".","success");
      }
@@ -218,6 +303,15 @@
    });
    $("p5-preview").addEventListener("click",()=>{void perform(()=>preview(false),"Compilation preview refreshed.")});
    $("p5-export").addEventListener("click",()=>{void perform(()=>preview(true),"Verified manifest exported.")});
+   $("p5-build-pdf").addEventListener("click",()=>{
+     void perform(()=>generate("pdf"),"Private PDF compilation generated.");
+   });
+   $("p5-build-zip").addEventListener("click",()=>{
+     void perform(()=>generate("zip"),"Private ZIP compilation generated.");
+   });
+   $("p5-history-refresh").addEventListener("click",()=>{
+     void perform(()=>loadHistory(),"Private compilation history refreshed.");
+   });
    void load();
  });
 })(window);

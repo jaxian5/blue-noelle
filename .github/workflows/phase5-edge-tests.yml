@@ -1,0 +1,27 @@
+name: Phase 5 PDF and ZIP compilation fixtures
+on:
+  pull_request:
+    paths:
+      - "supabase/functions/bn-phase5-compilation/**"
+      - "tests/phase5-edge-fixtures.test.ts"
+      - ".github/workflows/phase5-edge-tests.yml"
+  push:
+    branches: ["feat/phase5-private-artifact-generation-20261026"]
+    paths:
+      - "supabase/functions/bn-phase5-compilation/**"
+      - "tests/phase5-edge-fixtures.test.ts"
+      - ".github/workflows/phase5-edge-tests.yml"
+permissions:
+  contents: read
+jobs:
+  deno-compilers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check authenticated Edge Function types
+        run: deno check supabase/functions/bn-phase5-compilation/index.ts
+      - name: Run actual PDF merge, ZIP and file digest checks
+        run: deno test tests/phase5-edge-fixtures.test.ts

@@ -9,7 +9,7 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 > - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. The owner completed an initial live testing round and provisionally approved the phase; final browser sign-off is still pending.
 > - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. The owner provisionally approved Phase 3 after initial live testing. Final real-byte integrity and independent cross-account Storage isolation evidence remain required before release acceptance.
 > - **Phase 4:** Class Clock v2.9-inspired NOW/NEXT countdown, real weekly schedule, dated exceptions, and assignment deadline countdown are implemented in [PR #33](https://github.com/jaxian5/blue-noelle/pull/33). The Phase 4 database schema and guards are applied, with final authenticated browser acceptance **pending**. The Class Clock cannot be marked production-finalized from CI alone.
-> - **Phase 5:** Groups & Compilation Milestone 1 is implemented in [PR #34](https://github.com/jaxian5/blue-noelle/pull/34), with two deployed guarded read-model/membership-snapshot migrations and verified database rollback tests. Staff compilation **metadata manifests** and audited JSON export are available on the branch; protected combined PDF/ZIP generation is a separate follow-up and **not complete**.
+> - **Phase 5:** assignment group management and audited JSON manifest merged via [PR #34](https://github.com/jaxian5/blue-noelle/pull/34). [PR #35](https://github.com/jaxian5/blue-noelle/pull/35) adds **actual private PDF/ZIP compilation generation**, pinned submission-version provenance, stored SHA-256, staff-only downloads and durable compilation history. The new migration and JWT-protected Edge Function are deployed; 127 Node and 4 Deno binary tests passed. Final browser/file-byte acceptance is **not yet complete**.
 > - **Later phases:** chat, announcements and durable notifications remain **deny-by-default schema placeholders** until separately implemented and tested.
 
 ## Appearance: role colors and Dark Mode
@@ -82,10 +82,16 @@ The signed-in [Groups & Compilation](pages/phase5-groups.html) workspace
 lets Admins organize assignment-specific groups with existing audited Phase 3
 RPCs, Students view their own group, and Admins/Moderators preview/export
 server-verified submission metadata. Database triggers freeze a group's
-membership after the first submission draft to protect private versioned
-work. Both Phase 5 migrations are deployed, and rollback SQL acceptance
-passed. **This is not a finished merged-file/PDF generator**: the `Compilation`
-table remains deny-by-default until safe private artifact generation exists.
+membership after its first draft.
+
+With [PR #35](https://github.com/jaxian5/blue-noelle/pull/35), staff can
+also generate a real **combined PDF from PDF submissions** or a **ZIP for
+mixed file types**, stored in a new private `bn-compilations` bucket with
+version-accurate provenance, a stored SHA-256, and a protected history/
+download workflow. Compilation uses an authenticated Edge Function and
+server-only privileged Storage access. SQL rollback and Deno fixture tests
+passed; **real authenticated browser/file-byte acceptance remains pending**.
+The frontend changes are not on the main website until PR #35 is merged.
 
 See [Phase 5 development and acceptance](docs/PHASE5-GROUPS-COMPILATION-2026-10-26.md).
 Manual cross-account and UI acceptance still remain.

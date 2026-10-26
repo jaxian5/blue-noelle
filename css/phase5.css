@@ -30,3 +30,20 @@
 .p5-entry ul{color:var(--ui-text);padding-left:20px;margin:7px 0 0;font-size:.8rem}
 @media(max-width:900px){.p5-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.p5-actions button{flex:1}}
+
+/* Phase 5 private compiled artifacts, shared semantic role/light/dark colors. */
+.p5-generated{margin-top:20px}
+.p5-generated .p5-card-heading{margin-bottom:10px}
+.p5-history{display:grid;gap:10px;margin-top:17px}
+.p5-history-row{display:flex;align-items:center;justify-content:space-between;
+ gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--ui-border);
+ border-radius:12px;background:var(--ui-raised);color:var(--ui-text)}
+.p5-history-info{min-width:0;flex:1}
+.p5-history-info strong{display:block;font-size:.87rem;color:var(--ui-text)}
+.p5-history-info small{display:block;font-size:.74rem;margin-top:4px;
+ color:var(--ui-muted)}
+.p5-history-hash{display:block;overflow-wrap:anywhere;margin-top:5px;
+ font-size:.68rem;color:var(--ui-muted);font-family:ui-monospace,monospace}
+#p5-build-status{font-size:.83rem;line-height:1.6;margin:10px 0 0}
+.p5-actions button:disabled,.p5-history-row button:disabled{opacity:.58;cursor:progress}
+@media(max-width:560px){.p5-history-row button{width:100%}}
