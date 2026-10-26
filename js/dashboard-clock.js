@@ -25,6 +25,7 @@
    const picker=$("dash-class"),id=picker?.value||"";
    if(!id||picker.disabled||!db())return;
    const run=++generation;classId=id;
+   $("dash-clock-preview").hidden=false;
    try{
      const {data:auth,error}=await db().auth.getUser();
      if(error||!auth?.user)return;
