@@ -11,6 +11,7 @@
  const REFRESH_MS=60000;
  let memberships=[],rooms=[],slotRows=[],exceptionRows=[],assignmentRows=[],subjectRows=[];
  let selectedClass=null,loop=null,lastFetch=0,epoch=0,notified=new Set();
+ let fetchInProgress=false,lastDrawnAgenda="";
  const notifyKey="bn-clock-browser-reminders-v1";
  let reminders=false;
  try{reminders=w.localStorage?.getItem(notifyKey)==="true"}catch(_){}
@@ -68,13 +69,20 @@
      text("clock-task-countdown",model.taskCountdown);
      text("clock-task-name",model.soonestTask.name||"Assignment");
    }
-   const items=assignmentRows.filter(a=>a.status==="OPEN"&&a.deadline&&Date.parse(a.deadline)>=model.nowMs)
-     .sort((a,b)=>Date.parse(a.deadline)-Date.parse(b.deadline)).slice(0,5);
-   if(!items.length)box.append(el("p","No upcoming open classwork. You're caught up.","clock-muted"));
+   const allOpen=assignmentRows.filter(a=>a.status==="OPEN"&&a.deadline&&Number.isFinite(Date.parse(a.deadline)));
+   const future=allOpen.filter(a=>Date.parse(a.deadline)>=model.nowMs)
+     .sort((a,b)=>Date.parse(a.deadline)-Date.parse(b.deadline));
+   const overdue=allOpen.filter(a=>Date.parse(a.deadline)<model.nowMs)
+     .sort((a,b)=>Date.parse(b.deadline)-Date.parse(a.deadline));
+   const items=[...future,...overdue].slice(0,6);
+   if(!future.length&&overdue.length)text("clock-task-name",overdue.length+" overdue open task"+(overdue.length===1?"":"s"));
+   if(!items.length)box.append(el("p","No open assignment deadlines. You're caught up.","clock-muted"));
    for(const task of items){
      const row=el("div",null,"clock-task"),link=el("a",task.name||"Assignment");
+     const expired=Date.parse(task.deadline)<model.nowMs;
+     row.dataset.state=expired?"overdue":"upcoming";
      link.href="submission.html?assignment="+encodeURIComponent(task.id);
-     const due=el("time",new Intl.DateTimeFormat("en-PH",
+     const due=el("time",(expired?"OVERDUE · ":"")+new Intl.DateTimeFormat("en-PH",
        {timeZone:"Asia/Manila",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(task.deadline)));
      row.append(link,due);box.append(row);
    }
@@ -105,7 +113,20 @@
    text("clock-next-time",next?clock().spanLabel(next)+" · "+new Intl.DateTimeFormat("en-PH",
      {timeZone:"Asia/Manila",weekday:"short",month:"short",day:"numeric"}).format(new Date(next.startMs)):"—");
    text("clock-previous",model.previous?(model.previous.subject_name||model.previous.label):"None today");
-   renderToday(model);renderWeek(model);renderTasks(model);
+   const signature=[selectedClass,model.today,model.current?.id||"",
+     model.next?.id||"",model.todayAgenda.events.length,lastFetch].join("|");
+   const changed=signature!==lastDrawnAgenda;
+   if(changed){
+     lastDrawnAgenda=signature;
+     renderWeek(model);renderTasks(model);
+   }
+   // Live/past/next indicators change at class boundaries, not each second.
+   const status=(model.current?.id||"")+"|"+(model.next?.id||"");
+   if(changed||status!==renderTick.lastStatus){
+     renderToday(model);
+     renderTick.lastStatus=status;
+   }
+   if(model.soonestTask)text("clock-task-countdown",model.taskCountdown);
    reminderCheck(model);
  }
  function reminderCheck(model){
@@ -137,6 +158,13 @@
  }
  async function fetchData(showMessage=true){
    if(!selectedClass)return;
+   if(fetchInProgress){
+     // A role/class switch should not be lost behind a previous slow fetch.
+     if(showMessage)w.setTimeout(()=>{void fetchData(true)},500);
+     return;
+   }
+   fetchInProgress=true;
+   lastFetch=Date.now(); // Rate-limit retries even if the network is failing.
    const mine=++epoch,id=selectedClass;
    if(showMessage)message("Refreshing the timetable…");
    try{
@@ -163,6 +191,8 @@
    }catch(e){
      if(mine!==epoch)return;
      message("Unable to refresh this classroom: "+(e.message||e)+". Older results, if any, remain visible.","error");
+   }finally{
+     fetchInProgress=false;
    }
  }
  async function load(){
@@ -190,6 +220,7 @@
      picker.value=selectedClass;picker.disabled=false;
      picker.addEventListener("change",()=>{
        selectedClass=picker.value;slotRows=[];exceptionRows=[];assignmentRows=[];subjectRows=[];
+       lastDrawnAgenda="";
        $("clock-content").hidden=true;
        const role=memberships.find(m=>m.class_id===selectedClass)?.role;
        w.BNTheme?.setRole(role||"Student");
