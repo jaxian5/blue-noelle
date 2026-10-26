@@ -76,16 +76,20 @@
      if(error||!auth?.user){w.location.replace("login.html");return}
      user=auth.user;
      profile=await query(db().from("User")
-       .select("id,full_name,account_type").eq("id",user.id).single());
+       .select("id,full_name,account_type,is_developer").eq("id",user.id).single());
      if(!profile)throw Error("Your account profile is unavailable.");
      const list=await query(db().from("ClassMembership")
        .select("class_id,role,status").eq("user_id",user.id));
      const active=list.filter(m=>m.status==="ACTIVE");
+     if(document.documentElement)document.documentElement.dataset.developer=profile.is_developer===true?"true":"false";
+     const chosen=profile.is_developer?"Developer":
+       (active.some(m=>m.role==="Admin")?"Admin":active.some(m=>m.role==="Moderator")?"Moderator":"Student");
+     w.BNTheme?.setRole(chosen,{isDeveloper:profile.is_developer===true});
      $("account-email").textContent=user.email||"Your verified account";
      $("profile-email").value=user.email||"";
      applyName(profile.full_name||"Blue Noelle member");
      $("account-type").textContent=active.length
-       ?(active.some(m=>m.role==="Admin")?"Admin":active.some(m=>m.role==="Moderator")?"Moderator":"Student")
+       ?chosen
         +" · "+active.length+" approved classroom"+(active.length===1?"":"s")
        :(profile.account_type==="Admin"?"Admin":"Student")+" · Enrollment required";
      renderOnboarding(list);
