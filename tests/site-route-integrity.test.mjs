@@ -7,7 +7,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const canonical=[
  "index.html","pages/login.html","pages/register.html",
  "pages/verify-email.html","pages/dashboard.html","pages/account.html","pages/class-clock.html",
- "pages/classwork.html","pages/admin-classwork.html","pages/submission.html",
+ "pages/classwork.html","pages/phase5-groups.html","pages/admin-classwork.html","pages/submission.html",
  "pages/phase1-class-staff.html","pages/class-operations.html"
 ];
 test("canonical pages do not reference missing local href/src assets",()=>{
