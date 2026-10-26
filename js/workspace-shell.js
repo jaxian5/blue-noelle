@@ -121,11 +121,25 @@
      const uid=auth.user.id;
      const [{data:memberships,error:membershipError},{data:profiles,error:profileError}]=await Promise.all([
        db.from("ClassMembership").select("class_id,role,status").eq("status","ACTIVE"),
-       db.from("User").select("full_name").eq("id",uid).limit(1)
+       db.from("User").select("full_name,is_developer").eq("id",uid).limit(1)
      ]);
      const active=membershipError?[]:(memberships||[]).filter(m=>m.status==="ACTIVE");
      const admin=active.some(m=>m.role==="Admin");
      const staff=admin||active.some(m=>m.role==="Moderator");
+     const developer=!profileError&&profiles?.[0]?.is_developer===true;
+     if(document.documentElement)document.documentElement.dataset.developer=developer?"true":"false";
+     const roleForClass=classId=>active.find(m=>m.class_id===classId)?.role;
+     const selectedId=["classwork-class","admin-class","staff-class","ops-class"]
+       .map(id=>$(id)?.value).find(id=>id&&roleForClass(id));
+     const defaultRole=roleForClass(selectedId)||
+       (admin?"Admin":staff?"Moderator":active.length?"Student":"Student");
+     w.BNTheme?.setRole(defaultRole,{isDeveloper:developer});
+     document.addEventListener("change",event=>{
+       if(!["classwork-class","admin-class","staff-class","ops-class"].includes(event.target?.id))return;
+       const choice=roleForClass(event.target.value);
+       if(choice)w.BNTheme?.setRole(choice,{isDeveloper:developer});
+     });
+
      for(const a of document.querySelectorAll(".bn-unified-sidebar [data-role]")){
        a.hidden=a.dataset.role==="admin"?!admin:!staff;
      }
