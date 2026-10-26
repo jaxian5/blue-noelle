@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const canonical=[
  "index.html","pages/login.html","pages/register.html",
- "pages/verify-email.html","pages/dashboard.html","pages/account.html",
+ "pages/verify-email.html","pages/dashboard.html","pages/account.html","pages/class-clock.html",
  "pages/classwork.html","pages/admin-classwork.html","pages/submission.html",
  "pages/phase1-class-staff.html","pages/class-operations.html"
 ];
