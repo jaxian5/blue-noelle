@@ -11,7 +11,7 @@ const page=read("pages/classwork.html");
 const code=read("js/phase2-classwork.js");
 
 test("Phase 2 canonical viewer uses Supabase Auth and no local demo state",()=>{
- assert.match(page,/href="\.\.\/css\/classwork\.css"/);
+ assert.match(page,/href="\.\.\/css\/classwork\.css(?:\?[^"]*)?"/);
  assert.match(page,/js\/supabase-adapter\.js/);
  assert.match(page,/js\/phase2-classwork\.js/);
  assert.match(page,/id="classwork-class"/);

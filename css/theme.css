@@ -8,9 +8,12 @@
  --role-hero-a:#163d7d;--role-hero-b:#2674bd;
  --role-art:#b6d9ff;--role-name:"Student";
  --ui-page:#f3f7fb;--ui-surface:#ffffff;--ui-raised:#f7faff;
- --ui-text:#152e50;--ui-muted:#667c98;--ui-border:#dfe7f3;
+ --ui-text:#152e50;--ui-muted:#536781;--ui-border:#dfe7f3;
  --ui-line:#e9eff7;--ui-input:#fcfdff;--ui-sidebar-text:#d0e0f8;
  --ui-inverse:#fff;--ui-success-bg:#e6f7f0;--ui-success-text:#215f50;
+ --ui-info-bg:#e9f2ff;--ui-info-text:#24436f;
+ --ui-warn-bg:#fff0d5;--ui-warn-text:#88500b;
+ --ui-error-bg:#ffe8ed;--ui-error-text:#9e2344;
  --ui-shadow:0 12px 35px rgba(15,36,68,.06);
  --bn-primary:var(--role-main);--bn-primary-hover:var(--role-hover);
  --bn-primary-light:var(--role-main);--bn-accent:var(--role-main);
@@ -57,6 +60,9 @@ html[data-theme="dark"]{
  --ui-text:#e9effa;--ui-muted:#a6b6ce;--ui-border:#35455d;
  --ui-line:#2b3a50;--ui-input:#141f30;--ui-sidebar-text:#d3def0;
  --ui-inverse:#f7faff;--ui-success-bg:#183b38;--ui-success-text:#9ae8c9;
+ --ui-info-bg:#233e61;--ui-info-text:#c5dcff;
+ --ui-warn-bg:#49351c;--ui-warn-text:#ffe1a4;
+ --ui-error-bg:#4a2533;--ui-error-text:#ffc1cf;
  --ui-shadow:0 15px 34px rgba(0,0,0,.22);
  --bn-shadow:0 3px 12px rgba(0,0,0,.2);
  --bn-shadow-md:0 7px 25px rgba(0,0,0,.23);
@@ -271,4 +277,172 @@ html[data-theme="dark"] ::selection{background:#546da3;color:#fff}
  .bn-top-actions .bn-theme-label{display:none}
  .bn-theme-floating{bottom:12px;right:12px}
 }
+
+/* ------------------------------------------------------------
+   Contrast pass 2026-10-26: every small label and body string
+   uses foreground tokens with >=4.5:1 on its surface. Statuses
+   use matching background/foreground pairs rather than an old
+   dark-blue label over a light chip after switching to dark.
+   ------------------------------------------------------------ */
+html[data-theme] :is(.bn-dashboard-body,.bn-settings-main,.bn-classwork,
+ .bn-submission-page,.bn-admin-panel,.bn-admin-dialog,.bn-signup-dialog){
+ color:var(--ui-text);
+}
+html[data-theme] :is(.bn-hero,.bn-accent-panel,.bn-settings-side-note){
+ color:#ffffff;
+}
+html[data-theme] :is(.bn-hero h1,.bn-hero p,.bn-hero-content p,
+ .bn-accent-panel h2,.bn-accent-panel p,.bn-accent-panel a,
+ .bn-settings-side-note h2,.bn-settings-side-note p,
+ .bn-settings-side-note a){
+ color:#ffffff;
+}
+html[data-theme] :is(.bn-hero-link,.bn-accent-panel .bn-hero-link){
+ color:#182c4a;background:#f9fbff;
+}
+html[data-theme] :is(.bn-task-status,.bn-task-deadline,.bn-sub-secure,
+ .bn-admin-count,.bn-sidebar-role-badge,.bn-format-count,.bn-profile-pill){
+ background:var(--role-soft);color:var(--role-ink);
+ border-color:var(--ui-border);
+}
+html[data-theme] .bn-classwork-badge:not([data-status="CLOSED"]){
+ background:var(--role-soft);color:var(--role-ink);
+}
+html[data-theme] :is(.bn-task-status[data-state="submitted"],
+ .bn-badge-open,.bn-badge-submitted){
+ background:var(--ui-success-bg);color:var(--ui-success-text);
+}
+html[data-theme] :is(.bn-task-status[data-state="draft"],
+ .bn-task-deadline[data-urgency="soon"],.bn-classwork-badge[data-status="ARCHIVED"],
+ .bn-badge-draft){
+ background:var(--ui-warn-bg);color:var(--ui-warn-text);
+}
+html[data-theme] :is(.bn-task-deadline[data-urgency="overdue"],
+ .bn-badge-late,.bn-sub-error){
+ background:var(--ui-error-bg);color:var(--ui-error-text);
+}
+html[data-theme] :is(.bn-task-status[data-state="unavailable"],
+ .bn-task-deadline[data-urgency="none"],.bn-classwork-badge[data-status="CLOSED"],
+ .bn-badge-closed){
+ background:var(--ui-raised);color:var(--ui-muted);
+ border:1px solid var(--ui-border);
+}
+html[data-theme] :is(.bn-auth-notice[data-state="info"],.bn-settings-notice,
+ .bn-dashboard-notice:not([data-state]),.bn-sub-callout){
+ background:var(--ui-info-bg);color:var(--ui-info-text);
+ border-color:var(--ui-border);
+}
+html[data-theme] :is(.bn-auth-notice[data-state="success"],
+ .bn-settings-notice[data-state="success"],.bn-dashboard-notice[data-state="success"],
+ .bn-postlogin .bn-classwork-status[data-state="success"]){
+ background:var(--ui-success-bg);color:var(--ui-success-text);
+ border-color:var(--ui-border);
+}
+html[data-theme] :is(.bn-auth-notice[data-state="error"],
+ .bn-settings-notice[data-state="error"],.bn-dashboard-notice[data-state="error"],
+ .bn-postlogin .bn-classwork-status[data-state="error"]){
+ background:var(--ui-error-bg);color:var(--ui-error-text);
+ border-color:var(--ui-border);
+}
+/* Previously the sign-up dialog had a forced white background and its
+   headings were recolored to near-white: invisible in dark mode. */
+html[data-theme] .bn-signup-dialog{
+ background:var(--ui-surface);color:var(--ui-text);
+ border-color:var(--ui-border);
+}
+html[data-theme] .bn-signup-dialog :is(h2,.bn-signup-dialog-description,
+ .bn-signup-dialog-footnote){
+ color:var(--ui-text);
+}
+html[data-theme] .bn-signup-dialog :is(.bn-signup-dialog-footnote,
+ .bn-signup-dialog-alternative a,.bn-signup-dialog-alternative button){
+ color:var(--ui-muted);
+}
+html[data-theme] .bn-signup-dialog :is(.bn-signup-dialog-kicker,
+ .bn-signup-dialog-link,.bn-signup-dialog-icon){
+ color:var(--role-ink);
+}
+html[data-theme] .bn-signup-dialog-icon{
+ background:var(--role-soft);
+}
+html[data-theme] .bn-otp-content #otp-complete h2{color:var(--ui-success-text)}
+html[data-theme="light"] .bn-otp-content #otp-complete h2{color:#166534}
+html[data-theme] .bn-otp-emblem{
+ background:var(--role-soft);color:var(--role-ink);
+}
+html[data-theme] :is(.bn-entry-content .bn-otp-digit,
+ .bn-entry-content input,.bn-entry-content select){
+ color:var(--ui-text);background:var(--ui-input);
+ border-color:var(--ui-border);
+}
+html[data-theme] :is(.bn-entry-content a,.bn-otp-resend .bn-inline-button){
+ color:var(--role-ink);
+}
+html[data-theme] .bn-entry-content .bn-primary-action{
+ color:var(--ui-inverse);
+}
+html[data-theme="dark"] .bn-entry-content .bn-primary-action{
+ color:#102035;
+}
+/* A few fixed-value strings in cards, tables, and the assignment format
+   chooser out-ranked the former generic :is() rules. */
+html[data-theme] :is(.bn-sub-file-info strong,.bn-sub-file-info small,
+ .bn-sub-mini,.bn-sub-version p,.bn-sub-empty,.bn-admin-record p,
+ .bn-admin-empty,.bn-classwork-empty,.bn-classwork-notice p,
+ .bn-admin-form .bn-format-grid label small,.bn-format-help,
+ .bn-format-footer,.bn-format-group h4,.bn-settings-memberships span,
+ .bn-settings-card input[type="file"],.bn-settings-onboarding>p,
+ .bn-settings-profile-visual #account-email,.bn-side-caption){
+ color:var(--ui-muted);
+}
+html[data-theme] :is(.bn-sub-file-info strong,.bn-admin-form .bn-format-grid label,
+ .bn-admin-form .bn-format-fieldset legend,.bn-format-picker>summary,
+ .bn-classwork-item h4,.bn-postlogin .bn-classwork-item h4,
+ .bn-sub-version h4,.bn-sub-group h4,.bn-admin-panel-heading h2,
+ .bn-signup-dialog h2){
+ color:var(--ui-text);
+}
+html[data-theme] :is(.bn-sub-mini,.bn-postlogin .bn-nav a.active,
+ .bn-format-caret,.bn-format-count,.bn-admin-count,.bn-signup-dialog-link){
+ color:var(--role-ink);
+}
+html[data-theme] :is(.bn-settings-file-button,.bn-settings-back,
+ .bn-panel-head>a,.bn-task-title:hover){
+ color:var(--role-ink);
+}
+/* Global small-print: class/date selector labels must meet normal-text
+   contrast thresholds even when their font size is below 12px. */
+html[data-theme] :is(.bn-metric-top,.bn-class-select label,.bn-class-role span,
+ .bn-settings-crumb,.bn-top-date,.bn-subject-info span,
+ .bn-task-meta,.bn-breadcrumb,.bn-shortcut small,
+ .bn-dashboard-footer,.bn-settings-footer,.bn-panel-overline,
+ .bn-sidebar-footer small){
+ color:var(--ui-muted);
+}
+/* Sidebar text should NOT use the surface-muting token. The role sidebar
+   stays dark in either mode, so it has a separate, light foreground. */
+html[data-theme] :is(.bn-workspace-sidebar,.bn-shared-app .bn-workspace-sidebar,
+ .bn-settings-sidebar) :is(.bn-side-caption,.bn-side-link,.bn-brand-name small,
+ .bn-sidebar-footer strong,.bn-sidebar-footer small){
+ color:var(--ui-sidebar-text);
+}
+html[data-theme] :is(.bn-workspace-sidebar,.bn-shared-app .bn-workspace-sidebar,
+ .bn-settings-sidebar) .bn-side-link.selected{color:#ffffff}
+html[data-theme] .bn-settings-card input[readonly]{
+ background:var(--ui-raised);color:var(--ui-muted);
+}
+html[data-theme] :is(.bn-settings-logout,.bn-settings-outline,
+ .bn-signout,.bn-postlogin .bn-btn-secondary,
+ .bn-settings-file-button,.bn-format-clear){
+ background:var(--ui-raised);color:var(--ui-text);
+ border-color:var(--ui-border);
+}
+html[data-theme] .bn-theme-toggle{width:auto;flex:0 0 auto;color:var(--ui-text)}
+html[data-theme] .bn-entry-content .bn-signup-dialog .bn-signup-dialog-link{
+ color:var(--role-ink);
+}
+html[data-theme] .bn-entry-content .bn-signup-dialog .bn-signup-dialog-alternative a{
+ color:var(--ui-muted);
+}
+
 @media(prefers-reduced-motion:reduce){.bn-theme-toggle{transition:none}}
