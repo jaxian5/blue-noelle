@@ -28,7 +28,7 @@ html[data-role="moderator"]{
  --role-main:#7746c7;--role-hover:#6234a9;--role-ink:#5b3699;
  --role-soft:#f2eafb;--role-active:#744ab2;
  --role-sidebar-a:#382065;--role-sidebar-b:#21143f;
- --role-hero-a:#4b247a;--role-hero-b:#9160ce;--role-art:#ebc9ff;
+ --role-hero-a:#49236f;--role-hero-b:#8050b8;--role-art:#ebc9ff;
 }
 html[data-role="admin"]{
  --role-main:#514bd5;--role-hover:#3d36b3;--role-ink:#3f3b9f;
@@ -40,7 +40,7 @@ html[data-role="developer"]{
  --role-main:#51647c;--role-hover:#38485d;--role-ink:#46546a;
  --role-soft:#e7edf3;--role-active:#506275;
  --role-sidebar-a:#36414f;--role-sidebar-b:#19232f;
- --role-hero-a:#435365;--role-hero-b:#889aaf;--role-art:#f6f9ff;
+ --role-hero-a:#35475d;--role-hero-b:#53677b;--role-art:#f6f9ff;
 }
 /* An existing dashboard body sets an old violet custom property. Override
    locally as well so a class role switch never inherits the old color. */
@@ -83,7 +83,7 @@ html[data-theme="dark"][data-role="developer"]{
  --role-main:#d4dbe7;--role-hover:#f1f5f9;--role-ink:#e3e9f0;
  --role-soft:#303d4b;--role-active:#536375;
  --role-sidebar-a:#343f4b;--role-sidebar-b:#101923;
- --role-hero-a:#344253;--role-hero-b:#6d7d90;--role-art:#ffffff;
+ --role-hero-a:#253443;--role-hero-b:#4c5d70;--role-art:#ffffff;
 }
 /* The sidebar, avatar, hero, alerts, buttons and badges follow role. */
 html[data-role] :is(.bn-workspace-sidebar,.bn-shared-app .bn-workspace-sidebar,.bn-settings-sidebar){
