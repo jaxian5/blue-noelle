@@ -83,7 +83,7 @@ merged PDF would be misleading.
 
 ## Verification and acceptance
 
-**Automated:** `node --test tests/*.test.mjs`, including
+**Automated: 121 passing tests, 0 failing** (GitHub Actions), including
 `tests/phase5-foundation.test.mjs` and the expanded canonical route,
 theme, navigation and legacy-release checks.
 
@@ -91,7 +91,9 @@ theme, navigation and legacy-release checks.
 the connected Supabase project, with temporary group assignment/submission
 rolled back. Checks real ACTIVE Admin group creation and Student allocation,
 read model lock state, refusal to mutate group after draft, metadata-only
-compilation JSON, audited export and Student access denial.
+compilation JSON, audited export and Student access denial. The test also
+creates a submitted Version 1 and unfinished Version 2 and confirms the
+staff manifest returns historical Version 1 with its preserved late flag.
 Post-deployment Phase 2 and Phase 3 rollback tests also PASS; an older
 Class Operations rollback test was updated to follow Phase 4's explicit
 reschedule target requirement and now PASS.
