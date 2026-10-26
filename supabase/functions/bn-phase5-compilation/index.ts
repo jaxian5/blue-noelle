@@ -18,7 +18,7 @@ function headers(origin: string | null): Record<string, string> {
     ...(origin && trustedOrigins.has(origin) ? { "Access-Control-Allow-Origin": origin } : {}),
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-supabase-api-version",
-    "Access-Control-Expose-Headers": "content-disposition",
+    "Access-Control-Expose-Headers": "content-disposition, x-file-mime",
     "Cache-Control": "private, no-store",
     "X-Content-Type-Options": "nosniff",
     "Vary": "Origin",
@@ -82,7 +82,8 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Compilation integrity verification failed" }, 409, origin);
     const name = clean(grant.name, "blue-noelle-compilation." + grant.format, 145);
     return new Response(exactBuffer(bytes), { status: 200, headers: {
-      ...headers(origin), "Content-Type": grant.format === "pdf" ? "application/pdf" : "application/zip",
+      ...headers(origin), "Content-Type": "application/octet-stream",
+      "X-File-Mime": grant.format === "pdf" ? "application/pdf" : "application/zip",
       "Content-Disposition": 'attachment; filename="' + name + '"',
       "Content-Length": String(bytes.length),
     } });
