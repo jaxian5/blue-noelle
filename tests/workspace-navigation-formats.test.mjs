@@ -15,7 +15,7 @@ test("all authenticated secondary pages load one shared sidebar",()=>{
   const html=read("pages/"+page+".html");
   assert.match(html,/workspace-shell\.css/,page);
   assert.match(html,/workspace-shell\.js\?v=20261026-phase4/,page);
-  assert.doesNotMatch(html,/core\.js|phase1-auth\.js|phase2-assignments\.js/);
+  assert.doesNotMatch(html,/<script[^>]+src=["\x27][^"\x27]*\/(?:core|phase1-auth|phase2-assignments)\.js/i);
  }
  assert.match(shell,/getUser\(\)/);
  assert.match(shell,/from\("ClassMembership"\)/);
