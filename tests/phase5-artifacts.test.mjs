@@ -7,7 +7,7 @@ import {Script} from "node:vm";
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const read=p=>readFileSync(resolve(root,p),"utf8");
-const sql=read("supabase/migrations/20261026150000_phase5_private_compilation_artifacts.sql");
+const sql=read("supabase/migrations/20261026070205_phase5_private_compilation_artifacts.sql");
 const edge=read("supabase/functions/bn-phase5-compilation/index.ts");
 const ui=read("js/phase5-groups.js");
 const html=read("pages/phase5-groups.html");
