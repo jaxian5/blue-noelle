@@ -32,6 +32,7 @@ export async function hash(bytes: Uint8Array): Promise<string> {
 export async function buildPdf(files: { source: Source; bytes: Uint8Array }[]): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
+  let pageCount = 0;
   for (let i = 0; i < files.length; i++) {
     const { source, bytes } = files[i];
     if (source.mime !== "application/pdf") {
@@ -49,6 +50,8 @@ export async function buildPdf(files: { source: Source; bytes: Uint8Array }[]): 
     cover.drawText("From: " + owner + " / Version " + Number(source.version),
       { x: 45, y: 696, font, size: 10 });
     const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: false });
+    pageCount += sourcePdf.getPageCount();
+    if (pageCount > 150) throw new Error("TOO_MANY_PAGES");
     const pages = await doc.copyPages(sourcePdf, sourcePdf.getPageIndices());
     for (const page of pages) doc.addPage(page);
   }
