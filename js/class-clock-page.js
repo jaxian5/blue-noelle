@@ -68,7 +68,6 @@
      text("clock-task-countdown",model.taskCountdown);
      text("clock-task-name",model.soonestTask.name||"Assignment");
    }
-   const pending=model.agenda; // unused by tasks; time windows are independent.
    const items=assignmentRows.filter(a=>a.status==="OPEN"&&a.deadline&&Date.parse(a.deadline)>=model.nowMs)
      .sort((a,b)=>Date.parse(a.deadline)-Date.parse(b.deadline)).slice(0,5);
    if(!items.length)box.append(el("p","No upcoming open classwork. You're caught up.","clock-muted"));
@@ -141,17 +140,22 @@
    const mine=++epoch,id=selectedClass;
    if(showMessage)message("Refreshing the timetable…");
    try{
-     const result=await Promise.all([
-       query(db().from("ScheduleSlot").select("*").eq("class_id",id).order("day_of_week").order("start_local")),
-       query(db().from("ScheduleException").select("*").eq("class_id",id).order("exception_date")),
-       query(db().from("Subject").select("id,name").eq("class_id",id).is("deleted_at",null)),
-       query(db().from("Assignment").select("id,name,deadline,status,subject_id")
-         .in("subject_id",(await query(db().from("Subject").select("id").eq("class_id",id).is("deleted_at",null))).map(s=>s.id).length?
-           (await query(db().from("Subject").select("id").eq("class_id",id).is("deleted_at",null))).map(s=>s.id):
-           ["00000000-0000-0000-0000-000000000000"]).eq("status","OPEN"))
+     // A single subject query establishes classroom-scoped assignment IDs.
+     // Avoid repeated nested network requests and invalid .in([]) queries.
+     const [slots,exceptions,subjects]=await Promise.all([
+       query(db().from("ScheduleSlot").select("*").eq("class_id",id)
+         .order("day_of_week").order("start_local")),
+       query(db().from("ScheduleException").select("*").eq("class_id",id)
+         .order("exception_date")),
+       query(db().from("Subject").select("id,name").eq("class_id",id)
+         .is("deleted_at",null))
      ]);
+     const subjectIds=subjects.map(subject=>subject.id);
+     const assignments=subjectIds.length?await query(db().from("Assignment")
+       .select("id,name,deadline,status,subject_id")
+       .in("subject_id",subjectIds).eq("status","OPEN")):[];
      if(mine!==epoch)return;
-     [slotRows,exceptionRows,subjectRows,assignmentRows]=result;
+     [slotRows,exceptionRows,subjectRows,assignmentRows]=[slots,exceptions,subjects,assignments];
      lastFetch=Date.now();
      $("clock-content").hidden=false;
      renderTick();
