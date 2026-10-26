@@ -190,7 +190,7 @@
    w.BNTheme?.setRole(active.role);
    if(document.body)document.body.dataset.workspace=admin?"admin":"student";
    text("dash-role",active.role);
-   text("dash-user-role",active.role+" · ACTIVE");
+   text("dash-user-role",(document.documentElement?.dataset.developer==="true"?"Developer · ":"")+active.role+" · ACTIVE");
    text("dash-eyebrow",admin?"ADMIN COMMAND CENTER":staff?"MODERATOR WORKSPACE":"YOUR STUDENT WORKSPACE");
    $("dash-admin-link").hidden=!admin;
    $("dash-staff-link").hidden=!staff;
