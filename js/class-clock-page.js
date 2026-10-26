@@ -151,7 +151,25 @@
        }
      }
    }
-   if(notified.size>100)notified.clear();
+   // Original Class Clock also reminds about task deadlines. In Blue Noelle,
+   // these are opt-in, ephemeral browser notifications while this page is open.
+   for(const task of assignmentRows.filter(a=>a.status==="OPEN"&&a.deadline)){
+     const due=Date.parse(task.deadline);
+     if(!Number.isFinite(due))continue;
+     for(const offset of [24*60,6*60,60,15,0]){
+       const diff=due-now;
+       if(diff>offset*60000||diff<=offset*60000-REFRESH_MS)continue;
+       const key="task:"+task.id+":"+task.deadline+":"+offset;
+       if(notified.has(key))continue;
+       notified.add(key);
+       const body=offset===0?"Deadline reached":"Due in "+(offset>=60?offset/60+" hours":offset+" minutes");
+       try{new w.Notification("Blue Noelle Classwork",{
+         body:(task.name||"Assignment")+" · "+body,
+         tag:"bn-class-task-"+task.id+"-"+offset});
+       }catch(_){}
+     }
+   }
+   if(notified.size>200)notified.clear();
  }
  function beginLoop(){
    if(loop)w.clearInterval(loop);
