@@ -10,6 +10,25 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 > - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. **Live file-byte upload/download and cross-account Storage acceptance are outstanding.** A merged PR is not itself proof of production readiness.
 > - **Later phases:** chat, announcements, notifications and compilation remain **deny-by-default schema placeholders** until separately implemented and tested.
 
+## Appearance: role colors and Dark Mode
+
+Blue Noelle now has a **site-wide light/dark appearance toggle**. The first
+visit follows the device's color-scheme preference. Manual Light/Dark choice
+is stored locally as an appearance preference and persists across every
+canonical page, without affecting classwork or permissions.
+
+- **Student:** blue
+- **Moderator:** purple
+- **Admin:** indigo
+- **Developer:** silver
+
+The active class membership selects the classroom palette. Developer silver
+requires the protected `User.is_developer` flag and overrides only the
+**appearance**, never class privileges. The shared sidebar, academic pages,
+submissions, profile settings and Phase 1 public screens all support dark mode.
+Details and browser checks are documented in
+[Role palettes & Dark Mode](docs/ROLE-PALETTES-DARK-MODE-2026-10-26.md).
+
 ## Signed-in workspaces
 
 The public homepage presents **Sign in** and **Create an account** only.
