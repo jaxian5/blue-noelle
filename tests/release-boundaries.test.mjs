@@ -24,7 +24,7 @@ test("release docs distinguish merged Phase 2/3 code from owner acceptance", () 
 test("production routes never load local demo identities or role JSON", () => {
   const pages = [
     "index.html","pages/login.html","pages/register.html","pages/verify-email.html",
-    "pages/account.html","pages/dashboard.html","pages/class-clock.html","pages/classwork.html",
+    "pages/account.html","pages/dashboard.html","pages/class-clock.html","pages/classwork.html","pages/phase5-groups.html",
     "pages/admin-classwork.html","pages/submission.html",
     "pages/class-operations.html","pages/phase1-class-staff.html"
   ];
