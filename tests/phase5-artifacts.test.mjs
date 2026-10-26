@@ -9,6 +9,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const read=p=>readFileSync(resolve(root,p),"utf8");
 const sql=read("supabase/migrations/20261026070205_phase5_private_compilation_artifacts.sql");
 const edge=read("supabase/functions/bn-phase5-compilation/index.ts");
+const compiler=read("supabase/functions/bn-phase5-compilation/compile.ts");
 const ui=read("js/phase5-groups.js");
 const html=read("pages/phase5-groups.html");
 
@@ -66,17 +67,17 @@ test("Edge requires JWT Auth + user-scoped RPC before any private service-key re
  assert.doesNotMatch(edge,/getPublicUrl|createSignedUrl|localStorage|user_metadata/);
 });
 test("ZIP keeps mixed files; PDF sources must be PDF and are merged page-by-page",()=>{
- assert.match(edge,/pdf-lib@1\.17\.1/);
- assert.match(edge,/fflate@0\.8\.2/);
- assert.match(edge,/PDFDocument\.load/);
- assert.match(edge,/doc\.copyPages/);
- assert.match(edge,/zipSync/);
- assert.match(edge,/COMPILATION-MANIFEST\.json/);
- assert.match(edge,/source\.mime !== "application\/pdf"/);
+ assert.match(compiler,/pdf-lib@1\.17\.1/);
+ assert.match(compiler,/fflate@0\.8\.2/);
+ assert.match(compiler,/PDFDocument\.load/);
+ assert.match(compiler,/doc\.copyPages/);
+ assert.match(compiler,/zipSync/);
+ assert.match(compiler,/COMPILATION-MANIFEST\.json/);
+ assert.match(compiler,/source\.mime !== "application\/pdf"/);
  assert.match(edge,/file\.sha256 && await hash\(bytes\)/);
- assert.match(edge,/MAX_SOURCE_BYTES = 20 \* 1024 \* 1024/);
- assert.match(edge,/MAX_OUTPUT_BYTES = 24 \* 1024 \* 1024/);
- assert.match(edge,/MAX_FILES = 48/);
+ assert.match(compiler,/MAX_SOURCE_BYTES=20\*1024\*1024/);
+ assert.match(compiler,/MAX_OUTPUT_BYTES=24\*1024\*1024/);
+ assert.match(compiler,/MAX_FILES=48/);
 });
 test("Generated-file UI honors staff-only panel and never includes service key or raw Storage URLs",()=>{
  assert.doesNotThrow(()=>new Script(ui));
