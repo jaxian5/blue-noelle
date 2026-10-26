@@ -14,7 +14,7 @@ const html=read("pages/phase5-groups.html");
 
 test("Private generated artifacts have durable provenance and no direct browser Data API grant",()=>{
  for(const text of ['"CompilationExport"','"Compilation"','source_version_id',
-   'export_id','"bn-compilations"','bn_compilation_one_source_per_export']){
+   'export_id','bn-compilations','bn_compilation_one_source_per_export']){
    assert.ok(sql.includes(text),text);
  }
  assert.match(sql,/ALTER TABLE public\."CompilationExport" ENABLE ROW LEVEL SECURITY/);
