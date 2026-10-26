@@ -16,6 +16,7 @@ signed off. The remaining Class Clock model needs concrete behavioral rules.
 | Severity | Area | Evidence/finding | Resolution |
 | --- | --- | --- | --- |
 | CRITICAL | Class scheduling grants | `authenticated` had `TRUNCATE` privileges on ScheduleSlot and ScheduleException, bypassing row-based class isolation if directly invoked. | **FIXED in live DB** by migration 20261026015109; also revoked unnecessary TRIGGER/REFERENCES privileges. |
+| CRITICAL | Core academic grants | A broader SQL grant audit found the same RLS-bypassing `TRUNCATE` privileges on the Subject and Assignment tables. | **FIXED in live DB** by migration 20261026020847; kept RLS-scoped SELECT and audited classwork RPCs intact. |
 | HIGH | Schedule auditability | Directly written slots/exceptions were guarded by RLS but did not record who changed them in the central AuditLog. | **FIXED in live DB:** atomic AFTER mutation trigger records Admin actor and before/after row images. |
 | HIGH | Class Operations membership UX | Old UI offered promoting arbitrary members to Admin and modifying the protected Admin row; current owner guard explicitly prohibits those operations. | **FIXED in PR:** protected owner read-only; existing Student/Moderator changes use guarded `bn_update_member`, pending approvals use `bn_review_registration`. |
 | MEDIUM | Class Operations reliability | Large inline script coupled roster, slots and exceptions with `Promise.all`; one failing request prevented all sections from rendering and handlers were bound only afterward. Class selector showed bare UUIDs. | **FIXED in PR:** dedicated controller, independent requests, per-section errors, readable class labels, handlers bound early, explicit default selection/retry. |
@@ -25,6 +26,7 @@ signed off. The remaining Class Clock model needs concrete behavioral rules.
 | OPERATIONAL HOLD | Phase 1 emails | Brevo/Gmail rejection and missing Outlook delivery make new self-service signup/password recovery unreliable. | **OPEN**; maintain email confirmation and admin-assisted legitimate onboarding; do not weaken auth. |
 | ACCEPTANCE GATE | Phase 2/3 | Initial live round is provisionally approved, DB tests pass; final authorized browser and real-byte/isolation evidence is still required. | **OPEN** until owner acceptance is recorded. |
 | PHASE 4 DESIGN | Timetable logic | No Class Clock displays current/next class; weekly slots do not enforce overlap policy and dated exceptions lack a specific slot/subject target. | **OPEN, intentionally Phase 4 scope.** Define semantics before implementing clock/countdown. |
+| SECURITY GATE | Protected SQL privileges | Source and live grants must be checked globally, not only on tables that have an active UI. | **FIXED for current public schema**. Repeat privilege audit before each release. |
 | SECURITY SETTINGS | Password controls | Supabase Security Advisor reports leaked-password protection disabled. | **OPEN** Auth setting; consider enabling if available before wider public rollout. Does not justify disabling email confirmation. |
 | PERFORMANCE | Foreign-key indexes | Supabase Performance Advisor identifies 34 unindexed foreign keys, including future deny-by-default tables. | **TRACK**; prioritize active classwork/membership/schedule query indexes from measured plans, not speculative mass indexes. |
 | DEFENSE-IN-DEPTH | Deny-by-default tables | Supabase reports 12 RLS-enabled tables with no policies; most are intentionally private academic/internal placeholders, not an exposure signal. | **EXPECTED**, keep closed until separate phase implements scoped APIs. |
@@ -62,6 +64,7 @@ signed off. The remaining Class Clock model needs concrete behavioral rules.
   rollback-only SQL. The corresponding file-byte Storage API and a separate
   Student account browser test must remain distinct release gates.
 - Rollback-only Phase 3 SQL test **passed again on October 26, 2026**.
+- Both Phase 2 and Phase 3 rollback tests **passed again after the academic grant revocation**; this did not disable the guarded classwork RPCs.
 - **Pending:** owner-recorded real PDF/PNG byte integrity, version history,
   group file isolation, and cross-account browser Storage denial.
 
@@ -79,6 +82,7 @@ signed off. The remaining Class Clock model needs concrete behavioral rules.
   rendered text and cross-role browser visual inspection.
 
 ### Database / deployment safety
+- Migration `20261026020847_academic_table_least_privilege.sql` is also **already deployed** and removes the unsafe privileges on Subject and Assignment. A current global grant query returns **no TRUNCATE, TRIGGER or REFERENCES privileges for the authenticated role on any public table**.
 - Migration `20261026015109_class_operations_least_privilege_and_audit.sql`
   is **already applied to Supabase** and has the same version in the repo.
   Do not replay it under a different name/version.
