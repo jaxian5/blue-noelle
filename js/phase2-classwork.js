@@ -85,7 +85,8 @@
         .select("id,subject_id,name,description,instructions,deadline,is_group,status,created_at")
         .in("subject_id",ids).is("deleted_at",null).order("created_at",{ascending:false})) : [];
       if(current!==generation) return;
-      const membership = allowed.get(classId);
+      const membership = allowed.get(classId);      w.BNTheme?.setRole(membership.role);
+
       $("classwork-role").textContent = membership.role + " · ACTIVE";
       $("classwork-admin-link").hidden = membership.role !== "Admin";
       if (!subjects.length) {
