@@ -48,12 +48,13 @@
    for(const group of groupData){
      const box=node("article",null,"p5-group");
      box.append(node("h3",group.name));
+     if(group.locked)box.append(node("p","🔒 Membership locked after submission began.","bn-muted"));
      const members=group.members||[];
      if(!members.length)box.append(node("p","No assigned Students.","bn-muted"));
      for(const member of members){
        const row=node("div",null,"p5-member");
        row.append(node("span",member.name||"Student"));
-       if(role==="Admin"){
+       if(role==="Admin"&&!group.locked){
          const btn=node("button","Remove","bn-btn bn-btn-secondary");
          btn.type="button";btn.addEventListener("click",()=>perform(async()=>{
            if(!w.confirm("Remove this Student from "+group.name+"?"))return;
@@ -64,7 +65,7 @@
        }
        box.append(row);
      }
-     if(role==="Admin"&&available.length){
+     if(role==="Admin"&&!group.locked&&available.length){
        const controls=node("div",null,"p5-group-controls");
        const pick=node("select");pick.setAttribute("aria-label","Add Student to "+group.name);
        for(const student of available){
@@ -81,8 +82,9 @@
    }
  }
  async function reloadGroups(){
-   if(role!=="Admin")return;
-   const [g,r]=await Promise.all([groupCall("list"),groupCall("roster")]);
+   if(!active?.is_group){groupData=[];roster=[];drawGroups();return}
+   const g=await rpc("bn_p5_groups_read",{p_assignment:active.id});
+   const r=role==="Admin"?await groupCall("roster"):[];
    groupData=Array.isArray(g)?g:[];roster=Array.isArray(r)?r:[];
    drawGroups();
  }
@@ -138,7 +140,8 @@
        $("p5-student-group").textContent=!active.is_group?
          "Individual assignment. No group required.":result?.name||"You have not been assigned to a group yet.";
      }else{
-       if(role==="Admin"&&active.is_group)await reloadGroups();
+       if(active.is_group)await reloadGroups();
+       else{$("p5-group-list").append(node("p","Individual assignments do not use groups.","bn-muted"));}
        if(mine!==requestId)return;
        const manifest=await preview(false);
        if(mine!==requestId)return;
