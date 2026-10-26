@@ -148,7 +148,7 @@
      const initial=fullName.split(/\s+/).slice(0,2).filter(Boolean).map(n=>n[0]).join("").toUpperCase()||"BN";
      if($("shell-user-name"))$("shell-user-name").textContent=fullName;
      if($("shell-avatar"))$("shell-avatar").textContent=initial;
-     if($("shell-role"))$("shell-role").textContent=admin?"Admin · ACTIVE":staff?"Moderator · ACTIVE":active.length?"Student · ACTIVE":"Enrollment required";
+     if($("shell-role"))$("shell-role").textContent=(developer?"Developer · ":"")+(admin?"Admin · ACTIVE":staff?"Moderator · ACTIVE":active.length?"Student · ACTIVE":"Enrollment required");
      if(!accountPage&&db.storage?.from&&typeof URL!=="undefined"&&URL.createObjectURL){
        try{const {data,error:photoError}=await db.storage.from("bn-avatars").download(uid+"/avatar");
          if(!photoError&&data&&$("shell-avatar-img")){
