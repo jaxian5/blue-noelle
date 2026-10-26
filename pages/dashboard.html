@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/dashboard.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/class-clock.css?v=phase4-1">
 <link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
 
 </head>
@@ -66,6 +67,16 @@
        <div class="bn-class-role"><span>YOUR ROLE</span><strong id="dash-role">Checking…</strong></div>
        <a class="bn-primary-link" id="dash-primary-link" href="classwork.html">Browse classwork <span aria-hidden="true">↗</span></a>
      </section>
+     <section class="clock-dashboard-preview" aria-label="Class Clock preview">
+       <div class="clock-dashboard-preview-icon" aria-hidden="true">◷</div>
+       <div class="clock-dashboard-preview-content">
+         <span id="dash-clock-phase">CLASS CLOCK · LOADING</span>
+         <h2 id="dash-clock-title">Checking your next class…</h2>
+         <p id="dash-clock-caption">Times shown in Asia/Manila.</p>
+       </div>
+       <strong class="clock-dashboard-timer" id="dash-clock-countdown" aria-label="Time until class transition">--:--:--</strong>
+       <a id="dash-clock-link" href="class-clock.html" class="clock-dashboard-preview-link">Open Class Clock ↗</a>
+     </section>
      <section class="bn-metric-grid" aria-label="Classroom summary">
        <article class="bn-metric"><div class="bn-metric-top"><span>ACTIVE CLASSES</span><span class="bn-metric-icon">◫</span></div><strong id="dash-count-classes">0</strong><p>Your approved memberships</p></article>
        <article class="bn-metric"><div class="bn-metric-top"><span>SUBJECTS</span><span class="bn-metric-icon">◇</span></div><strong id="dash-count-subjects">0</strong><p>In this classroom</p></article>
@@ -106,5 +117,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/class-clock-core.js?v=phase4-1"></script>
 <script src="../js/dashboard-live.js"></script>
+<script src="../js/dashboard-clock.js?v=phase4-1"></script>
 </body></html>
