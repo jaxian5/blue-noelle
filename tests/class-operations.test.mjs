@@ -161,3 +161,12 @@ test("Schedule API uses session, audited RLS tables and verified deletions",()=>
  assert.match(sql,/bn_schedule_exception_audit/);
  assert.match(sql,/INSERT INTO public\."AuditLog"/);
 });
+
+test("academic tables revoke RLS-bypassing privileges without touching classwork RPCs",()=>{
+ const migration=read("supabase/migrations/20261026020847_academic_table_least_privilege.sql");
+ assert.match(migration,/REVOKE TRUNCATE, TRIGGER, REFERENCES/);
+ assert.match(migration,/public\."Subject", public\."Assignment"/);
+ assert.doesNotMatch(migration,/DROP TABLE|DELETE FROM|TRUNCATE TABLE/);
+ const phase2=read("js/phase2-admin.js");
+ assert.match(phase2,/bn_manage_classwork/);
+});
