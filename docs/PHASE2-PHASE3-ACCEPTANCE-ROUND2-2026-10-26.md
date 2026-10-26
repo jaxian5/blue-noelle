@@ -10,7 +10,7 @@
 ## Automated evidence
 - Latest PR branch CI: `node --test tests/*.test.mjs`: **74 passed, 0 failed**.
 - **Phase 2 rollback SQL: PASS** against linked live Supabase project on October 26: class-scoped Admin subjects/assignments, edits/status, expected audit trail, Manila deadline, Student/outsider read/write denials.
-- **Phase 3 rollback SQL: PASS** against the same Supabase project: Version 1 -> Version 2 historical deadline/timestamp, group-owned versioning, authenticated Storage **metadata** RLS and outsider denials.
+- **Additional live Phase 2 MIME rollback QA: PASS**: PDF+PNG, PDF-only and empty/unrestricted arrays all survived creation/edit/read-back through the audited RPC. The transaction rolled back.\n- **Phase 3 rollback SQL: PASS** against the same Supabase project: Version 1 -> Version 2 historical deadline/timestamp, group-owned versioning, authenticated Storage **metadata** RLS and outsider denials.
 - Both SQL tests rolled back their fixtures. No production academic assignment/submission/storage records were changed by the tests.
 - Tests in this PR check the new MIME checkbox values are sent unchanged to the existing audited RPC and date conversion remains in Asia/Manila. No new schema, table, bucket or RLS policy is needed.
 
