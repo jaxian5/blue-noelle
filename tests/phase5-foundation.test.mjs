@@ -66,7 +66,7 @@ test("Manifest download is generated only from server-verified rows, not raw Sto
  assert.match(ui,/revokeObjectURL/);
  assert.doesNotMatch(ui,/\.storage\.from\(|\.getPublicUrl\(/);
  assert.match(ui,/role==="Admin"/);
- assert.match(ui,/role==="Moderator"/);
+ assert.match(ui,/\["Admin","Moderator"\]\.includes\(role\)/);
 });
 test("Phase 5 respects role-aware light and dark palettes",()=>{
  const styles=read("css/phase5.css");
