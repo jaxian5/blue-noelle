@@ -61,7 +61,7 @@ a{text-decoration:none;color:inherit}button,input{font:inherit}button{cursor:poi
 .bn-settings-card input[type=file]{display:block;font-size:.7rem;max-width:100%;color:var(--ui-muted)}
 .bn-settings-card input[type=file]::file-selector-button{display:none}
 #profile-photo-save{width:100%}
-.bn-settings-link-button{border:0;background:transparent;color:#8c4560;padding:12px 0 0;font-size:.76rem;font-weight:850}
+.bn-settings-link-button{border:0;background:transparent;color:var(--ui-error-text);padding:12px 0 0;font-size:.76rem;font-weight:850}
 .bn-settings-link-button:hover{text-decoration:underline}
 .bn-settings-side-note{border-radius:18px;padding:25px 28px;background:linear-gradient(140deg,#133966,#21619b);color:white}
 .bn-settings-side-note>span{font-size:1.8rem;color:#a3d4ff}
