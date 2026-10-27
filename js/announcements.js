@@ -40,6 +40,7 @@
    if(!posts.length){list.append(el("p","No announcements published for this classroom.","p67-empty"));return}
    for(const post of posts){
      const article=el("article",null,"p67-post");
+     article.dataset.announcement=post.id;
      const heading=el("div",null,"p67-row");
      heading.append(el("strong",post.title),el("small",
        (post.pinned?"📌 Pinned · ":"")+
@@ -56,6 +57,7 @@
          dom("p7-pinned").checked=post.pinned;
          dom("p7-expires").value=manilaLocal(post.expires_at);
          dom("p7-publish").textContent="Save changes";
+         dom("p7-cancel-edit").hidden=false;
          dom("p7-form").scrollIntoView({behavior:"smooth",block:"nearest"});
        }));
        actions.append(btn(post.pinned?"Unpin":"Pin",()=>perform(async()=>{
@@ -99,7 +101,10 @@
        actions.append(link);
      }else if(notice.type==="ANNOUNCEMENT"){
        actions.append(btn("View announcement",()=>{
-         dom("p7-posts").scrollIntoView({behavior:"smooth",block:"start"});
+         const id=String(notice.payload?.announcement_id||"");
+         const target=[...dom("p7-posts").children]
+           .find(post=>post.dataset.announcement===id);
+         (target||dom("p7-posts")).scrollIntoView({behavior:"smooth",block:"start"});
        }));
      }
      card.append(actions);list.append(card);
@@ -130,6 +135,7 @@
  }
  function clearForm(){
    editing=null;dom("p7-form").reset();dom("p7-publish").textContent="Publish";
+   dom("p7-cancel-edit").hidden=true;
  }
  document.addEventListener("DOMContentLoaded",async()=>{
    try{
@@ -140,6 +146,7 @@
        void reload(true);
      });
      dom("p7-reload").addEventListener("click",()=>{void reload(true)});
+     dom("p7-cancel-edit").addEventListener("click",()=>{clearForm();});
      dom("p7-read-all").addEventListener("click",()=>{
        void perform(()=>rpc("bn_p7_notifications_read_all",{p_class:classId()}),
          "Your classroom notifications were marked read.");
