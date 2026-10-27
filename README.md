@@ -9,8 +9,10 @@ A private, multi-class classroom platform hosted on **GitHub Pages**, using **Su
 > - **Phase 2:** audited Subjects and Assignments, a live multi-class dashboard and Admin tools are **merged into `main`** (PRs [#20](https://github.com/jaxian5/blue-noelle/pull/20), [#21](https://github.com/jaxian5/blue-noelle/pull/21), [#24](https://github.com/jaxian5/blue-noelle/pull/24)). Automated and rolled-back database tests passed. The owner completed an initial live testing round and provisionally approved the phase; final browser sign-off is still pending.
 > - **Phase 3:** private Storage, versioned individual/group submissions, role-scoped review and guarded upload/finalize/submit RPCs are **merged into `main`** (PR [#23](https://github.com/jaxian5/blue-noelle/pull/23)); database migrations are deployed and CI is green. The owner provisionally approved Phase 3 after initial live testing. Final real-byte integrity and independent cross-account Storage isolation evidence remain required before release acceptance.
 > - **Phase 4:** Class Clock v2.9-inspired NOW/NEXT countdown, real weekly schedule, dated exceptions, and assignment deadline countdown are implemented in [PR #33](https://github.com/jaxian5/blue-noelle/pull/33). The Phase 4 database schema and guards are applied, with final authenticated browser acceptance **pending**. The Class Clock cannot be marked production-finalized from CI alone.
-> - **Phase 5:** Groups & Compilation Milestone 1 is implemented in [PR #34](https://github.com/jaxian5/blue-noelle/pull/34), with two deployed guarded read-model/membership-snapshot migrations and verified database rollback tests. Staff compilation **metadata manifests** and audited JSON export are available on the branch; protected combined PDF/ZIP generation is a separate follow-up and **not complete**.
-> - **Later phases:** chat, announcements and durable notifications remain **deny-by-default schema placeholders** until separately implemented and tested.
+> - **Phase 5:** Group management and metadata manifests are merged ([PR #34](https://github.com/jaxian5/blue-noelle/pull/34)). Real privately stored PDF/ZIP compilation and verified history are implemented in **open [PR #35](https://github.com/jaxian5/blue-noelle/pull/35)**, with DB and Edge Function deployed. **Partially approved only; full mass-testing and acceptance pending.**
+> - **Phase 6:** Protected classroom discussions, replies, author editing and staff moderation implemented in **[PR #36](https://github.com/jaxian5/blue-noelle/pull/36)**. RPC migration deployed; browser acceptance pending.
+> - **Phase 7:** Staff announcements, pinning, in-app per-user notifications and read receipts implemented in the same **PR #36**. RPC migration deployed; browser acceptance pending.
+> - **Communications release boundary:** Phases 6/7 use authenticated RPCs and visibility-aware polling, **not** push notifications, outbound email, or opened Realtime streams. Mass testing and approvals remain separate.
 
 ## Appearance: role colors and Dark Mode
 
@@ -68,6 +70,8 @@ This frontend redesign does **not** count as Phase 2/3 final live acceptance.
 | Classroom overview | [Live dashboard](pages/dashboard.html) |
 | Phase 4 live timetable and upcoming deadlines | [Class Clock](pages/class-clock.html) |
 | Phase 5 assignment teams and compilation manifests | [Groups & Compilation](pages/phase5-groups.html) |
+| Phase 6 class discussions | [Discussions](pages/discussions.html) |
+| Phase 7 staff announcements and personal notifications | [Announcements & Inbox](pages/announcements.html) |
 | Read subjects and assignments | [Classwork](pages/classwork.html) |
 | Admin subject/assignment management | [Manage classwork](pages/admin-classwork.html) |
 | Student submissions / authorized staff review | [Private submissions](pages/submission.html) (requires `?assignment=<uuid>` from a real assignment link) |
@@ -75,6 +79,22 @@ This frontend redesign does **not** count as Phase 2/3 final live acceptance.
 | Classroom roster and weekly scheduling | [Schedule & members](pages/class-operations.html) |
 
 Production pages use **Supabase Auth + class membership RLS**. The browser may use only public Supabase URL and publishable key; never database passwords, `sb_secret_*`, or the service-role key.
+
+## Phases 6–7: Private Classroom Communications
+
+The new signed-in [Discussions](pages/discussions.html) and
+[Announcements & Inbox](pages/announcements.html) pages are implemented
+in [PR #36](https://github.com/jaxian5/blue-noelle/pull/36), using
+two deployed private, class-scoped PostgreSQL RPC migrations. ACTIVE
+students and staff may participate in class discussions. Only
+Admins and Moderators may publish official announcements. Replies
+and announcements create **in-app** notifications for eligible ACTIVE
+recipients, while read receipts are restricted to the notification owner.
+
+These features intentionally do **not** claim real-time push/email
+delivery. Existing Phase 5 status remains **partially approved** until
+separate mass testing is completed. See
+[Phase 6/7 development & final acceptance](docs/PHASE6-PHASE7-FOUNDATION-2026-10-27.md).
 
 ## Phase 5: Groups & Compilation
 
@@ -125,7 +145,7 @@ A passing CI/database test is distinct from real browser acceptance.
 - **Business rules:** guarded functions in private `bn_private` validate `auth.uid()`, role and class on every privileged operation. Public wrappers are narrow. **No direct browser writes** to `Subject`, `Assignment`, `Submission`, `SubmissionVersion` or `File`.
 - **Storage:** the `bn-submissions` bucket is **private**. Upload keys originate from guarded RPCs and Storage RLS authorizes uploads/downloads. No public file URLs, no reliance on opaque paths alone for protection. Each submitted version is independent; submitted timestamps and deadline snapshots are server-written. Live Storage acceptance remains open.
 - **Invariants:** submission owner is Student XOR Group; audit retains `actor_role_at_time`; deadlines are stored as UTC timestamps and displayed in Asia/Manila; compilation is distinct from a submission version.
-- **Later phases:** a table alone is not an enabled feature. Group/announcement/chat/notification/compilation capability needs its own authorized APIs, UI and acceptance gate. Phase 3 assignment groups are an implemented exception; chat, announcements, notifications and compilation remain inactive.
+- **Later-phase release discipline:** a table alone is not a feature. Each protected capability requires audited RPCs, usable UI and independent browser acceptance. Group and class-communication foundations now exist; Phase 5 mass testing and Phase 6/7 browser acceptance remain outstanding.
 
 ## Historical prototype isolation
 
