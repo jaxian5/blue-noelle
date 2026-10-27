@@ -83,6 +83,13 @@ BEGIN
  PERFORM public.bn_p7_announcements_mutate(cid,'pin',NULL,NULL,post_id,0,false);
  response:=public.bn_p7_announcements_list(cid);
  IF (response->0->>'pinned')::boolean THEN RAISE EXCEPTION 'Staff pin toggle failed';END IF;
+ PERFORM public.bn_p7_announcements_mutate(cid,'edit','Updated QA announcement','Edited and expiring',post_id,1,false,now()+interval '1 hour');
+ response:=public.bn_p7_announcements_list(cid);
+ IF response->0->>'title'<>'Updated QA announcement' OR response->0->>'expires_at' IS NULL
+ THEN RAISE EXCEPTION 'Announcement edit or future expiry did not save';END IF;
+ UPDATE public."Announcement" SET expires_at=now()-interval '1 second' WHERE id=post_id;
+ response:=public.bn_p7_announcements_list(cid);
+ IF jsonb_array_length(response)<>0 THEN RAISE EXCEPTION 'Expired announcement leaked into active feed';END IF;
  PERFORM set_config('request.jwt.claim.sub',student::text,true);
  denied:=false;BEGIN PERFORM public.bn_p7_announcements_mutate(cid,'delete',NULL,NULL,post_id);
  EXCEPTION WHEN insufficient_privilege THEN denied:=true;END;
