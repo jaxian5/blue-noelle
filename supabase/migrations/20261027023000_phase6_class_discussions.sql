@@ -61,7 +61,7 @@ DECLARE actor uuid:=(SELECT auth.uid());v_role text;v_message public."ChatMessag
 BEGIN
  v_role:=bn_private.bn_p6_staff_or_student(p_class);
  IF v_role IS NULL THEN RAISE EXCEPTION 'ACTIVE class membership required' USING ERRCODE='42501';END IF;
- IF p_action NOT IN ('post','edit','delete') THEN
+ IF p_action IS NULL OR p_action NOT IN ('post','edit','delete') THEN
   RAISE EXCEPTION 'Unsupported discussion operation';END IF;
  IF p_action IN ('post','edit') THEN
   trimmed:=btrim(coalesce(p_body,''));
