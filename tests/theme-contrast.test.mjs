@@ -131,7 +131,7 @@ test("Contrast audit does not reintroduce global white-on-white or dark-on-dark 
 test("CSS cache keys and account destructive action follow latest contrast tokens",()=>{
  const pages=["index.html","pages/login.html","pages/register.html",
   "pages/verify-email.html","pages/dashboard.html","pages/account.html","pages/class-clock.html",
-  "pages/classwork.html","pages/phase5-groups.html","pages/admin-classwork.html","pages/submission.html",
+  "pages/classwork.html","pages/phase5-groups.html","pages/discussions.html","pages/announcements.html","pages/admin-classwork.html","pages/submission.html",
   "pages/class-operations.html","pages/phase1-class-staff.html"];
  for(const path of pages){
   const html=read(path);

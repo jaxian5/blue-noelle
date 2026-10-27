@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head>
+<script src="../js/theme.js?v=20261026-theme"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark"><title>Announcements & Inbox | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-pages.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-shell.css?v=20261027-p67">
+<link rel="stylesheet" href="../css/phase67.css?v=20261027-p67">
+<link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
+</head><body class="bn-postlogin"><div class="bn-app">
+<header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span>Blue Noelle</a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="announcements.html" class="active">Announcements & Inbox</a></nav></header>
+<main class="bn-main bn-p67">
+<div class="p67-heading"><div><p class="bn-classwork-eyebrow">PHASE 7 · CLASS UPDATES</p><h1>Announcements & Inbox</h1><p class="bn-muted">Verified classroom announcements and private in-app notifications.</p></div><a class="bn-btn bn-btn-secondary" href="dashboard.html">← Dashboard</a></div>
+<div id="p67-status" class="p67-status" role="status" aria-live="polite">Verifying your account…</div>
+
+<section class="bn-card p67-toolbar"><div><label for="p7-class">Approved classroom</label><select id="p7-class" disabled><option>Loading…</option></select></div><button class="bn-btn bn-btn-secondary" type="button" id="p7-reload">Refresh</button></section>
+<div id="p7-content" class="p67-columns" hidden>
+<section class="bn-card"><div class="p67-row"><h2>Announcements</h2><span id="p7-total" class="p67-pill">0 posts</span></div>
+<form id="p7-form" class="p67-form p67-staff-form" hidden><h3>Publish an announcement</h3>
+<label for="p7-title">Title</label><input id="p7-title" maxlength="120" minlength="3" required placeholder="Important update">
+<label for="p7-body">Message</label><textarea id="p7-body" maxlength="4000" rows="4" required></textarea>
+<div class="p67-controls"><label for="p7-priority">Priority</label><select id="p7-priority"><option value="0">Normal</option><option value="1">Important</option><option value="2">Urgent</option></select>
+<label class="p67-check"><input type="checkbox" id="p7-pinned"> Pin</label></div>
+<label for="p7-expires">Expires (optional, Asia/Manila)</label>
+<input type="datetime-local" id="p7-expires" aria-describedby="p7-expires-note">
+<small class="bn-muted" id="p7-expires-note">Leave blank to keep this announcement available until removed. Set a time within the next year.</small>
+<div class="p67-row"><small class="bn-muted">Delivered to active members' in-app inboxes.</small><div class="p67-row"><button id="p7-cancel-edit" class="bn-btn bn-btn-secondary" type="button" hidden>Cancel editing</button><button class="bn-btn bn-btn-primary" type="submit" id="p7-publish">Publish</button></div></div></form>
+<div id="p7-posts" class="p67-feed" aria-live="polite"></div></section>
+<section class="bn-card"><div class="p67-row"><h2>My inbox</h2><div class="p67-row"><span id="p7-unread" class="p67-pill">0 unread</span><button class="bn-btn bn-btn-secondary" id="p7-read-all" type="button" disabled>Mark all read</button></div></div>
+<p class="bn-muted">Only notifications addressed to your account are shown. This is not email or device push delivery.</p>
+<div id="p7-inbox" class="p67-feed"></div></section>
+</div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/workspace-shell.js?v=20261027-p67"></script>
+<script src="../js/phase67-core.js?v=20261027-p67"></script>
+<script src="../js/announcements.js?v=20261027-p67"></script>
+</body></html>
