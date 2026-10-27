@@ -100,6 +100,49 @@ BEGIN
  response:=public.bn_p7_announcements_mutate(cid,'create','Moderator message','Valid staff publication');
  IF (response->>'id') IS NULL THEN RAISE EXCEPTION 'Moderator publish denied';END IF;
  PERFORM public.bn_p7_announcements_mutate(cid,'delete',NULL,NULL,(response->>'id')::uuid);
- RAISE NOTICE 'PASS: Phase 6 chat/RBAC/moderation and Phase 7 staff publishing, per-user inbox, outsider denial';
+
+ -- Phase 6 timestamp/UUID pagination must not skip equal-time messages.
+ -- Place fixture posts in a future second (ROLLBACK), above all other rows.
+ PERFORM set_config('request.jwt.claim.sub',admin::text,true);
+ FOR before_chat IN 1..3 LOOP
+   response:=public.bn_p6_chat_mutate(cid,'post','Cursor QA #'||before_chat);
+   UPDATE public."ChatMessage" SET created_at=now()+interval '30 seconds'
+    WHERE id=(response->>'id')::uuid;
+ END LOOP;
+ response:=public.bn_p6_chat_page(cid,NULL,NULL,2);
+ IF jsonb_array_length(response)<>2 THEN
+   RAISE EXCEPTION 'Expected first 2 equal-time posts';END IF;
+ DECLARE
+   first_page jsonb:=response; second_page jsonb;
+ BEGIN
+   second_page:=public.bn_p6_chat_page(cid,
+     (first_page->0->>'created_at')::timestamptz,(first_page->0->>'id')::uuid,2);
+   IF jsonb_array_length(second_page)<1 OR
+      (second_page->0->>'id')=(first_page->0->>'id') OR
+      (second_page->0->>'id')=(first_page->1->>'id')
+   THEN RAISE EXCEPTION 'Equal-time keyset paging duplicated or skipped messages';END IF;
+ END;
+ IF NOT EXISTS(SELECT 1 FROM public."AuditLog" a
+    WHERE a.class_id=cid AND a.action='CHAT_POSTED'
+      AND a.target_type='ChatMessage')
+ THEN RAISE EXCEPTION 'Chat publication audit event missing';END IF;
+
+ -- Phase 7 bulk read is caller-only. Create a fresh Student notification,
+ -- then ensure the outsider cannot clear it and Student can.
+ response:=public.bn_p7_announcements_mutate(cid,'create','Bulk inbox QA','Unread notice');
+ PERFORM set_config('request.jwt.claim.sub',outsider::text,true);
+ denied:=false;BEGIN PERFORM public.bn_p7_notifications_read_all(cid);
+ EXCEPTION WHEN insufficient_privilege THEN denied:=true;END;
+ IF NOT denied THEN RAISE EXCEPTION 'Outsider bulk-read other classroom';END IF;
+ PERFORM set_config('request.jwt.claim.sub',student::text,true);
+ -- Restore Student role (changed above to exercise Moderator writes).
+ UPDATE public."ClassMembership" SET role='Student' WHERE class_id=cid AND user_id=student;
+ response:=public.bn_p7_notifications_read_all(cid);
+ IF (response->>'marked_read')::int<1 THEN
+   RAISE EXCEPTION 'Student bulk-read did not update its own notifications';END IF;
+ IF EXISTS(SELECT 1 FROM public."Notification" n
+    WHERE n.user_id=student AND n.class_id=cid AND n.read_at IS NULL)
+ THEN RAISE EXCEPTION 'Student still has unread notifications';END IF;
+ RAISE NOTICE 'PASS: Phases 6/7 role permissions, equal-time pagination, atomic posting audit, private bulk-read';
 END $qa$;
 ROLLBACK;
