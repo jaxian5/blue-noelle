@@ -20,7 +20,7 @@ test("Phase 6 + 7 share real class membership and avoid demo/unsafe HTML renderi
  assert.match(core,/\.eq\("status","ACTIVE"\)/);
  assert.match(core,/BNTheme\?\.setRole/);
  assert.match(core,/document\.hidden/);
- assert.match(chat,/bn_p6_chat_list/);
+ assert.match(chat,/bn_p6_chat_page/);
  assert.match(news,/bn_p7_notifications/);
 });
 test("Phase 6 list and mutation RPCs require ACTIVE member; staff moderation scoped to class",()=>{
@@ -93,4 +93,28 @@ test("No database Realtime broadcast open to unauthorized channels",()=>{
  assert.match(core,/periodic/);
  assert.match(chat,/periodic\(\(\)=>reload\(\),20000\)/);
  assert.match(news,/periodic\(\(\)=>reload\(\),30000\)/);
+});
+
+test("Hardened chat cursor tracks identical timestamps and post count uses serialized lock",()=>{
+ const migrated=read("supabase/migrations/20261027024458_phase6_phase7_polish_hardening.sql");
+ assert.match(migrated,/bn_p6_chat_page_impl/);
+ assert.match(migrated,/\(c\.created_at,c\.id\)<\(p_before,p_before_id\)/);
+ assert.match(migrated,/pg_advisory_xact_lock/);
+ assert.match(migrated,/CHAT_POSTED/);
+ assert.match(migrated,/bn_p7_notifications_read_all_impl/);
+ assert.match(migrated,/WHERE user_id=\(SELECT auth\.uid\(\)\) AND class_id=p_class AND read_at IS NULL/);
+ assert.match(migrated,/bn_p6_staff_or_student\(p_class\) IS NULL/);
+ assert.match(chat,/p_before_id:before\.id/);
+ assert.match(chat,/before=thread\.length\?\{time:thread\[0\]\.created_at,id:thread\[0\]\.id\}/);
+});
+test("Announcement expiry is sent as Manila-local UTC and edit form preserves expiry",()=>{
+ const html=read("pages/announcements.html");
+ for(const id of ["p7-expires","p7-read-all"])assert.ok(html.includes('id="'+id+'"'),id);
+ assert.match(html,/type="datetime-local"/);
+ assert.match(news,/timeZone:"Asia\/Manila"/);
+ assert.match(news,/new Date\(time\+":00\+08:00"\)/);
+ assert.match(news,/p_expires:data\.expires\?\?null/);
+ assert.match(news,/dom\("p7-expires"\)\.value=manilaLocal\(post\.expires_at\)/);
+ assert.match(news,/bn_p7_notifications_read_all/);
+ assert.match(news,/dom\("p7-read-all"\)\.disabled=working\|\|unread===0/);
 });
