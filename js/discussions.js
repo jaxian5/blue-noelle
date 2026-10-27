@@ -67,7 +67,12 @@
      render();dom("p6-content").hidden=false;
      if(force)status("Class discussion updated.","success");
    }catch(e){if(room===classId())status(e.message,"error")}
-   finally{loading=false}
+   finally{
+     loading=false;
+     // If the classroom changed mid-request, fetch only the newly chosen
+     // class. Never leave previous classroom messages visible.
+     if(room!==classId())void reload(true);
+   }
  }
  async function more(){
    if(loading||!before)return;loading=true;const room=classId();
@@ -78,7 +83,10 @@
      thread=[...(Array.isArray(rows)?rows:[]).filter(x=>!existing.has(x.id)),...thread];
      before=thread[0]?.created_at||null;
      dom("p6-more").hidden=!rows?.length||rows.length<60;render();
-   }catch(e){status(e.message,"error")}finally{loading=false}
+   }catch(e){status(e.message,"error")}finally{
+     loading=false;
+     if(room!==classId())void reload(true);
+   }
  }
  function reset(){
    seq++;thread=[];before=null;replyId=null;
