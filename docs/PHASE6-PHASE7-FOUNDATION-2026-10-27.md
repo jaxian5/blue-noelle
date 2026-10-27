@@ -29,8 +29,13 @@ and server migration `20261027021547_phase6_class_discussions.sql`.
   key prevents a reply in a different classroom; server also rejects
   removed/foreign targets.
 - Message size is 1–2,000 characters. Posting is limited to 8 per
-  author per rolling minute. Every author may edit their own post for
-  15 minutes. Self-delete is always available.
+  author per rolling minute, enforced atomically using a database
+  transaction advisory lock for each author. Every author may edit their
+  own post for 15 minutes. Self-delete is always available.
+- The hardened `bn_p6_chat_page` RPC uses a **timestamp + message UUID**
+  cursor, preventing missing/duplicated posts when multiple messages
+  share the same microsecond. A post creates a `CHAT_POSTED` audit
+  entry; self/staff edits and removals retain their previous audits.
 - ACTIVE Admin and Moderator can remove other members' posts. Edits/removals
   soft-delete or update the current row, with an `AuditLog` entry for changes.
   Removed entries are excluded from the normal reader.
@@ -52,6 +57,9 @@ Entry: `pages/announcements.html`, implemented by
   yet exposed in the initial form.
 - Readers (all ACTIVE roles) see current, non-expired posts; pinned and
   prioritized items are displayed first. List capped at 80 posts.
+- Staff can now set or clear an optional expiry date from the post form.
+  The browser interprets that value in **Asia/Manila (UTC+08:00)** and
+  sends UTC to the server, which validates a future expiry within 366 days.
 - Publication records individual `ANNOUNCEMENT` notifications for
   members with ACTIVE membership at posting time (excluding author).
   These are **database inbox records**, not sent emails or push messages.
@@ -59,6 +67,9 @@ Entry: `pages/announcements.html`, implemented by
   60 records in the chosen class. Its read action requires matching
   notification ID, `user_id=auth.uid()`, and class ID. Another
   classmate or unapproved account cannot read, dismiss or list them.
+- `Mark all read` updates **only the requesting user's unread records
+  in their currently ACTIVE class** through the guarded
+  `bn_p7_notifications_read_all` RPC, not direct table writes.
 - The visible tab refreshes every 30 seconds, with manual Refresh.
 
 ## Design
@@ -88,7 +99,9 @@ passed after both migrations were deployed. It creates temporary Admin,
 Student and Moderator chat/announcement actions, checks own edits versus
 other edits, staff removals, reply delivery, Student publication denial,
 receipt isolation, outsider cross-class denial, pin/unpin and read receipts.
-The entire transaction rolls back.
+The entire transaction rolls back. The additional Phase 6/7 hardening
+migration `20261027024458_phase6_phase7_polish_hardening.sql` adds equal-time
+cursor testing, chat post audit and cross-account bulk-read denial.
 
 **Automated repository tests:** `node --test tests/*.test.mjs` and
 `tests/phase67-communications.test.mjs` cover permissions, safe
