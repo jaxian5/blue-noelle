@@ -21,9 +21,12 @@
 <label for="p7-body">Message</label><textarea id="p7-body" maxlength="4000" rows="4" required></textarea>
 <div class="p67-controls"><label for="p7-priority">Priority</label><select id="p7-priority"><option value="0">Normal</option><option value="1">Important</option><option value="2">Urgent</option></select>
 <label class="p67-check"><input type="checkbox" id="p7-pinned"> Pin</label></div>
+<label for="p7-expires">Expires (optional, Asia/Manila)</label>
+<input type="datetime-local" id="p7-expires" aria-describedby="p7-expires-note">
+<small class="bn-muted" id="p7-expires-note">Leave blank to keep this announcement available until removed. Set a time within the next year.</small>
 <div class="p67-row"><small class="bn-muted">Delivered to active members' in-app inboxes.</small><button class="bn-btn bn-btn-primary" type="submit" id="p7-publish">Publish</button></div></form>
 <div id="p7-posts" class="p67-feed" aria-live="polite"></div></section>
-<section class="bn-card"><div class="p67-row"><h2>My inbox</h2><span id="p7-unread" class="p67-pill">0 unread</span></div>
+<section class="bn-card"><div class="p67-row"><h2>My inbox</h2><div class="p67-row"><span id="p7-unread" class="p67-pill">0 unread</span><button class="bn-btn bn-btn-secondary" id="p7-read-all" type="button" disabled>Mark all read</button></div></div>
 <p class="bn-muted">Only notifications addressed to your account are shown. This is not email or device push delivery.</p>
 <div id="p7-inbox" class="p67-feed"></div></section>
 </div>
