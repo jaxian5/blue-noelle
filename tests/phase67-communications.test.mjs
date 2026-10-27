@@ -49,7 +49,7 @@ test("Phase 7 authorizes staff-only publication and broadcasts to only ACTIVE cl
  assert.match(newsSQL,/char_length\(title_clean\) NOT BETWEEN 3 AND 120/);
 });
 test("Inbox is per-user, class-scoped, and its read receipt cannot be edited by another user",()=>{
- assert.match(newsSQL,/n\.user_id=\(SELECT auth\.uid\(\)\) AND class_id=p_class/);
+ assert.match(newsSQL,/WHERE user_id=\(SELECT auth\.uid\(\)\) AND class_id=p_class/);
  assert.match(newsSQL,/WHERE id=p_id AND user_id=\(SELECT auth\.uid\(\)\) AND class_id=p_class/);
  assert.match(newsSQL,/coalesce\(read_at,now\(\)\)/);
  assert.match(newsSQL,/bn_p7_notifications_impl/);
