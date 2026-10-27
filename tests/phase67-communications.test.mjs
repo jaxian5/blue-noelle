@@ -117,4 +117,9 @@ test("Announcement expiry is sent as Manila-local UTC and edit form preserves ex
  assert.match(news,/dom\("p7-expires"\)\.value=manilaLocal\(post\.expires_at\)/);
  assert.match(news,/bn_p7_notifications_read_all/);
  assert.match(news,/dom\("p7-read-all"\)\.disabled=working\|\|unread===0/);
+ assert.ok(html.includes('id="p7-cancel-edit"'));
+ assert.match(news,/dom\("p7-cancel-edit"\)\.hidden=false/);
+ assert.match(news,/dom\("p7-cancel-edit"\)\.hidden=true/);
+ assert.match(news,/post\.dataset\.announcement===id/);
+ assert.match(read("css/phase67.css"),/\.bn-p67 \[hidden\]\{display:none!important\}/);
 });
