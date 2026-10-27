@@ -30,3 +30,6 @@
 .p67-muted{color:var(--ui-muted)}.p67-empty{color:var(--ui-muted);padding:18px 4px}
 @media(max-width:840px){.p67-columns{grid-template-columns:1fr}.p67-feed{max-height:unset}}
 @media(max-width:540px){.p67-heading .bn-btn{width:100%;text-align:center}.p67-row{align-items:start}}
+
+/* Avoid author display rules overriding the HTML hidden attribute. */
+.bn-p67 [hidden]{display:none!important}
