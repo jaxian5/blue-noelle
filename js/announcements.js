@@ -4,12 +4,31 @@
  const {dom,el,status,rpc,fmt,init,periodic}=w.BNComm;
  let user=null,posts=[],notices=[],working=false,seq=0,editing=null;
  const classId=()=>dom("p7-class").value;
+ function manilaLocal(utc){
+   if(!utc)return "";
+   const formatter=new Intl.DateTimeFormat("en-GB",{
+     timeZone:"Asia/Manila",year:"numeric",month:"2-digit",day:"2-digit",
+     hour:"2-digit",minute:"2-digit",hour12:false,hourCycle:"h23"
+   });
+   const parts=Object.fromEntries(formatter.formatToParts(new Date(utc))
+     .filter(p=>p.type!=="literal").map(p=>[p.type,p.value]));
+   return parts.year+"-"+parts.month+"-"+parts.day+"T"+parts.hour+":"+parts.minute;
+ }
+ function expiresUtc(){
+   const time=dom("p7-expires").value;
+   if(!time)return null;
+   const date=new Date(time+":00+08:00");
+   if(Number.isNaN(date.valueOf()))throw Error("Enter a valid Manila expiration time.");
+   if(date<=new Date()||date>new Date(Date.now()+366*86400000))
+     throw Error("Expiration must be in the future and within one year.");
+   return date.toISOString();
+ }
  const staff=()=>["Admin","Moderator"].includes(user?.role(classId()));
  const mutate=(p_action,p_announcement=null,data={})=>rpc("bn_p7_announcements_mutate",{
   p_class:classId(),p_action,p_announcement,
   p_title:data.title??null,p_message:data.body??null,
   p_priority:data.priority??0,p_pinned:data.pinned??false,
-  p_expires:null
+  p_expires:data.expires??null
  });
  function btn(label,callback){
    const button=el("button",label,"bn-btn bn-btn-secondary");button.type="button";
@@ -35,6 +54,7 @@
          dom("p7-body").value=post.message;
          dom("p7-priority").value=String(post.priority);
          dom("p7-pinned").checked=post.pinned;
+         dom("p7-expires").value=manilaLocal(post.expires_at);
          dom("p7-publish").textContent="Save changes";
          dom("p7-form").scrollIntoView({behavior:"smooth",block:"nearest"});
        }));
@@ -54,6 +74,7 @@
    const list=dom("p7-inbox");list.replaceChildren();
    const unread=notices.filter(x=>!x.read_at).length;
    dom("p7-unread").textContent=unread+" unread";
+   dom("p7-read-all").disabled=working||unread===0;
    if(!notices.length){list.append(el("p","No notifications in this classroom yet.","p67-empty"));return}
    for(const notice of notices){
      const card=el("article",null,"p67-notice");
@@ -101,10 +122,11 @@
  }
  async function perform(fn,success){
    if(working)return;working=true;
-   for(const id of ["p7-publish","p7-reload"])dom(id).disabled=true;
+   for(const id of ["p7-publish","p7-reload","p7-read-all"])dom(id).disabled=true;
    try{await fn();status(success,"success");await reload();}
    catch(e){status(e.message||"Request failed.","error")}
-   finally{working=false;for(const id of ["p7-publish","p7-reload"])dom(id).disabled=false}
+   finally{working=false;for(const id of ["p7-publish","p7-reload"])dom(id).disabled=false;
+    dom("p7-read-all").disabled=!notices.some(n=>!n.read_at)}
  }
  function clearForm(){
    editing=null;dom("p7-form").reset();dom("p7-publish").textContent="Publish";
@@ -118,12 +140,19 @@
        void reload(true);
      });
      dom("p7-reload").addEventListener("click",()=>{void reload(true)});
+     dom("p7-read-all").addEventListener("click",()=>{
+       void perform(()=>rpc("bn_p7_notifications_read_all",{p_class:classId()}),
+         "Your classroom notifications were marked read.");
+     });
      dom("p7-form").addEventListener("submit",event=>{
        event.preventDefault();if(!staff())return;
        const id=editing;
+       let expires;
+       try{expires=expiresUtc()}
+       catch(e){status(e.message,"error");return}
        const data={title:dom("p7-title").value.trim(),
         body:dom("p7-body").value.trim(),priority:Number(dom("p7-priority").value),
-        pinned:dom("p7-pinned").checked};
+        pinned:dom("p7-pinned").checked,expires};
        void perform(async()=>{
          await mutate(id?"edit":"create",id,data);
          clearForm();
