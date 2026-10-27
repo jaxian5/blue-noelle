@@ -48,7 +48,7 @@ BEGIN
  v_role:=bn_private.bn_p6_staff_or_student(p_class);
  IF v_role NOT IN ('Admin','Moderator') OR v_role IS NULL
  THEN RAISE EXCEPTION 'ACTIVE classroom staff access required' USING ERRCODE='42501';END IF;
- IF p_action NOT IN ('create','edit','delete','pin') THEN
+ IF p_action IS NULL OR p_action NOT IN ('create','edit','delete','pin') THEN
   RAISE EXCEPTION 'Unsupported announcement operation';END IF;
  IF p_action IN ('create','edit') THEN
   title_clean:=btrim(coalesce(p_title,''));body_clean:=btrim(coalesce(p_message,''));
