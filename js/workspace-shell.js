@@ -14,6 +14,8 @@
    {href:"class-clock.html",icon:"◷",label:"Class Clock"},
    {href:"classwork.html",icon:"▤",label:"Subjects & classwork"},
    {href:"phase5-groups.html",icon:"♧",label:"Groups & compilation"},
+   {href:"discussions.html",icon:"◫",label:"Class discussions"},
+   {href:"announcements.html",icon:"✉",label:"Announcements & inbox"},
    {href:"admin-classwork.html",icon:"✎",label:"Manage classwork",role:"admin",id:"classwork-admin-link"},
    {href:"phase1-class-staff.html",icon:"◎",label:"Member requests",role:"staff"},
    {href:"class-operations.html",icon:"▦",label:"Schedule & members",role:"staff"},
