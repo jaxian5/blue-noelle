@@ -59,10 +59,10 @@
    if(loading||document.hidden&&!force)return;
    const room=classId(),turn=++seq;loading=true;
    try{
-     const rows=await rpc("bn_p6_chat_list",{p_class:room,p_before:null,p_limit:60});
+     const rows=await rpc("bn_p6_chat_page",{p_class:room,p_before:null,p_before_id:null,p_limit:60});
      if(turn!==seq||room!==classId())return;
      thread=Array.isArray(rows)?rows:[];
-     before=thread.length?thread[0].created_at:null;
+     before=thread.length?{time:thread[0].created_at,id:thread[0].id}:null;
      dom("p6-more").hidden=thread.length<60;
      render();dom("p6-content").hidden=false;
      if(force)status("Class discussion updated.","success");
@@ -77,11 +77,13 @@
  async function more(){
    if(loading||!before)return;loading=true;const room=classId();
    try{
-     const rows=await rpc("bn_p6_chat_list",{p_class:room,p_before:before,p_limit:60});
+     const rows=await rpc("bn_p6_chat_page",{
+       p_class:room,p_before:before.time,p_before_id:before.id,p_limit:60
+     });
      if(room!==classId())return;
      const existing=new Set(thread.map(x=>x.id));
      thread=[...(Array.isArray(rows)?rows:[]).filter(x=>!existing.has(x.id)),...thread];
-     before=thread[0]?.created_at||null;
+     before=thread[0]?{time:thread[0].created_at,id:thread[0].id}:null;
      dom("p6-more").hidden=!rows?.length||rows.length<60;render();
    }catch(e){status(e.message,"error")}finally{
      loading=false;
