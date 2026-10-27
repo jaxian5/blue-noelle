@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head>
+<script src="../js/theme.js?v=20261026-theme"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark"><title>Class Discussions | Blue Noelle</title>
+<link rel="stylesheet" href="../css/main.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-pages.css?v=20261026-contrast-aa">
+<link rel="stylesheet" href="../css/workspace-shell.css?v=20261027-p67">
+<link rel="stylesheet" href="../css/phase67.css?v=20261027-p67">
+<link rel="stylesheet" href="../css/theme.css?v=20261026-contrast-aa">
+</head><body class="bn-postlogin"><div class="bn-app">
+<header class="bn-header"><a class="bn-logo" href="dashboard.html"><span class="bn-logo-mark">BN</span>Blue Noelle</a><nav class="bn-nav"><a href="dashboard.html">Dashboard</a><a href="discussions.html" class="active">Class Discussions</a></nav></header>
+<main class="bn-main bn-p67">
+<div class="p67-heading"><div><p class="bn-classwork-eyebrow">PHASE 6 · CLASS COMMUNICATION</p><h1>Class Discussions</h1><p class="bn-muted">Private class discussions, replies and staff moderation.</p></div><a class="bn-btn bn-btn-secondary" href="dashboard.html">← Dashboard</a></div>
+<div id="p67-status" class="p67-status" role="status" aria-live="polite">Verifying your account…</div>
+
+<section class="bn-card p67-toolbar"><div><label for="p6-class">Approved classroom</label><select id="p6-class" disabled><option>Loading…</option></select></div><button class="bn-btn bn-btn-secondary" type="button" id="p6-reload">Refresh</button></section>
+<section id="p6-content" hidden class="bn-card">
+<div class="p67-row"><h2>Class discussion</h2><span class="p67-pill">Class members only</span></div>
+<p class="bn-muted">Replies stay in the current classroom. Edit your own messages within 15 minutes. Staff can remove inappropriate messages.</p>
+<button id="p6-more" class="bn-btn bn-btn-secondary" type="button">Load older messages</button>
+<div id="p6-messages" class="p67-feed" aria-live="polite"></div>
+<form id="p6-form" class="p67-form"><label for="p6-body">Message</label>
+<p id="p6-replying" class="bn-muted" hidden></p><button id="p6-cancel-reply" type="button" hidden>Cancel reply</button>
+<textarea id="p6-body" maxlength="2000" rows="3" required placeholder="Write something for your classmates…"></textarea>
+<div class="p67-row"><small class="bn-muted">Text only · 2,000 characters maximum</small><button type="submit" class="bn-btn bn-btn-primary" id="p6-send">Post message</button></div></form>
+</section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script><script src="../js/supabase-adapter.js"></script>
+<script src="../js/workspace-shell.js?v=20261027-p67"></script>
+<script src="../js/discussions.js?v=20261027-p67"></script>
+</body></html>
