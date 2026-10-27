@@ -67,6 +67,10 @@ Entry: `pages/announcements.html`, implemented by
   60 records in the chosen class. Its read action requires matching
   notification ID, `user_id=auth.uid()`, and class ID. Another
   classmate or unapproved account cannot read, dismiss or list them.
+- The announcement editor supports **Cancel editing**, preserving
+  the distinction between publishing a new post and changing an existing
+  one. Inbox announcement navigation focuses the corresponding visible post
+  when possible, rather than merely jumping to the top of the feed.
 - `Mark all read` updates **only the requesting user's unread records
   in their currently ACTIVE class** through the guarded
   `bn_p7_notifications_read_all` RPC, not direct table writes.
@@ -99,11 +103,13 @@ passed after both migrations were deployed. It creates temporary Admin,
 Student and Moderator chat/announcement actions, checks own edits versus
 other edits, staff removals, reply delivery, Student publication denial,
 receipt isolation, outsider cross-class denial, pin/unpin and read receipts.
-The entire transaction rolls back. The additional Phase 6/7 hardening
+The test also verifies announcement edit and time-limited expiry, same-timestamp
+chat pagination, audited posts and private bulk inbox read. The entire
+transaction rolls back. The additional Phase 6/7 hardening
 migration `20261027024458_phase6_phase7_polish_hardening.sql` adds equal-time
 cursor testing, chat post audit and cross-account bulk-read denial.
 
-**Automated repository tests:** `node --test tests/*.test.mjs` and
+**Automated repository tests: 130 passed, 0 failed** in [GitHub Actions](https://github.com/jaxian5/blue-noelle/actions/runs/40440790539), including `node --test tests/*.test.mjs` and
 `tests/phase67-communications.test.mjs` cover permissions, safe
 rendering, route consistency and theme contracts.
 
@@ -130,6 +136,10 @@ rendering, route consistency and theme contracts.
 9. Verify all old Phase 2–4 DB suites still pass and Auth email
    deliverability is not assumed fixed.
 
-**Release state:** Phase 6 and 7 MVP code and migrations are implemented.
+**Release state:** Phase 6 and 7 code, reliable keyset paging, announcement
+expiration UI and inbox bulk read are implemented. All seven rollback-only
+DB suites for Phases 2–7, including Phase 5's private generated artifacts,
+passed after the hardening migration. No permanent test messages or inbox
+records were created.
 The website UI awaits PR merge and GitHub Pages deployment. Full
 approval requires the multi-account browser evidence above.
