@@ -84,7 +84,7 @@ test("invalid stored setting is ignored and OS preference wins without explicit 
 test("every canonical entry and signed-in view loads early theme and final override CSS",()=>{
  const paths=["index.html","pages/login.html","pages/register.html",
    "pages/verify-email.html","pages/dashboard.html","pages/account.html","pages/class-clock.html",
-   "pages/classwork.html","pages/phase5-groups.html","pages/admin-classwork.html","pages/submission.html",
+   "pages/classwork.html","pages/phase5-groups.html","pages/discussions.html","pages/announcements.html","pages/admin-classwork.html","pages/submission.html",
    "pages/phase1-class-staff.html","pages/class-operations.html"];
  for(const path of paths){
   const page=read(path);
